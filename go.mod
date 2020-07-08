@@ -18,8 +18,5 @@ require (
 	golang.org/x/tools v0.0.0-20200515010526-7d3b6ebf133d // indirect
 	gopkg.in/AlecAivazis/survey.v1 v1.8.8
 	gopkg.in/inf.v0 v0.9.1 // indirect
-	k8s.io/client-go v0.15.11
 	k8s.io/utils v0.0.0-20200327001022-6496210b90e8 // indirect
 )
-
-replace k8s.io/kube-openapi => k8s.io/kube-openapi v0.0.0-20190718092204-1918f780cd63
