@@ -236,11 +236,11 @@ func main() {
 	newRelease := <-updateMessageChan
 	if newRelease != nil {
 		msg := fmt.Sprintf("%s %s → %s\n%s\n\n%s",
-			util.ColorInfo("A new release of sac is available:"),
+			util.ColorInfo("A new release of chilly is available:"),
 			util.ColorWarning(currentVersion),
 			util.ColorWarning(newRelease.Version),
 			util.ColorInfo(newRelease.URL),
-			util.ColorInfo("sac upgrade cli"))
+			util.ColorInfo("chilly upgrade cli"))
 
 		stderr := os.Stderr
 		fmt.Fprintf(stderr, "\n\n%s\n\n", msg)

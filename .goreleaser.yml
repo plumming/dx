@@ -6,7 +6,7 @@ before:
     - go mod download
 
 builds:
-  - id: sac-linux
+  - id: chilly-linux
     # Path to main.go file or main package.
     # Default is `.`.
     main: ./cmd/chilly/chilly.go
@@ -14,12 +14,12 @@ builds:
     # Binary name.
     # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
     # Default is the name of the project directory.
-    binary: sac
+    binary: chilly
 
     # Custom ldflags templates.
     # Default is `-s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}} -X main.builtBy=goreleaser`.
     ldflags:
-      - -X "{{.Env.ROOTPACKAGE}}/pkg/version.Version={{.Env.VERSION}}" -X "{{.Env.ROOTPACKAGE}}/pkg/version.Revision={{.Env.REV}}" -X "{{.Env.ROOTPACKAGE}}/pkg/version.Branch={{.Env.BRANCH}}" -X "{{.Env.ROOTPACKAGE}}/pkg/version.BuildDate={{.Env.BUILDDATE}}" -X "{{.Env.ROOTPACKAGE}}/pkg/version.GoVersion={{.Env.GOVERSION}}"
+      - -X github.com/plumming/chilly/pkg/version.Version={{.Env.VERSION}}" -X github.com/plumming/chilly/pkg/version.Revision={{.Env.REV}}" -X github.com/plumming/chilly/pkg/version.Branch={{.Env.BRANCH}}" -X github.com/plumming/chilly/pkg/version.BuildDate={{.Env.BUILDDATE}}" -X github.com/plumming/chilly/pkg/version.GoVersion={{.Env.GOVERSION}}"
 
     # GOOS list to build for.
     # For more info refer to: https://golang.org/doc/install/source#environment
@@ -33,7 +33,7 @@ builds:
     goarch:
       - amd64
 
-  - id: sac-amd64
+  - id: chilly-amd64
     # Path to main.go file or main package.
     # Default is `.`.
     main: ./cmd/chilly/chilly.go
@@ -41,12 +41,12 @@ builds:
     # Binary name.
     # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
     # Default is the name of the project directory.
-    binary: sac
+    binary: chilly
 
     # Custom ldflags templates.
     # Default is `-s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}} -X main.builtBy=goreleaser`.
     ldflags:
-     - -X "{{.Env.ROOTPACKAGE}}/pkg/version.Version={{.Env.VERSION}}" -X "{{.Env.ROOTPACKAGE}}/pkg/version.Revision={{.Env.REV}}" -X "{{.Env.ROOTPACKAGE}}/pkg/version.Branch={{.Env.BRANCH}}" -X "{{.Env.ROOTPACKAGE}}/pkg/version.BuildDate={{.Env.BUILDDATE}}" -X "{{.Env.ROOTPACKAGE}}/pkg/version.GoVersion={{.Env.GOVERSION}}"
+     - -X github.com/plumming/chilly/pkg/version.Version={{.Env.VERSION}}" -X github.com/plumming/chilly/pkg/version.Revision={{.Env.REV}}" -X github.com/plumming/chilly/pkg/version.Branch={{.Env.BRANCH}}" -X github.com/plumming/chilly/pkg/version.BuildDate={{.Env.BUILDDATE}}" -X github.com/plumming/chilly/pkg/version.GoVersion={{.Env.GOVERSION}}"
 
     # GOOS list to build for.
     # For more info refer to: https://golang.org/doc/install/source#environment
@@ -60,7 +60,7 @@ builds:
     goarch:
       - amd64
 
-  - id: sac-windows-amd64
+  - id: chilly-windows-amd64
     # Path to main.go file or main package.
     # Default is `.`.
     main: ./cmd/chilly/chilly.go
@@ -68,12 +68,12 @@ builds:
     # Binary name.
     # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
     # Default is the name of the project directory.
-    binary: sac
+    binary: chilly
 
     # Custom ldflags templates.
     # Default is `-s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}} -X main.builtBy=goreleaser`.
     ldflags:
-     - -X "{{.Env.ROOTPACKAGE}}/pkg/version.Version={{.Env.VERSION}}" -X "{{.Env.ROOTPACKAGE}}/pkg/version.Revision={{.Env.REV}}" -X "{{.Env.ROOTPACKAGE}}/pkg/version.Branch={{.Env.BRANCH}}" -X "{{.Env.ROOTPACKAGE}}/pkg/version.BuildDate={{.Env.BUILDDATE}}" -X "{{.Env.ROOTPACKAGE}}/pkg/version.GoVersion={{.Env.GOVERSION}}"
+     - -X github.com/plumming/chilly/pkg/version.Version={{.Env.VERSION}}" -X github.com/plumming/chilly/pkg/version.Revision={{.Env.REV}}" -X github.com/plumming/chilly/pkg/version.Branch={{.Env.BRANCH}}" -X github.com/plumming/chilly/pkg/version.BuildDate={{.Env.BUILDDATE}}" -X github.com/plumming/chilly/pkg/version.GoVersion={{.Env.GOVERSION}}"
 
     # GOOS list to build for.
     # For more info refer to: https://golang.org/doc/install/source#environment
@@ -120,4 +120,4 @@ release:
 
   # You can change the name of the GitHub release.
   # Default is `{{.Tag}}`
-  name_template: "{{.Env.VERSION}}"
+  name_template: "{{.Tag}}"
