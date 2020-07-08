@@ -19,7 +19,7 @@ builds:
     # Custom ldflags templates.
     # Default is `-s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}} -X main.builtBy=goreleaser`.
     ldflags:
-      - -X github.com/plumming/chilly/pkg/version.Version={{.Env.VERSION}}" -X github.com/plumming/chilly/pkg/version.Revision={{.Env.REV}}" -X github.com/plumming/chilly/pkg/version.Branch={{.Env.BRANCH}}" -X github.com/plumming/chilly/pkg/version.BuildDate={{.Env.BUILDDATE}}" -X github.com/plumming/chilly/pkg/version.GoVersion={{.Env.GOVERSION}}"
+      - -X github.com/plumming/chilly/pkg/version.Version={{.Version}} -X github.com/plumming/chilly/pkg/version.Revision={{.ShortCommit}} -X github.com/plumming/chilly/pkg/version.BuildDate={{.CommitDate}}
 
     # GOOS list to build for.
     # For more info refer to: https://golang.org/doc/install/source#environment
@@ -46,7 +46,7 @@ builds:
     # Custom ldflags templates.
     # Default is `-s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}} -X main.builtBy=goreleaser`.
     ldflags:
-     - -X github.com/plumming/chilly/pkg/version.Version={{.Env.VERSION}}" -X github.com/plumming/chilly/pkg/version.Revision={{.Env.REV}}" -X github.com/plumming/chilly/pkg/version.Branch={{.Env.BRANCH}}" -X github.com/plumming/chilly/pkg/version.BuildDate={{.Env.BUILDDATE}}" -X github.com/plumming/chilly/pkg/version.GoVersion={{.Env.GOVERSION}}"
+      - -X github.com/plumming/chilly/pkg/version.Version={{.Version}} -X github.com/plumming/chilly/pkg/version.Revision={{.ShortCommit}} -X github.com/plumming/chilly/pkg/version.BuildDate={{.CommitDate}}
 
     # GOOS list to build for.
     # For more info refer to: https://golang.org/doc/install/source#environment
@@ -73,7 +73,7 @@ builds:
     # Custom ldflags templates.
     # Default is `-s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}} -X main.builtBy=goreleaser`.
     ldflags:
-     - -X github.com/plumming/chilly/pkg/version.Version={{.Env.VERSION}}" -X github.com/plumming/chilly/pkg/version.Revision={{.Env.REV}}" -X github.com/plumming/chilly/pkg/version.Branch={{.Env.BRANCH}}" -X github.com/plumming/chilly/pkg/version.BuildDate={{.Env.BUILDDATE}}" -X github.com/plumming/chilly/pkg/version.GoVersion={{.Env.GOVERSION}}"
+      - -X github.com/plumming/chilly/pkg/version.Version={{.Version}} -X github.com/plumming/chilly/pkg/version.Revision={{.ShortCommit}} -X github.com/plumming/chilly/pkg/version.BuildDate={{.CommitDate}}
 
     # GOOS list to build for.
     # For more info refer to: https://golang.org/doc/install/source#environment
