@@ -84,12 +84,12 @@ func (c *UpgradeCliCmd) Run() error {
 		return errors.Wrap(err, "unable to get latest release info")
 	}
 
-	log.Logger().Infof("Upgrading sac client to %s", util.ColorInfo(latestRelease.Version))
+	log.Logger().Infof("Upgrading chilly client to %s", util.ColorInfo(latestRelease.Version))
 
 	// Check for jx binary in non standard path and install there instead if found...
 	binDir, err := util.ChillyBinaryLocation()
 	if err != nil {
-		return errors.Wrap(err, "unable to get location of sac binary")
+		return errors.Wrap(err, "unable to get location of chilly binary")
 	}
 
 	fileName := binary
@@ -171,12 +171,12 @@ func downloadNewBinary(client *api.Client, archivePath string, url string, binDi
 		if err != nil {
 			return err
 		}
-		err = os.Remove(filepath.Join(binDir, "sac"))
+		err = os.Remove(filepath.Join(binDir, "chilly"))
 		if err != nil {
-			log.Logger().Infof("Skipping removal of old sac binary: %s", err)
+			log.Logger().Infof("Skipping removal of old chilly binary: %s", err)
 		}
 		// Copy over the new binary
-		err = os.Rename(filepath.Join(util.ConfigDir(), "sac"), filepath.Join(binDir, "sac"))
+		err = os.Rename(filepath.Join(util.ConfigDir(), "chilly"), filepath.Join(binDir, "chilly"))
 		if err != nil {
 			return err
 		}
@@ -184,8 +184,8 @@ func downloadNewBinary(client *api.Client, archivePath string, url string, binDi
 		log.Logger().Errorf("Upgrade not supported on windows")
 	}
 
-	fullPath := filepath.Join(binDir, "sac")
-	log.Logger().Infof("sac client has been installed into %s", util.ColorInfo(fullPath))
+	fullPath := filepath.Join(binDir, "chilly")
+	log.Logger().Infof("chilly client has been installed into %s", util.ColorInfo(fullPath))
 	return os.Chmod(fullPath, 0755)
 }
 
