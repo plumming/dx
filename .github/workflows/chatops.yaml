@@ -9,6 +9,6 @@ jobs:
     steps:
       - uses: Naturalclar/issue-action@v1.0.0
         with:
-          keywords: '["/lgtm", "/approve"]'
+          keywords: '["lgtm", "approve"]'
           labels: '["lgtm"]'
           github-token: "${{ secrets.CHILLY_BOT_TOKEN }}"
