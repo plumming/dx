@@ -5,7 +5,7 @@ on:
     branches:
       - '*'
 jobs:
-  Run Actions:
+  run_actions:
     runs-on: ubuntu-latest
     steps:
       - name: Automatically Merge PR
