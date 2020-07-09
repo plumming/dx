@@ -120,6 +120,7 @@ func (c Client) GraphQL(query string, variables map[string]interface{}, data int
 	}
 
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	req.Header.Set("Accept", "application/vnd.github.antiope-preview+json")
 
 	resp, err := c.http.Do(req)
 	if err != nil {
@@ -142,6 +143,7 @@ func handleResponse(resp *http.Response, data interface{}) error {
 		return err
 	}
 
+	log.Logger().Debugf("got response %s", body)
 	gr := &graphQLResponse{Data: data}
 	err = json.Unmarshal(body, &gr)
 	if err != nil {

@@ -58,9 +58,12 @@ func (p *PullRequest) LabelsString() string {
 
 func (p *PullRequest) contexts() []string {
 	contexts := []string{}
-	for _, c := range p.Commits.Nodes[0].Commit.Status.Contexts {
-		if c.Context != "tide" && c.Context != "keeper" && c.Context != "Merge Status" {
+	for _, c := range p.Commits.Nodes[0].Commit.StatusCheckRollup.Contexts.Nodes {
+		if c.Context != "" && c.Context != "tide" && c.Context != "keeper" && c.Context != "Merge Status" {
 			contexts = append(contexts, c.State)
+		}
+		if c.Name != "" {
+			contexts = append(contexts, c.Conclusion)
 		}
 	}
 	return contexts
@@ -79,8 +82,11 @@ func (p *PullRequest) ContextsString() string {
 
 func (p *PullRequest) FailedContexts() []Context {
 	var failedContexts []Context
-	for _, c := range p.Commits.Nodes[0].Commit.Status.Contexts {
-		if c.Context != "tide" && c.Context != "keeper" && c.Context != "Merge Status" && c.State == failure {
+	for _, c := range p.Commits.Nodes[0].Commit.StatusCheckRollup.Contexts.Nodes {
+		if c.Context != "" && c.Context != "tide" && c.Context != "keeper" && c.Context != "Merge Status" && c.State == failure {
+			failedContexts = append(failedContexts, c)
+		}
+		if c.Name != "" && c.Conclusion == failure {
 			failedContexts = append(failedContexts, c)
 		}
 	}
@@ -133,8 +139,11 @@ func (p *PullRequest) HasLabel(name string) bool {
 }
 
 func (p *PullRequest) HasContext(name string) bool {
-	for _, label := range p.Commits.Nodes[0].Commit.Status.Contexts {
+	for _, label := range p.Commits.Nodes[0].Commit.StatusCheckRollup.Contexts.Nodes {
 		if name == label.Context {
+			return true
+		}
+		if name == label.Name {
 			return true
 		}
 	}
@@ -180,18 +189,25 @@ type CommitEntry struct {
 }
 
 type Commit struct {
-	Status CommitStatus `json:"status"`
+	StatusCheckRollup StatusCheckRollup `json:"statusCheckRollup"`
 }
 
-type CommitStatus struct {
-	Contexts []Context `json:"contexts"`
+type StatusCheckRollup struct {
+	State    string        `json:"state"`
+	Contexts StatusContext `json:"contexts"`
+}
+
+type StatusContext struct {
+	Nodes []Context `json:"nodes"`
 }
 
 type Context struct {
 	State       string `json:"state"`
-	TargetURL   string `json:"targetUrl"`
 	Description string `json:"description"`
 	Context     string `json:"context"`
+	Conclusion  string `json:"conclusion"`
+	Name        string `json:"name"`
+	Title       string `json:"title"`
 }
 
 func unique(stringSlice []string) []string {

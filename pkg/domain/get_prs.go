@@ -69,7 +69,7 @@ func (g *GetPrs) Run() error {
         number
         title
         url
-		createdAt
+        createdAt
         closed
         author {
           login
@@ -86,12 +86,22 @@ func (g *GetPrs) Run() error {
         commits(last: 1){
           nodes{
             commit{
-              status {
-                contexts {
-                  state
-                  targetUrl
-                  description
-                  context
+              statusCheckRollup {
+                state
+                contexts(last:100) {
+                  totalCount
+                  nodes {
+                    ...on StatusContext {
+                      state
+                      context
+                      description
+                    }
+                    ...on CheckRun {
+                      conclusion
+                      name
+                      title
+                    }
+                  }
                 }
               }
             }
@@ -107,7 +117,10 @@ func (g *GetPrs) Run() error {
 	if err != nil {
 		return err
 	}
-	err = client.GraphQL(fmt.Sprintf(query, strings.Join(repos, " ")), nil, &data)
+	queryToRun := fmt.Sprintf(query, strings.Join(repos, " "))
+	log.Logger().Debugf("running query %s", queryToRun)
+
+	err = client.GraphQL(queryToRun, nil, &data)
 	if err != nil {
 		return err
 	}
@@ -174,8 +187,8 @@ func (g *GetPrs) Retrigger() error {
 
 	for _, pr := range g.PullRequests {
 		if pr.ContextsString() == "FAILURE" && pr.Mergeable == "MERGEABLE" && pr.HasLabel("updatebot") {
-			failedContexts := pr.FailedContexts
-			for _, f := range failedContexts() {
+			failedContexts := pr.FailedContexts()
+			for _, f := range failedContexts {
 				testCommand := fmt.Sprintf("/test %s", f.Context)
 				if f.Context == "pr-build" {
 					testCommand = "/test this"
