@@ -79,10 +79,12 @@ type FlagError struct {
 	Err error
 }
 
+// Error.
 func (fe FlagError) Error() string {
 	return fe.Err.Error()
 }
 
+// Unwrap FlagError.
 func (fe FlagError) Unwrap() error {
 	return fe.Err
 }
