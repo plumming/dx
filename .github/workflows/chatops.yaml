@@ -7,8 +7,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: Naturalclar/issue-action@v2.0.1
+      - uses: Naturalclar/issue-action@v1.0.0
         with:
-          title-or-body: "body"
-          parameters: '[ {"keywords": ["/lgtm", "/approve"], "labels": ["lgtm"], "assignees": ["chilly-bot"]}]'
+          keywords: '["/lgtm", "/approve"]'
+          labels: '["lgtm"]'
           github-token: "${{ secrets.CHILLY_BOT_TOKEN }}"
