@@ -113,8 +113,8 @@ func TestGetPrs_Retrigger(t *testing.T) {
 				Nodes: []pr.CommitEntry{
 					{
 						Commit: pr.Commit{
-							Status: pr.CommitStatus{
-								Contexts: []pr.Context{},
+							StatusCheckRollup: pr.StatusCheckRollup{
+								Contexts: pr.StatusContext{[]pr.Context{}},
 							},
 						},
 					},
@@ -130,8 +130,8 @@ func TestGetPrs_Retrigger(t *testing.T) {
 				Nodes: []pr.CommitEntry{
 					{
 						Commit: pr.Commit{
-							Status: pr.CommitStatus{
-								Contexts: []pr.Context{{Context: "build", State: "FAILURE"}},
+							StatusCheckRollup: pr.StatusCheckRollup{
+								Contexts: pr.StatusContext{[]pr.Context{{Context: "build", State: "FAILURE"}}},
 							},
 						},
 					},
@@ -148,8 +148,8 @@ func TestGetPrs_Retrigger(t *testing.T) {
 				Nodes: []pr.CommitEntry{
 					{
 						Commit: pr.Commit{
-							Status: pr.CommitStatus{
-								Contexts: []pr.Context{{Context: "build", State: "FAILURE"}},
+							StatusCheckRollup: pr.StatusCheckRollup{
+								Contexts: pr.StatusContext{[]pr.Context{{Context: "build", State: "FAILURE"}}},
 							},
 						},
 					},
@@ -166,8 +166,8 @@ func TestGetPrs_Retrigger(t *testing.T) {
 				Nodes: []pr.CommitEntry{
 					{
 						Commit: pr.Commit{
-							Status: pr.CommitStatus{
-								Contexts: []pr.Context{{Context: "build", State: "PENDING"}},
+							StatusCheckRollup: pr.StatusCheckRollup{
+								Contexts: pr.StatusContext{[]pr.Context{{Context: "build", State: "PENDING"}}},
 							},
 						},
 					},
@@ -184,9 +184,9 @@ func TestGetPrs_Retrigger(t *testing.T) {
 				Nodes: []pr.CommitEntry{
 					{
 						Commit: pr.Commit{
-							Status: pr.CommitStatus{
-								Contexts: []pr.Context{{Context: "plumming", State: "FAILURE"},
-									{Context: "build", State: "FAILURE"}},
+							StatusCheckRollup: pr.StatusCheckRollup{
+								Contexts: pr.StatusContext{[]pr.Context{{Context: "plumming", State: "FAILURE"},
+									{Context: "build", State: "FAILURE"}}},
 							},
 						},
 					},
