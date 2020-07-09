@@ -21,6 +21,7 @@ var (
 	defaultRepos = []string{"plumming/chilly"}
 )
 
+// GetPrs defines get pull request response.
 type GetPrs struct {
 	cmd.CommonOptions
 	ShowDependabot bool
@@ -28,27 +29,33 @@ type GetPrs struct {
 	PullRequests   []pr.PullRequest
 }
 
+// Repos defines repos to watch.
 type Repos struct {
 	Repos []string `json:"repos"`
 }
 
+// Data.
 type Data struct {
 	Search Search `json:"search"`
 }
 
+// Search.
 type Search struct {
 	PullRequests []pr.PullRequest `json:"nodes"`
 }
 
+// NewGetPrs.
 func NewGetPrs() *GetPrs {
 	g := &GetPrs{}
 	return g
 }
 
+// Validate input.
 func (g *GetPrs) Validate() error {
 	return nil
 }
 
+// Run the cmd.
 func (g *GetPrs) Run() error {
 	client, err := g.GithubClient()
 	if err != nil {
@@ -156,6 +163,7 @@ func repos() ([]string, error) {
 	return repoList, nil
 }
 
+// Retrigger failed prs.
 func (g *GetPrs) Retrigger() error {
 	client, err := g.GithubClient()
 	if err != nil {

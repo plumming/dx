@@ -46,6 +46,7 @@ type UpgradeCliCmd struct {
 	Args  []string
 }
 
+// NewUpgradeCliCmd defines new upgrade cmd.
 func NewUpgradeCliCmd() *cobra.Command {
 	c := &UpgradeCliCmd{}
 	cmd := &cobra.Command{
@@ -70,6 +71,7 @@ func NewUpgradeCliCmd() *cobra.Command {
 	return cmd
 }
 
+// Run the cmd.
 func (c *UpgradeCliCmd) Run() error {
 	client, err := api.BasicClient()
 	if err != nil {
@@ -189,7 +191,7 @@ func downloadNewBinary(client *api.Client, archivePath string, url string, binDi
 	return os.Chmod(fullPath, 0755)
 }
 
-// untargz a tarball to a target, from
+// UnTargz a tarball to a target, from.
 // http://blog.ralch.com/tutorial/golang-working-with-tar-and-gzipf
 func UnTargz(tarball, target string, onlyFiles []string) error {
 	zreader, err := os.Open(tarball)

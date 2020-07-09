@@ -5,11 +5,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// UpgradeCmd defines the cmd.
 type UpgradeCmd struct {
 	Cmd  *cobra.Command
 	Args []string
 }
 
+// NewUpgradeCmd defines a new cmd.
 func NewUpgradeCmd() *cobra.Command {
 	c := &UpgradeCmd{}
 	cmd := &cobra.Command{
@@ -32,6 +34,7 @@ func NewUpgradeCmd() *cobra.Command {
 	return cmd
 }
 
+// Run upgrade help.
 func (c *UpgradeCmd) Run() error {
 	return c.Cmd.Help()
 }
