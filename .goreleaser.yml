@@ -105,7 +105,7 @@ checksum:
 
 changelog:
   # set it to true if you wish to skip the changelog generation
-  skip: true
+  skip: false
 
 release:
   # If set to true, will not auto-publish the release.
