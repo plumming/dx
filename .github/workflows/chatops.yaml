@@ -1,23 +1,14 @@
-name: ChatOps
-on: [issue_comment]
+name: "Set Label"
+on:
+  issue_comment:
+    types: [created]
 
 jobs:
-  label-pr:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: ChatOps For Pull Requests
-        uses: machine-learning-apps/actions-chatops@1.41
+      - uses: Naturalclar/issue-action@v1.0.0
         with:
-          TRIGGER_PHRASE: "/lgtm"
-          INDICATOR_LABEL: "lgtm"
-        env: # you must supply GITHUB_TOKEN
-          GITHUB_TOKEN: ${{ secrets.CHILLY_BOT_TOKEN }}
-        id: prcomm
-
-      - name: print variables
-        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
-        run: echo "${USERNAME} approved PR# ${PR_NUMBER} on ${BRANCH_NAME}"
-        env: 
-          BRANCH_NAME: ${{ steps.prcomm.outputs.BRANCH_NAME }}
-          PR_NUMBER: ${{ steps.prcomm.outputs.PULL_REQUEST_NUMBER }}
-          USERNAME: ${{ steps.prcomm.outputs.COMMENTER_USERNAME }}
+          keywords: '["lgtm", "approve"]'
+          labels: '["lgtm"]'
+          github-token: "${{ secrets.CHILLY_BOT_TOKEN }}"

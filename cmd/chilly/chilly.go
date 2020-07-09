@@ -25,7 +25,6 @@ import (
 	"github.com/jenkins-x/jx-logging/pkg/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 )
 
 // Version is dynamically set by the toolchain or overridden by the Makefile.
@@ -80,10 +79,12 @@ type FlagError struct {
 	Err error
 }
 
+// Error.
 func (fe FlagError) Error() string {
 	return fe.Err.Error()
 }
 
+// Unwrap FlagError.
 func (fe FlagError) Unwrap() error {
 	return fe.Err
 }
