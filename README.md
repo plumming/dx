@@ -7,3 +7,4 @@
 ![golangci-lint](https://github.com/plumming/chilly/workflows/golangci-lint/badge.svg)
 ![Build and test Go](https://github.com/plumming/chilly/workflows/Build%20and%20test%20Go/badge.svg)
 ![goreleaser](https://github.com/plumming/chilly/workflows/goreleaser/badge.svg)
+![Codecov](https://github.com/plumming/chilly/workflows/Codecov/badge.svg)
