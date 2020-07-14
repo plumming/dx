@@ -29,9 +29,10 @@ type GetPrs struct {
 	PullRequests   []pr.PullRequest
 }
 
-// Repos defines repos to watch.
-type Repos struct {
-	Repos []string `json:"repos"`
+// Config defines repos to watch.
+type Config struct {
+	Repos        []string `json:"repos"`
+	HiddenLabels []string `json:"hiddenLabels"`
 }
 
 // Data.
@@ -113,7 +114,7 @@ func (g *GetPrs) Run() error {
 }`
 
 	data := Data{}
-	repos, err := repos()
+	repos, hiddenLabels, err := reposAndHiddenLabels()
 	if err != nil {
 		return err
 	}
@@ -132,7 +133,7 @@ func (g *GetPrs) Run() error {
 
 	for _, pr := range pulls {
 		pullRequest := pr
-		if pr.Display(g.ShowDependabot, g.ShowOnHold) {
+		if pr.Display(g.ShowDependabot, g.ShowOnHold, hiddenLabels...) {
 			pullsToReturn = append(pullsToReturn, pullRequest)
 		}
 	}
@@ -142,29 +143,32 @@ func (g *GetPrs) Run() error {
 	return nil
 }
 
-func repos() ([]string, error) {
+func reposAndHiddenLabels() ([]string, []string, error) {
 	configFile := util.ChillyConfigFile()
 
 	var repos []string
+	var hiddenLabels []string
 	if exists, err := util.FileExists(configFile); err == nil && exists {
 		content, err := ioutil.ReadFile(configFile)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 
-		configRepos := Repos{}
-		err = yaml.Unmarshal(content, &configRepos)
+		config := Config{}
+		err = yaml.Unmarshal(content, &config)
 		if err != nil {
 			log.Logger().Infof("no repos configured in %s", configFile)
 			os.Exit(1)
 		}
-		repos = configRepos.Repos
+		repos = config.Repos
 		if len(repos) == 0 {
 			log.Logger().Infof("no repos configured in %s", configFile)
 			os.Exit(1)
 		}
+
+		hiddenLabels = config.HiddenLabels
 	} else if err != nil {
-		return nil, err
+		return nil, nil, err
 	} else {
 		repos = defaultRepos
 	}
@@ -173,7 +177,7 @@ func repos() ([]string, error) {
 	for _, r := range repos {
 		repoList = append(repoList, fmt.Sprintf("repo:%s", r))
 	}
-	return repoList, nil
+	return repoList, hiddenLabels, nil
 }
 
 // Retrigger failed prs.
