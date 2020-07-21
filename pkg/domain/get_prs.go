@@ -50,7 +50,7 @@ func (g *GetPrs) Run() error {
 	}
 
 	query := `{
-	search(query: "is:pr is:open %s", type: ISSUE, first: 100) {
+	search(query: "is:pr is:open %s", type: ISSUE, first: %d) {
       nodes {
       ... on PullRequest {
         number
@@ -100,11 +100,11 @@ func (g *GetPrs) Run() error {
 }`
 
 	data := Data{}
-	repos, hiddenLabels, err := reposAndHiddenLabels()
+	cfg, err := config.LoadFromDefaultLocation()
 	if err != nil {
 		return err
 	}
-	queryToRun := fmt.Sprintf(query, strings.Join(repos, " "))
+	queryToRun := fmt.Sprintf(query, strings.Join(cfg.ReposToQuery(), " "), cfg.MaxNumberOfPRs)
 	log.Logger().Debugf("running query %s", queryToRun)
 
 	err = client.GraphQL(queryToRun, nil, &data)
@@ -119,7 +119,7 @@ func (g *GetPrs) Run() error {
 
 	for _, pr := range pulls {
 		pullRequest := pr
-		if pr.Display(g.ShowDependabot, g.ShowOnHold, hiddenLabels...) {
+		if pr.Display(g.ShowDependabot, g.ShowOnHold, cfg.HiddenLabels...) {
 			pullsToReturn = append(pullsToReturn, pullRequest)
 		}
 	}
@@ -127,24 +127,6 @@ func (g *GetPrs) Run() error {
 	g.PullRequests = pullsToReturn
 
 	return nil
-}
-
-func reposAndHiddenLabels() ([]string, []string, error) {
-	var repos []string
-	var hiddenLabels []string
-
-	config, err := config.LoadFromDefaultLocation()
-	if err != nil {
-		return nil, nil, err
-	}
-	repos = config.Repos
-	hiddenLabels = config.HiddenLabels
-
-	var repoList []string
-	for _, r := range repos {
-		repoList = append(repoList, fmt.Sprintf("repo:%s", r))
-	}
-	return repoList, hiddenLabels, nil
 }
 
 // Retrigger failed prs.

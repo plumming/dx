@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"io/ioutil"
 
 	"github.com/ghodss/yaml"
@@ -9,13 +10,24 @@ import (
 )
 
 var (
-	defaultRepos = []string{"plumming/chilly"}
+	defaultRepos          = []string{"plumming/chilly"}
+	defaultHiddenLabels   = []string{"hide-this"}
+	defaultMaxNumberOfPRs = 100
 )
 
 // Config defines repos to watch.
 type Config struct {
-	Repos        []string `json:"repos"`
-	HiddenLabels []string `json:"hiddenLabels"`
+	Repos          []string `json:"repos"`
+	HiddenLabels   []string `json:"hiddenLabels"`
+	MaxNumberOfPRs int      `json:"maxNumberOfPRs"`
+}
+
+func (c *Config) ReposToQuery() []string {
+	var repoList []string
+	for _, r := range c.Repos {
+		repoList = append(repoList, fmt.Sprintf("repo:%s", r))
+	}
+	return repoList
 }
 
 func LoadFromFile(path string) (Config, error) {
@@ -32,17 +44,29 @@ func LoadFromFile(path string) (Config, error) {
 			return Config{}, err
 		}
 
-		if config.Repos == nil || len(config.Repos) == 0 {
-			config.Repos = defaultRepos
-		}
+		config.SetDefaults()
 
 		return config, nil
 	}
 
 	config := Config{}
-	config.Repos = defaultRepos
+	config.SetDefaults()
 
 	return config, nil
+}
+
+func (c *Config) SetDefaults() {
+	if c.Repos == nil || len(c.Repos) == 0 {
+		c.Repos = defaultRepos
+	}
+
+	if c.HiddenLabels == nil || len(c.HiddenLabels) == 0 {
+		c.HiddenLabels = defaultHiddenLabels
+	}
+
+	if c.MaxNumberOfPRs == 0 {
+		c.MaxNumberOfPRs = defaultMaxNumberOfPRs
+	}
 }
 
 func LoadFromDefaultLocation() (Config, error) {
