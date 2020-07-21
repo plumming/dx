@@ -270,6 +270,13 @@ func checkForUpdate(currentVersion string) (*update.ReleaseInfo, error) {
 	}
 
 	repo := updaterEnabled
+
+	if _, err := os.Stat(util.ConfigDir()); os.IsNotExist(err) {
+		err = os.Mkdir(util.ConfigDir(), 0755)
+		if err != nil {
+			log.Logger().Warnf("unable to create %s directory", util.ConfigDir())
+		}
+	}
 	stateFilePath := path.Join(util.ConfigDir(), "state.yml")
 	return update.CheckForUpdate(client, stateFilePath, repo, currentVersion)
 }
