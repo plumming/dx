@@ -61,6 +61,15 @@ func TestPullRequest_ContextsString(t *testing.T) {
 			},
 			exp: "FAILURE",
 		},
+		{
+			name: "build_error",
+			contexts: []Context{
+				{State: "SUCCESS", Context: "Build"},
+				{State: "ERROR", Context: "Other-Build"},
+				{State: "PENDING", Context: "Merge Status"},
+			},
+			exp: "ERROR",
+		},
 	}
 
 	for _, test := range tests {

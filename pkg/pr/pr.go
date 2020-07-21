@@ -26,6 +26,7 @@ const (
 	success     = "SUCCESS"
 	pending     = "PENDING"
 	failure     = "FAILURE"
+	error       = "ERROR"
 	conflicting = "CONFLICTING"
 	unknown     = "UNKNOWN"
 )
@@ -77,7 +78,9 @@ func (p *PullRequest) contexts() []string {
 
 func (p *PullRequest) ContextsString() string {
 	c := unique(p.contexts())
-	if stringInSlice(c, failure) {
+	if stringInSlice(c, error) {
+		return "ERROR"
+	} else if stringInSlice(c, failure) {
 		return "FAILURE"
 	} else if stringInSlice(c, pending) {
 		return pending
@@ -92,7 +95,7 @@ func (p *PullRequest) FailedContexts() []Context {
 		if c.Context != "" && c.Context != "tide" && c.Context != "keeper" && c.Context != "Merge Status" && c.State == failure {
 			failedContexts = append(failedContexts, c)
 		}
-		if c.Name != "" && c.Conclusion == failure {
+		if c.Name != "" && (c.Conclusion == failure || c.Conclusion == error) {
 			failedContexts = append(failedContexts, c)
 		}
 	}
