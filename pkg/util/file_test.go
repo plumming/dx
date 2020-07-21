@@ -1,10 +1,11 @@
 package util_test
 
 import (
-	"github.com/plumming/chilly/pkg/util"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+
+	"github.com/plumming/chilly/pkg/util"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestConfigDir(t *testing.T) {
