@@ -2,23 +2,15 @@ package domain
 
 import (
 	"fmt"
-	"io/ioutil"
-	"os"
 	"sort"
 	"strings"
 
-	"github.com/plumming/chilly/pkg/util"
-
-	"github.com/ghodss/yaml"
+	"github.com/plumming/chilly/pkg/config"
 
 	"github.com/plumming/chilly/pkg/pr"
 
 	"github.com/jenkins-x/jx-logging/pkg/log"
 	"github.com/plumming/chilly/pkg/cmd"
-)
-
-var (
-	defaultRepos = []string{"plumming/chilly"}
 )
 
 // GetPrs defines get pull request response.
@@ -27,12 +19,6 @@ type GetPrs struct {
 	ShowDependabot bool
 	ShowOnHold     bool
 	PullRequests   []pr.PullRequest
-}
-
-// Config defines repos to watch.
-type Config struct {
-	Repos        []string `json:"repos"`
-	HiddenLabels []string `json:"hiddenLabels"`
 }
 
 // Data.
@@ -144,34 +130,15 @@ func (g *GetPrs) Run() error {
 }
 
 func reposAndHiddenLabels() ([]string, []string, error) {
-	configFile := util.ChillyConfigFile()
-
 	var repos []string
 	var hiddenLabels []string
-	if exists, err := util.FileExists(configFile); err == nil && exists {
-		content, err := ioutil.ReadFile(configFile)
-		if err != nil {
-			return nil, nil, err
-		}
 
-		config := Config{}
-		err = yaml.Unmarshal(content, &config)
-		if err != nil {
-			log.Logger().Infof("no repos configured in %s", configFile)
-			os.Exit(1)
-		}
-		repos = config.Repos
-		if len(repos) == 0 {
-			log.Logger().Infof("no repos configured in %s", configFile)
-			os.Exit(1)
-		}
-
-		hiddenLabels = config.HiddenLabels
-	} else if err != nil {
+	config, err := config.LoadFromDefaultLocation()
+	if err != nil {
 		return nil, nil, err
-	} else {
-		repos = defaultRepos
 	}
+	repos = config.Repos
+	hiddenLabels = config.HiddenLabels
 
 	var repoList []string
 	for _, r := range repos {

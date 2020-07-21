@@ -9,6 +9,8 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"github.com/plumming/chilly/pkg/cmd/editcmd"
+
 	"github.com/plumming/chilly/pkg/deprecation"
 
 	"github.com/spf13/cobra/doc"
@@ -67,6 +69,7 @@ func init() {
 	})
 
 	RootCmd.AddCommand(getcmd.NewGetCmd())
+	RootCmd.AddCommand(editcmd.NewEditCmd())
 	RootCmd.AddCommand(upgradecmd.NewUpgradeCmd())
 
 	c := completionCmd
