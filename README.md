@@ -1,6 +1,7 @@
 # chilly
 
-![gopherbadger-tag-do-not-edit](https://img.shields.io/badge/Go%20Coverage-42%25-brightgreen.svg?longCache=true&style=flat) [![Go Report Card](https://goreportcard.com/badge/github.com/plumming/chilly)](https://goreportcard.com/report/github.com/plumming/chilly)
+![gopherbadger-tag-do-not-edit](https://img.shields.io/badge/Go%20Coverage-42%25-brightgreen.svg?longCache=true&style=flat) 
+[![Go Report Card](https://goreportcard.com/badge/github.com/plumming/chilly)](https://goreportcard.com/report/github.com/plumming/chilly)
 
 ![Check PR can be merged](https://github.com/plumming/chilly/workflows/Check%20PR%20can%20be%20merged/badge.svg)
 ![Set Label](https://github.com/plumming/chilly/workflows/Set%20Label/badge.svg)
