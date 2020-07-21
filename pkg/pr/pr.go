@@ -30,11 +30,17 @@ const (
 	unknown     = "UNKNOWN"
 )
 
-func (p *PullRequest) Display(showDependabot bool, showOnHold bool) bool {
+func (p *PullRequest) Display(showDependabot bool, showOnHold bool, hiddenLabels ...string) bool {
 	display := true
 	// exit early
 	if p.Closed {
 		return false
+	}
+
+	for _, label := range hiddenLabels {
+		if p.HasLabel(label) {
+			return false
+		}
 	}
 
 	if p.Author.Login == "dependabot-preview" {
