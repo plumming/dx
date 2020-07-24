@@ -27,3 +27,4 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CHILLY_TAP_TOKEN: ${{ secrets.CHILLY_TAP_TOKEN }}
