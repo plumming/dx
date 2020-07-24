@@ -121,3 +121,56 @@ release:
   # You can change the name of the GitHub release.
   # Default is `{{.Tag}}`
   name_template: "{{.Tag}}"
+
+brews:
+  -
+    # Name template of the recipe
+    # Default to project name
+    name: chilly
+
+    # NOTE: make sure the url_template, the token and given repo (github or gitlab) owner and name are from the
+    # same kind. We will probably unify this in the next major version like it is done with scoop.
+
+    # GitHub/GitLab repository to push the formula to
+    # Gitea is not supported yet, but the support coming
+    tap:
+      owner: plumming
+      name: chilly-tap
+      # Optionally a token can be provided, if it differs from the token provided to GoReleaser
+      # token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+
+    # Allows you to set a custom download strategy. Note that you'll need
+    # to implement the strategy and add it to your tap repository.
+    # Example: https://docs.brew.sh/Formula-Cookbook#specifying-the-download-strategy-explicitly
+    # Default is empty.
+    # download_strategy: CurlDownloadStrategy.
+
+    # Git author used to commit to the repository.
+    # Defaults are shown.
+    commit_author:
+      name: garethjevans
+      email: gareth@bryncynfelin.co.uk
+
+    # Folder inside the repository to put the formula.
+    # Default is the root folder.
+    folder: Formula
+
+    # Caveats for the user of your binary.
+    # Default is empty.
+    caveats: "How to use this binary"
+
+    # Your app's homepage.
+    # Default is empty.
+    # homepage: "https://example.com/"
+
+    # Your app's description.
+    # Default is empty.
+    description: "Have you got the chillys?"
+
+    # Setting this will prevent goreleaser to actually try to commit the updated
+    # formula - instead, the formula file will be stored on the dist folder only,
+    # leaving the responsibility of publishing it to the user.
+    # If set to auto, the release will not be uploaded to the homebrew tap
+    # in case there is an indicator for prerelease in the tag e.g. v1.0.0-rc1
+    # Default is false.
+    skip_upload: true
