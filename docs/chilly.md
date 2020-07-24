@@ -15,6 +15,7 @@ Have you got the chillies.
 
 ### SEE ALSO
 
+* [chilly edit](chilly_edit.md)	 - 
 * [chilly get](chilly_get.md)	 - 
 * [chilly upgrade](chilly_upgrade.md)	 - 
 
