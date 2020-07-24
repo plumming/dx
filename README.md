@@ -9,3 +9,12 @@
 ![Build and test Go](https://github.com/plumming/chilly/workflows/Build%20and%20test%20Go/badge.svg)
 ![goreleaser](https://github.com/plumming/chilly/workflows/goreleaser/badge.svg)
 ![Codecov](https://github.com/plumming/chilly/workflows/Codecov/badge.svg)
+
+# Installation via Homebrew
+
+To install `chilly` using homebrew, run the following:
+
+```
+brew tap plumming/chilly
+brew install chilly
+```
