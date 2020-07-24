@@ -136,7 +136,7 @@ brews:
     tap:
       owner: plumming
       name: chilly-tap
-      token: "{{ .Env.CHILLY_TAP_TOKEN }}"
+      token: ${{ secrets.CHILLY_TAP_TOKEN }}
 
     # Allows you to set a custom download strategy. Note that you'll need
     # to implement the strategy and add it to your tap repository.
