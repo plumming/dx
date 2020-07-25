@@ -19,6 +19,7 @@ type GetPrsCmd struct {
 	ShowOnHold     bool
 	Retrigger      bool
 	Review         bool
+	Quiet          bool
 	Cmd            *cobra.Command
 	Args           []string
 }
@@ -50,6 +51,8 @@ func NewGetPrsCmd() *cobra.Command {
 		"Retrigger failed PRs")
 	cmd.Flags().BoolVarP(&c.Review, "review", "", false,
 		"Show PRs that are ready for review")
+	cmd.Flags().BoolVarP(&c.Quiet, "quiet", "", false,
+		"Hide the column headings")
 
 	return cmd
 }
@@ -79,6 +82,16 @@ func (c *GetPrsCmd) Run() error {
 		}
 	} else {
 		pullURL := ""
+		if !c.Quiet {
+			table.AddRow(
+				"PR#",
+				"Author",
+				"Title",
+				"Age",
+				"Labels",
+				"Mergeable",
+			)
+		}
 		for _, pr := range d.PullRequests {
 			if pullURL != pr.PullsString() {
 				table.AddRow(fmt.Sprintf("# %s", util.ColorAnswer(pr.PullsString())))

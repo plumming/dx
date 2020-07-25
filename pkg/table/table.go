@@ -5,6 +5,8 @@ import (
 	"io"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/plumming/chilly/pkg/util"
 )
 
 type Table struct {
@@ -36,7 +38,7 @@ func (t *Table) Render() {
 	// lets figure out the max widths of each column
 	for _, row := range t.Rows {
 		for ci, col := range row {
-			l := utf8.RuneCountInString(col)
+			l := utf8.RuneCountInString(util.Strip(col))
 			t.ColumnWidths = ensureArrayCanContain(t.ColumnWidths, ci)
 
 			if !strings.HasPrefix(col, "# ") {

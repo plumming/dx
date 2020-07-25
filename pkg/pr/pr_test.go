@@ -3,6 +3,8 @@ package pr
 import (
 	"testing"
 
+	"github.com/plumming/chilly/pkg/util"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -277,26 +279,26 @@ func TestPullRequest_ColoredTitle(t *testing.T) {
 		Commits: Commits{Nodes: []CommitEntry{{Commit: Commit{StatusCheckRollup: StatusCheckRollup{Contexts: StatusContext{Nodes: []Context{{State: "SUCCESS"}}}}}}}},
 	}
 
-	assert.Equal(t, pr.ColoredTitle(), "this is a short PR title")
+	assert.Equal(t, pr.ColoredTitle(), util.ColorInfo("this is a short PR title"))
 
 	pr = PullRequest{
 		Title:   "this is a short PR title",
 		Commits: Commits{Nodes: []CommitEntry{{Commit: Commit{StatusCheckRollup: StatusCheckRollup{Contexts: StatusContext{Nodes: []Context{{State: "PENDING"}}}}}}}},
 	}
 
-	assert.Equal(t, pr.ColoredTitle(), "this is a short PR title")
+	assert.Equal(t, pr.ColoredTitle(), util.ColorInfo("this is a short PR title"))
 
 	pr = PullRequest{
 		Title:   "this is a short PR title",
 		Commits: Commits{Nodes: []CommitEntry{{Commit: Commit{StatusCheckRollup: StatusCheckRollup{Contexts: StatusContext{Nodes: []Context{{State: "FAILING"}}}}}}}},
 	}
 
-	assert.Equal(t, pr.ColoredTitle(), "this is a short PR title")
+	assert.Equal(t, pr.ColoredTitle(), util.ColorInfo("this is a short PR title"))
 
 	pr = PullRequest{
 		Title:   "this is a really really really really really really really really really really really really really really long PR title",
 		Commits: Commits{Nodes: []CommitEntry{{Commit: Commit{StatusCheckRollup: StatusCheckRollup{Contexts: StatusContext{Nodes: []Context{{State: "SUCCESS"}}}}}}}},
 	}
 
-	assert.Equal(t, pr.ColoredTitle(), "this is a really really really really really really really really really re...")
+	assert.Equal(t, pr.ColoredTitle(), util.ColorInfo("this is a really really really really really really really really really re..."))
 }

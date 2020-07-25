@@ -4,6 +4,8 @@ import (
 	"math"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/plumming/chilly/pkg/util"
 )
 
 const (
@@ -23,7 +25,7 @@ func Pad(s, pad string, width int, align int) string {
 }
 
 func PadRight(s, pad string, width int) string {
-	gap := width - utf8.RuneCountInString(s)
+	gap := width - utf8.RuneCountInString(util.Strip(s))
 	if gap > 0 {
 		return s + strings.Repeat(pad, gap)
 	}
@@ -31,7 +33,7 @@ func PadRight(s, pad string, width int) string {
 }
 
 func PadLeft(s, pad string, width int) string {
-	gap := width - utf8.RuneCountInString(s)
+	gap := width - utf8.RuneCountInString(util.Strip(s))
 	if gap > 0 {
 		return strings.Repeat(pad, gap) + s
 	}
@@ -39,7 +41,7 @@ func PadLeft(s, pad string, width int) string {
 }
 
 func PadCenter(s, pad string, width int) string {
-	gap := width - utf8.RuneCountInString(s)
+	gap := width - utf8.RuneCountInString(util.Strip(s))
 	if gap > 0 {
 		gapLeft := int(math.Ceil(float64(gap / 2)))
 		gapRight := gap - gapLeft
