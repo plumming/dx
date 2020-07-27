@@ -3,7 +3,6 @@ module github.com/plumming/chilly
 go 1.13
 
 require (
-	github.com/fatih/color v1.9.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/hashicorp/go-version v1.2.1
 	github.com/jenkins-x/jx-logging v0.0.11
