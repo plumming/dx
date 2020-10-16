@@ -15,4 +15,5 @@ require (
 	github.com/xeonx/timeago v1.0.0-rc4
 	golang.org/x/tools v0.0.0-20200515010526-7d3b6ebf133d // indirect
 	gopkg.in/AlecAivazis/survey.v1 v1.8.8
+	k8s.io/client-go v0.16.5
 )

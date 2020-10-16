@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/plumming/chilly/pkg/api"
+	"github.com/plumming/chilly/pkg/kube"
 
 	"github.com/plumming/chilly/pkg/prompter"
 )
@@ -10,6 +11,7 @@ type CommonOptions struct {
 	prompter        prompter.Prompter
 	nonGithubClient *api.Client
 	githubClient    *api.Client
+	kuber           kube.Kuber
 }
 
 func (c *CommonOptions) SetPrompter(p prompter.Prompter) {
@@ -47,4 +49,15 @@ func (c *CommonOptions) GithubClient() (*api.Client, error) {
 		}
 	}
 	return c.githubClient, nil
+}
+
+func (c *CommonOptions) SetKuber(k kube.Kuber) {
+	c.kuber = k
+}
+
+func (c *CommonOptions) Kuber() kube.Kuber {
+	if c.kuber == nil {
+		c.kuber = kube.NewKuber()
+	}
+	return c.kuber
 }
