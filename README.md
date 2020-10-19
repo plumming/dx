@@ -6,6 +6,7 @@
 ![Check PR can be merged](https://github.com/plumming/chilly/workflows/Check%20PR%20can%20be%20merged/badge.svg)
 ![Set Label](https://github.com/plumming/chilly/workflows/Set%20Label/badge.svg)
 ![Build and test Go](https://github.com/plumming/chilly/workflows/Build%20and%20test%20Go/badge.svg)
+[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
 # Installation via Homebrew
 
