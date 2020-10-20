@@ -2,7 +2,7 @@ package getcmd
 
 import (
 	"fmt"
-
+	"github.com/plumming/chilly/pkg/cmd"
 	"github.com/plumming/chilly/pkg/domain"
 
 	"github.com/pkg/errors"
@@ -15,6 +15,7 @@ import (
 )
 
 type GetPrsCmd struct {
+	cmd.CommonCmd
 	ShowDependabot bool
 	ShowOnHold     bool
 	Retrigger      bool
@@ -43,6 +44,8 @@ func NewGetPrsCmd() *cobra.Command {
 		Args: cobra.NoArgs,
 	}
 
+	c.AddOptions(cmd)
+
 	cmd.Flags().BoolVarP(&c.ShowDependabot, "show-dependabot", "", false,
 		"Show dependabot PRs (default: false)")
 	cmd.Flags().BoolVarP(&c.ShowOnHold, "show-on-hold", "", false,
@@ -70,6 +73,11 @@ func (c *GetPrsCmd) Run() error {
 	err = d.Run()
 	if err != nil {
 		return errors.Wrap(err, "run failed")
+	}
+
+	if c.Query != "" {
+		fmt.Println(c.Filter(d.PullRequests))
+		return nil
 	}
 
 	table := table.NewTable(c.Cmd.OutOrStdout())
