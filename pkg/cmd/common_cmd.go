@@ -7,7 +7,7 @@ import (
 	"github.com/jmespath/go-jmespath"
 )
 
-const two_spaces = "  "
+const twoSpaces = "  "
 
 type CommonCmd struct {
 	Query string
@@ -35,7 +35,7 @@ func (c *CommonCmd) Filter(data interface{}) (string, error) {
 		return "", errors.Wrap(err, "filter failed")
 	}
 
-	formattedOutput, err := json.MarshalIndent(filtered, "", two_spaces)
+	formattedOutput, err := json.MarshalIndent(filtered, "", twoSpaces)
 	if err != nil {
 		return "", errors.Wrap(err, "output failed")
 	}
