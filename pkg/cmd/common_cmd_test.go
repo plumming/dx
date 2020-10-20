@@ -1,10 +1,11 @@
 package cmd_test
 
 import (
+	"testing"
+
 	cmd2 "github.com/plumming/chilly/pkg/cmd"
 	"github.com/plumming/chilly/pkg/pr"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestCommonCmd_Filter_AllData(t *testing.T) {
@@ -79,7 +80,7 @@ func TestCommonCmd_Filter_AllData(t *testing.T) {
     "url": ""
   }
 ]`
-	assert.Equal(t,expected, result)
+	assert.Equal(t, expected, result)
 }
 
 func TestCommonCmd_Filter_FilterOnAuthor(t *testing.T) {
@@ -114,7 +115,7 @@ func TestCommonCmd_Filter_FilterOnAuthor(t *testing.T) {
     "url": ""
   }
 ]`
-	assert.Equal(t,expected, result)
+	assert.Equal(t, expected, result)
 }
 
 func TestCommonCmd_Filter_Rewrite(t *testing.T) {
@@ -144,5 +145,5 @@ func TestCommonCmd_Filter_Rewrite(t *testing.T) {
     "url": ""
   }
 ]`
-	assert.Equal(t,expected, result)
+	assert.Equal(t, expected, result)
 }
