@@ -6,6 +6,7 @@ require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/hashicorp/go-version v1.2.1
 	github.com/jenkins-x/jx-logging v0.0.11
+	github.com/jmespath/go-jmespath v0.4.0
 	github.com/mattn/go-colorable v0.1.6 // indirect
 	github.com/maxbrunsfeld/counterfeiter/v6 v6.2.3
 	github.com/pkg/errors v0.9.1
