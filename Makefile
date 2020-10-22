@@ -118,3 +118,6 @@ goreleaser:
 
 docs: build
 	./build/chilly docs
+
+lint:
+	golangci-lint run

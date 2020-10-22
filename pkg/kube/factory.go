@@ -3,7 +3,8 @@ package kube
 import (
 	"fmt"
 
-	"github.com/pkg/errors"
+	"errors"
+
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/tools/clientcmd/api"
 )
@@ -11,20 +12,20 @@ import (
 type factory struct {
 }
 
-func (f *factory) SetKubeContext(context string, config *api.Config) error {
+func (f *factory) SetKubeContext(context string, config *api.Config) (*api.Config, error) {
 	fmt.Printf("you selected context %s", context)
 	ctx := config.Contexts[context]
 	if ctx == nil {
-		return fmt.Errorf("could not find Kubernetes context %s", context)
+		return nil, fmt.Errorf("could not find Kubernetes context %s", context)
 	}
 
 	newConfig := *config
 	newConfig.CurrentContext = context
 	err := clientcmd.ModifyConfig(clientcmd.NewDefaultPathOptions(), newConfig, false)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return &newConfig, nil
 }
 
 func NewKuber() Kuber {
@@ -40,5 +41,6 @@ func (f *factory) LoadConfig() (*api.Config, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return config, nil
 }

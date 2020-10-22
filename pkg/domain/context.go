@@ -41,7 +41,8 @@ func (c *Context) Validate() error {
 func (c *Context) Run() error {
 	fmt.Printf("you selected context %s", c.Context)
 	k := c.Kuber()
-	err := k.SetKubeContext(c.Context, c.Config)
+	var err error
+	c.Config, err = k.SetKubeContext(c.Context, c.Config)
 	if err != nil {
 		return err
 	}

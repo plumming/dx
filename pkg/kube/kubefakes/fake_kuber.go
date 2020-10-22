@@ -21,17 +21,19 @@ type FakeKuber struct {
 		result1 *api.Config
 		result2 error
 	}
-	SetKubeContextStub        func(string, *api.Config) error
+	SetKubeContextStub        func(string, *api.Config) (*api.Config, error)
 	setKubeContextMutex       sync.RWMutex
 	setKubeContextArgsForCall []struct {
 		arg1 string
 		arg2 *api.Config
 	}
 	setKubeContextReturns struct {
-		result1 error
+		result1 *api.Config
+		result2 error
 	}
 	setKubeContextReturnsOnCall map[int]struct {
-		result1 error
+		result1 *api.Config
+		result2 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
@@ -92,7 +94,7 @@ func (fake *FakeKuber) LoadConfigReturnsOnCall(i int, result1 *api.Config, resul
 	}{result1, result2}
 }
 
-func (fake *FakeKuber) SetKubeContext(arg1 string, arg2 *api.Config) error {
+func (fake *FakeKuber) SetKubeContext(arg1 string, arg2 *api.Config) (*api.Config, error) {
 	fake.setKubeContextMutex.Lock()
 	ret, specificReturn := fake.setKubeContextReturnsOnCall[len(fake.setKubeContextArgsForCall)]
 	fake.setKubeContextArgsForCall = append(fake.setKubeContextArgsForCall, struct {
@@ -105,10 +107,10 @@ func (fake *FakeKuber) SetKubeContext(arg1 string, arg2 *api.Config) error {
 		return fake.SetKubeContextStub(arg1, arg2)
 	}
 	if specificReturn {
-		return ret.result1
+		return ret.result1, ret.result2
 	}
 	fakeReturns := fake.setKubeContextReturns
-	return fakeReturns.result1
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeKuber) SetKubeContextCallCount() int {
@@ -117,7 +119,7 @@ func (fake *FakeKuber) SetKubeContextCallCount() int {
 	return len(fake.setKubeContextArgsForCall)
 }
 
-func (fake *FakeKuber) SetKubeContextCalls(stub func(string, *api.Config) error) {
+func (fake *FakeKuber) SetKubeContextCalls(stub func(string, *api.Config) (*api.Config, error)) {
 	fake.setKubeContextMutex.Lock()
 	defer fake.setKubeContextMutex.Unlock()
 	fake.SetKubeContextStub = stub
@@ -130,27 +132,30 @@ func (fake *FakeKuber) SetKubeContextArgsForCall(i int) (string, *api.Config) {
 	return argsForCall.arg1, argsForCall.arg2
 }
 
-func (fake *FakeKuber) SetKubeContextReturns(result1 error) {
+func (fake *FakeKuber) SetKubeContextReturns(result1 *api.Config, result2 error) {
 	fake.setKubeContextMutex.Lock()
 	defer fake.setKubeContextMutex.Unlock()
 	fake.SetKubeContextStub = nil
 	fake.setKubeContextReturns = struct {
-		result1 error
-	}{result1}
+		result1 *api.Config
+		result2 error
+	}{result1, result2}
 }
 
-func (fake *FakeKuber) SetKubeContextReturnsOnCall(i int, result1 error) {
+func (fake *FakeKuber) SetKubeContextReturnsOnCall(i int, result1 *api.Config, result2 error) {
 	fake.setKubeContextMutex.Lock()
 	defer fake.setKubeContextMutex.Unlock()
 	fake.SetKubeContextStub = nil
 	if fake.setKubeContextReturnsOnCall == nil {
 		fake.setKubeContextReturnsOnCall = make(map[int]struct {
-			result1 error
+			result1 *api.Config
+			result2 error
 		})
 	}
 	fake.setKubeContextReturnsOnCall[i] = struct {
-		result1 error
-	}{result1}
+		result1 *api.Config
+		result2 error
+	}{result1, result2}
 }
 
 func (fake *FakeKuber) Invocations() map[string][][]interface{} {
