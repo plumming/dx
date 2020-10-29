@@ -16,3 +16,37 @@ To install `chilly` using homebrew, run the following:
 brew tap plumming/chilly
 brew install chilly
 ```
+
+## Basic Usage
+
+### View a list of Open PRs
+
+```
+chilly get prs
+```
+
+### Configure the list of repos to watch
+
+```
+chilly edit config
+```
+
+Add more entries under the `repos:` block e.g.
+
+```
+repos:
+- org/repo1
+- org/repo2
+```
+
+### Exclude PRs based on labels
+
+```
+chilly edit config
+```
+
+```
+hiddenLabels:
+- wip
+- do not merge
+```
