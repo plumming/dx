@@ -9,6 +9,8 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"github.com/plumming/chilly/pkg/cmd/contextcmd"
+
 	"github.com/plumming/chilly/pkg/cmd/editcmd"
 
 	"github.com/plumming/chilly/pkg/deprecation"
@@ -71,6 +73,7 @@ func init() {
 	RootCmd.AddCommand(getcmd.NewGetCmd())
 	RootCmd.AddCommand(editcmd.NewEditCmd())
 	RootCmd.AddCommand(upgradecmd.NewUpgradeCmd())
+	RootCmd.AddCommand(contextcmd.NewContextCmd())
 
 	c := completionCmd
 	c.Flags().StringP("shell", "s", "bash", "Shell type: {bash|zsh|fish|powershell}")
