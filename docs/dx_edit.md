@@ -1,13 +1,9 @@
-## dx upgrade
-
-
-
-### Synopsis
+## dx edit
 
 
 
 ```
-dx upgrade [flags]
+dx edit [flags]
 ```
 
 ### Options inherited from parent commands
@@ -19,5 +15,5 @@ dx upgrade [flags]
 ### SEE ALSO
 
 * [dx](dx.md)	 - Plumming dx
-* [dx upgrade cli](dx_upgrade_cli.md)	 - Upgrade the cli
+* [dx edit config](dx_edit_config.md)	 - Edit the configuration for dx
 

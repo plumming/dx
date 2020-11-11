@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"github.com/plumming/chilly/pkg/api"
-	"github.com/plumming/chilly/pkg/kube"
+	"github.com/plumming/dx/pkg/api"
+	"github.com/plumming/dx/pkg/kube"
 
-	"github.com/plumming/chilly/pkg/prompter"
+	"github.com/plumming/dx/pkg/prompter"
 )
 
 type CommonOptions struct {

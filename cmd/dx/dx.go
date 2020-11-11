@@ -9,22 +9,22 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/plumming/chilly/pkg/cmd/contextcmd"
+	"github.com/plumming/dx/pkg/cmd/contextcmd"
 
-	"github.com/plumming/chilly/pkg/cmd/editcmd"
+	"github.com/plumming/dx/pkg/cmd/editcmd"
 
-	"github.com/plumming/chilly/pkg/deprecation"
+	"github.com/plumming/dx/pkg/deprecation"
 
 	"github.com/spf13/cobra/doc"
 
-	"github.com/plumming/chilly/pkg/cmd/upgradecmd"
+	"github.com/plumming/dx/pkg/cmd/upgradecmd"
 
-	"github.com/plumming/chilly/pkg/api"
-	"github.com/plumming/chilly/pkg/update"
-	"github.com/plumming/chilly/pkg/util"
-	"github.com/plumming/chilly/pkg/version"
+	"github.com/plumming/dx/pkg/api"
+	"github.com/plumming/dx/pkg/update"
+	"github.com/plumming/dx/pkg/util"
+	"github.com/plumming/dx/pkg/version"
 
-	"github.com/plumming/chilly/pkg/cmd/getcmd"
+	"github.com/plumming/dx/pkg/cmd/getcmd"
 
 	"github.com/jenkins-x/jx-logging/pkg/log"
 	"github.com/spf13/cobra"
@@ -38,7 +38,7 @@ var Version = version.Version
 var BuildDate = version.BuildDate
 
 var versionOutput = ""
-var updaterEnabled = "plumming/chilly"
+var updaterEnabled = "plumming/dx"
 
 func init() {
 	log.Logger()
@@ -54,7 +54,7 @@ func init() {
 	} else {
 		RootCmd.Version = fmt.Sprintf("%s (%s)", Version, BuildDate)
 	}
-	versionOutput = fmt.Sprintf("chilly version %s\n%s\n", RootCmd.Version, changelogURL(Version))
+	versionOutput = fmt.Sprintf("dx version %s\n%s\n", RootCmd.Version, changelogURL(Version))
 	RootCmd.AddCommand(versionCmd)
 	RootCmd.SetVersionTemplate(versionOutput)
 
@@ -97,8 +97,8 @@ func (fe FlagError) Unwrap() error {
 
 // RootCmd is the entry point of command-line execution.
 var RootCmd = &cobra.Command{
-	Use:   "chilly",
-	Short: "Plumming Chilly",
+	Use:   "dx",
+	Short: "Plumming dx",
 	Long:  `Have you got the chillies.`,
 
 	SilenceErrors: false,
@@ -218,7 +218,7 @@ Homebrew, see <https://docs.brew.sh/Shell-Completion>
 }
 
 func changelogURL(version string) string {
-	path := "https://github.com/plumming/chilly"
+	path := "https://github.com/plumming/dx"
 	r := regexp.MustCompile(`^v?\d+\.\d+\.\d+(-[\w.]+)?$`)
 	if !r.MatchString(version) {
 		return fmt.Sprintf("%s/releases/latest", path)
@@ -243,11 +243,11 @@ func main() {
 	newRelease := <-updateMessageChan
 	if newRelease != nil {
 		msg := fmt.Sprintf("%s %s → %s\n%s\n\n%s",
-			util.ColorInfo("A new release of chilly is available:"),
+			util.ColorInfo("A new release of dx is available:"),
 			util.ColorWarning(currentVersion),
 			util.ColorWarning(newRelease.Version),
 			util.ColorInfo(newRelease.URL),
-			util.ColorInfo("chilly upgrade cli"))
+			util.ColorInfo("dx upgrade cli"))
 
 		stderr := os.Stderr
 		fmt.Fprintf(stderr, "\n\n%s\n\n", msg)

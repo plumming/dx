@@ -1,4 +1,4 @@
-module github.com/plumming/chilly
+module github.com/plumming/dx
 
 go 1.13
 

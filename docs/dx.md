@@ -15,6 +15,7 @@ Have you got the chillies.
 
 ### SEE ALSO
 
+* [dx context](dx_context.md)	 - View or change the current Kubernetes context
 * [dx edit](dx_edit.md)	 - 
 * [dx get](dx_get.md)	 - 
 * [dx upgrade](dx_upgrade.md)	 - 

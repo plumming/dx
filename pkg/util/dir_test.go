@@ -3,11 +3,11 @@ package util_test
 import (
 	"testing"
 
-	"github.com/plumming/chilly/pkg/util"
+	"github.com/plumming/dx/pkg/util"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestChillyBinaryLocation(t *testing.T) {
-	_, err := util.ChillyBinaryLocation()
+func TestDxBinaryLocation(t *testing.T) {
+	_, err := util.DxBinaryLocation()
 	assert.NoError(t, err)
 }

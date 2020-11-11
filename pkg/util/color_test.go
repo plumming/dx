@@ -3,7 +3,7 @@ package util_test
 import (
 	"testing"
 
-	"github.com/plumming/chilly/pkg/util"
+	"github.com/plumming/dx/pkg/util"
 	"github.com/stretchr/testify/assert"
 )
 

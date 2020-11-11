@@ -4,7 +4,7 @@ package kubefakes
 import (
 	"sync"
 
-	"github.com/plumming/chilly/pkg/kube"
+	"github.com/plumming/dx/pkg/kube"
 	"k8s.io/client-go/tools/clientcmd/api"
 )
 
@@ -44,15 +44,16 @@ func (fake *FakeKuber) LoadConfig() (*api.Config, error) {
 	ret, specificReturn := fake.loadConfigReturnsOnCall[len(fake.loadConfigArgsForCall)]
 	fake.loadConfigArgsForCall = append(fake.loadConfigArgsForCall, struct {
 	}{})
+	stub := fake.LoadConfigStub
+	fakeReturns := fake.loadConfigReturns
 	fake.recordInvocation("LoadConfig", []interface{}{})
 	fake.loadConfigMutex.Unlock()
-	if fake.LoadConfigStub != nil {
-		return fake.LoadConfigStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.loadConfigReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -101,15 +102,16 @@ func (fake *FakeKuber) SetKubeContext(arg1 string, arg2 *api.Config) (*api.Confi
 		arg1 string
 		arg2 *api.Config
 	}{arg1, arg2})
+	stub := fake.SetKubeContextStub
+	fakeReturns := fake.setKubeContextReturns
 	fake.recordInvocation("SetKubeContext", []interface{}{arg1, arg2})
 	fake.setKubeContextMutex.Unlock()
-	if fake.SetKubeContextStub != nil {
-		return fake.SetKubeContextStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.setKubeContextReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 

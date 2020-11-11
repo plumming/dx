@@ -5,12 +5,12 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/plumming/chilly/pkg/config"
+	"github.com/plumming/dx/pkg/config"
 
-	"github.com/plumming/chilly/pkg/pr"
+	"github.com/plumming/dx/pkg/pr"
 
 	"github.com/jenkins-x/jx-logging/pkg/log"
-	"github.com/plumming/chilly/pkg/cmd"
+	"github.com/plumming/dx/pkg/cmd"
 )
 
 // GetPrs defines get pull request response.

@@ -3,9 +3,9 @@ package domain
 import (
 	"testing"
 
-	"github.com/plumming/chilly/pkg/kube/kubefakes"
+	"github.com/plumming/dx/pkg/kube/kubefakes"
 
-	"github.com/plumming/chilly/pkg/prompter/prompterfakes"
+	"github.com/plumming/dx/pkg/prompter/prompterfakes"
 
 	"github.com/stretchr/testify/assert"
 	"k8s.io/client-go/tools/clientcmd/api"

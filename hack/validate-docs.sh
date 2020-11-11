@@ -3,7 +3,7 @@
 set -e
 set -u
 
-./build/linux/chilly docs
+./build/linux/dx docs
 git status
 
 CHANGED=$(git ls-files --modified --others --exclude-standard)
