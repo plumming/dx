@@ -13,7 +13,7 @@
 To install `dx` using homebrew, run the following:
 
 ```
-brew tap plumming/dx
+brew tap plumming/homebrew-tap
 brew install dx
 ```
 
