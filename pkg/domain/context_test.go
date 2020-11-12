@@ -32,13 +32,15 @@ func TestConnectWorkspace_Validate_AllDataSupplied(t *testing.T) {
 
 func TestConnectWorkspace_Run(t *testing.T) {
 	d := NewContext()
-
 	c := testKubeConfig()
+	// define contextKey upfront as iteration order of
+	// a map is non-deterministic
+	contextKey := getContextKey(c.Contexts, 0)
 	d.Config = &c
-	d.Context = getContextKey(c.Contexts, 0)
+	d.Context = contextKey
 
 	x := &c
-	x.CurrentContext = getContextKey(c.Contexts, 0)
+	x.CurrentContext = contextKey
 
 	var kuber = &kubefakes.FakeKuber{}
 	d.SetKuber(kuber)
