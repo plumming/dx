@@ -6,7 +6,7 @@ import (
 	"path"
 
 	"github.com/jenkins-x/jx-logging/pkg/log"
-	"github.com/plumming/chilly/pkg/config"
+	"github.com/plumming/dx/pkg/config"
 	"github.com/spf13/cobra"
 )
 
@@ -23,7 +23,7 @@ func NewEditConfigCmd() *cobra.Command {
 	c := &EditConfigCmd{}
 	cmd := &cobra.Command{
 		Use:     "config",
-		Short:   "Edit the configuration for chilly",
+		Short:   "Edit the configuration for dx",
 		Long:    "",
 		Example: "",
 		Aliases: []string{"configuration"},

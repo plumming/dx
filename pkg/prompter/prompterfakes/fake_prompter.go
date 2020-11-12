@@ -4,7 +4,7 @@ package prompterfakes
 import (
 	"sync"
 
-	"github.com/plumming/chilly/pkg/prompter"
+	"github.com/plumming/dx/pkg/prompter"
 )
 
 type FakePrompter struct {
@@ -38,15 +38,16 @@ func (fake *FakePrompter) SelectFromOptions(arg1 string, arg2 []string) (string,
 		arg1 string
 		arg2 []string
 	}{arg1, arg2Copy})
+	stub := fake.SelectFromOptionsStub
+	fakeReturns := fake.selectFromOptionsReturns
 	fake.recordInvocation("SelectFromOptions", []interface{}{arg1, arg2Copy})
 	fake.selectFromOptionsMutex.Unlock()
-	if fake.SelectFromOptionsStub != nil {
-		return fake.SelectFromOptionsStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.selectFromOptionsReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 

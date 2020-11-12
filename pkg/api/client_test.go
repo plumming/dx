@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/plumming/chilly/pkg/httpmock"
+	"github.com/plumming/dx/pkg/httpmock"
 )
 
 func eq(t *testing.T, got interface{}, expected interface{}) {

@@ -6,7 +6,7 @@ import (
 	"path"
 
 	"github.com/ghodss/yaml"
-	"github.com/plumming/chilly/pkg/util"
+	"github.com/plumming/dx/pkg/util"
 )
 
 func ConfigFile() string {

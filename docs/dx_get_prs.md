@@ -2,10 +2,6 @@
 
 Gets your open prs
 
-### Synopsis
-
-Gets your open prs
-
 ```
 dx get prs [flags]
 ```
@@ -13,6 +9,8 @@ dx get prs [flags]
 ### Options
 
 ```
+  -q, --query string      JMESPath query filter
+      --quiet             Hide the column headings
       --retrigger         Retrigger failed PRs
       --review            Show PRs that are ready for review
       --show-dependabot   Show dependabot PRs (default: false)

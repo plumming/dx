@@ -3,8 +3,8 @@ package cmd_test
 import (
 	"testing"
 
-	cmd2 "github.com/plumming/chilly/pkg/cmd"
-	"github.com/plumming/chilly/pkg/pr"
+	cmd2 "github.com/plumming/dx/pkg/cmd"
+	"github.com/plumming/dx/pkg/pr"
 	"github.com/stretchr/testify/assert"
 )
 

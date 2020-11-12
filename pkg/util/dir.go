@@ -7,11 +7,11 @@ import (
 	"github.com/jenkins-x/jx-logging/pkg/log"
 )
 
-func ChillyBinaryLocation() (string, error) {
-	return chillyBinaryLocation(os.Executable)
+func DxBinaryLocation() (string, error) {
+	return dxBinaryLocation(os.Executable)
 }
 
-func chillyBinaryLocation(osExecutable func() (string, error)) (string, error) {
+func dxBinaryLocation(osExecutable func() (string, error)) (string, error) {
 	processBinary, err := osExecutable()
 	if err != nil {
 		log.Logger().Debugf("processBinary error %s", err)

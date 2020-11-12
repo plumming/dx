@@ -3,15 +3,15 @@ package getcmd
 import (
 	"fmt"
 
-	"github.com/plumming/chilly/pkg/cmd"
-	"github.com/plumming/chilly/pkg/domain"
+	"github.com/plumming/dx/pkg/cmd"
+	"github.com/plumming/dx/pkg/domain"
 
 	"github.com/pkg/errors"
 
-	"github.com/plumming/chilly/pkg/util"
+	"github.com/plumming/dx/pkg/util"
 
 	"github.com/jenkins-x/jx-logging/pkg/log"
-	"github.com/plumming/chilly/pkg/table"
+	"github.com/plumming/dx/pkg/table"
 	"github.com/spf13/cobra"
 )
 

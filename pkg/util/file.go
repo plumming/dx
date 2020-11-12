@@ -8,10 +8,10 @@ import (
 )
 
 const (
-	configDir        = ".config"
-	ghConfigDir      = "gh"
-	chillyConfigFile = "config.yml"
-	chillyConfigDir  = ".chilly"
+	configDir    = ".config"
+	ghConfigDir  = "gh"
+	dxConfigFile = "config.yml"
+	dxConfigDir  = ".dx"
 )
 
 // FileExists checks if path exists and is a file.
@@ -39,7 +39,7 @@ func HomeDir() string {
 
 func ConfigDir() string {
 	home := HomeDir()
-	configDir := filepath.Join(home, chillyConfigDir)
+	configDir := filepath.Join(home, dxConfigDir)
 	return configDir
 }
 
@@ -49,6 +49,6 @@ func GhConfigDir() string {
 	return configDir
 }
 
-func ChillyConfigFile() string {
-	return filepath.Join(ConfigDir(), chillyConfigFile)
+func DxConfigFile() string {
+	return filepath.Join(ConfigDir(), dxConfigFile)
 }

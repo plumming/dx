@@ -6,7 +6,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/plumming/chilly/pkg/util"
+	"github.com/plumming/dx/pkg/util"
 )
 
 type Table struct {

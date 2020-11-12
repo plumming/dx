@@ -2,10 +2,6 @@
 
 Edit the configuration for dx
 
-### Synopsis
-
-Edit the configuration for dx
-
 ```
 dx edit config [flags]
 ```

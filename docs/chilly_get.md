@@ -1,4 +1,4 @@
-## chilly get
+## dx get
 
 
 
@@ -7,7 +7,7 @@
 
 
 ```
-chilly get [flags]
+dx get [flags]
 ```
 
 ### Options inherited from parent commands
@@ -18,6 +18,6 @@ chilly get [flags]
 
 ### SEE ALSO
 
-* [chilly](chilly.md)	 - Plumming Chilly
-* [chilly get prs](chilly_get_prs.md)	 - Gets your open prs
+* [dx](dx.md)	 - Plumming dx
+* [dx get prs](dx_get_prs.md)	 - Gets your open prs
 

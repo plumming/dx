@@ -1,10 +1,10 @@
 SHELL := /bin/bash
-NAME := chilly
-BINARY_NAME := chilly
+NAME := dx
+BINARY_NAME := dx
 GO := GO111MODULE=on GO15VENDOREXPERIMENT=1 go
 GO_NOMOD := GO111MODULE=off go
-PACKAGE_NAME := github.com/plumming/chilly
-ROOT_PACKAGE := github.com/plumming/chilly
+PACKAGE_NAME := github.com/plumming/dx
+ROOT_PACKAGE := github.com/plumming/dx
 ORG := plumming
 
 # set dev version unless VERSION is explicitly set via environment
@@ -117,7 +117,7 @@ goreleaser:
 	step-go-releaser --organisation=$(ORG) --revision=$(REV) --branch=$(BRANCH) --build-date=$(BUILD_DATE) --go-version=$(GO_VERSION) --root-package=$(ROOT_PACKAGE) --version=$(VERSION)
 
 docs: build
-	./build/chilly docs
+	./build/dx docs
 
 lint:
 	golangci-lint run

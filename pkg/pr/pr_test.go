@@ -3,7 +3,7 @@ package pr
 import (
 	"testing"
 
-	"github.com/plumming/chilly/pkg/util"
+	"github.com/plumming/dx/pkg/util"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -116,11 +116,11 @@ func TestPullRequest_MergableString(t *testing.T) {
 }
 
 func TestPullRequest_PullsString(t *testing.T) {
-	pr := PullRequest{URL: "https://github.com/plumming/chilly/pull/257"}
-	assert.Equal(t, pr.PullsString(), "https://github.com/plumming/chilly/pulls")
+	pr := PullRequest{URL: "https://github.com/plumming/dx/pull/257"}
+	assert.Equal(t, pr.PullsString(), "https://github.com/plumming/dx/pulls")
 
-	pr = PullRequest{URL: "https://github.com/plumming/chilly/pull/1083"}
-	assert.Equal(t, pr.PullsString(), "https://github.com/plumming/chilly/pulls")
+	pr = PullRequest{URL: "https://github.com/plumming/dx/pull/1083"}
+	assert.Equal(t, pr.PullsString(), "https://github.com/plumming/dx/pulls")
 }
 
 func TestPullRequest_HasLabel(t *testing.T) {

@@ -5,7 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/plumming/chilly/pkg/cmd"
+	"github.com/plumming/dx/pkg/cmd"
 	"k8s.io/client-go/tools/clientcmd/api"
 )
 

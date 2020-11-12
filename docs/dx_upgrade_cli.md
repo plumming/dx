@@ -2,10 +2,6 @@
 
 Upgrade the cli
 
-### Synopsis
-
-Upgrade the cli
-
 ```
 dx upgrade cli [flags]
 ```

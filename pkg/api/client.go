@@ -12,10 +12,10 @@ import (
 
 	"strings"
 
-	"github.com/plumming/chilly/pkg/util"
+	"github.com/plumming/dx/pkg/util"
 
 	"github.com/jenkins-x/jx-logging/pkg/log"
-	"github.com/plumming/chilly/pkg/version"
+	"github.com/plumming/dx/pkg/version"
 )
 
 // ClientOption represents an argument to NewClient.
@@ -259,7 +259,7 @@ func BasicClient() (*Client, error) {
 		opts = append(opts, enableTracing())
 	}
 
-	opts = append(opts, AddHeader("User-Agent", fmt.Sprintf("Chilly CLI %s", version.Version)))
+	opts = append(opts, AddHeader("User-Agent", fmt.Sprintf("dx CLI %s", version.Version)))
 
 	if c, err := ParseDefaultConfig(); err == nil {
 		if token := c.GetToken(defaultHostname); token != "" {

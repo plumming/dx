@@ -1,4 +1,4 @@
-## chilly edit
+## dx edit
 
 
 
@@ -7,7 +7,7 @@
 
 
 ```
-chilly edit [flags]
+dx edit [flags]
 ```
 
 ### Options inherited from parent commands
@@ -18,6 +18,6 @@ chilly edit [flags]
 
 ### SEE ALSO
 
-* [chilly](chilly.md)	 - Plumming Chilly
-* [chilly edit config](chilly_edit_config.md)	 - Edit the configuration for chilly
+* [dx](dx.md)	 - Plumming dx
+* [dx edit config](dx_edit_config.md)	 - Edit the configuration for dx
 

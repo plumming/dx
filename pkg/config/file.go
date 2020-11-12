@@ -6,11 +6,11 @@ import (
 
 	"github.com/ghodss/yaml"
 	"github.com/jenkins-x/jx-logging/pkg/log"
-	"github.com/plumming/chilly/pkg/util"
+	"github.com/plumming/dx/pkg/util"
 )
 
 var (
-	defaultRepos          = []string{"plumming/chilly"}
+	defaultRepos          = []string{"plumming/dx"}
 	defaultHiddenLabels   = []string{"hide-this"}
 	defaultMaxNumberOfPRs = 100
 )
@@ -70,11 +70,11 @@ func (c *Config) SetDefaults() {
 }
 
 func LoadFromDefaultLocation() (Config, error) {
-	return LoadFromFile(util.ChillyConfigFile())
+	return LoadFromFile(util.DxConfigFile())
 }
 
 func (c *Config) SaveToDefaultLocation() error {
-	return c.SaveToFile(util.ChillyConfigFile())
+	return c.SaveToFile(util.DxConfigFile())
 }
 
 func (c *Config) SaveToFile(path string) error {

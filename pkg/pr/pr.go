@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/plumming/chilly/pkg/util"
+	"github.com/plumming/dx/pkg/util"
 )
 
 type PullRequest struct {

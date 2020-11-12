@@ -8,7 +8,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/plumming/chilly/pkg/api"
+	"github.com/plumming/dx/pkg/api"
 )
 
 func TestCheckForUpdate(t *testing.T) {

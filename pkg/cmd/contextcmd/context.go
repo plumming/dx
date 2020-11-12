@@ -3,7 +3,7 @@ package contextcmd
 import (
 	"github.com/jenkins-x/jx-logging/pkg/log"
 	"github.com/pkg/errors"
-	"github.com/plumming/chilly/pkg/domain"
+	"github.com/plumming/dx/pkg/domain"
 	"github.com/spf13/cobra"
 )
 

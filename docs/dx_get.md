@@ -1,13 +1,9 @@
-## dx upgrade
-
-
-
-### Synopsis
+## dx get
 
 
 
 ```
-dx upgrade [flags]
+dx get [flags]
 ```
 
 ### Options inherited from parent commands
@@ -19,5 +15,5 @@ dx upgrade [flags]
 ### SEE ALSO
 
 * [dx](dx.md)	 - Plumming dx
-* [dx upgrade cli](dx_upgrade_cli.md)	 - Upgrade the cli
+* [dx get prs](dx_get_prs.md)	 - Gets your open prs
 

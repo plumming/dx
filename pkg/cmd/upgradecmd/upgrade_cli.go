@@ -14,14 +14,14 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/jenkins-x/jx-logging/pkg/log"
-	"github.com/plumming/chilly/pkg/api"
-	"github.com/plumming/chilly/pkg/update"
-	"github.com/plumming/chilly/pkg/util"
+	"github.com/plumming/dx/pkg/api"
+	"github.com/plumming/dx/pkg/update"
+	"github.com/plumming/dx/pkg/util"
 	"github.com/spf13/cobra"
 )
 
 var (
-	binary = "chilly"
+	binary = "dx"
 )
 
 const (
@@ -78,7 +78,7 @@ func (c *UpgradeCliCmd) Run() error {
 		return err
 	}
 
-	repo := "plumming/chilly"
+	repo := "plumming/dx"
 	stateFilePath := path.Join(util.ConfigDir(), "state.yml")
 
 	latestRelease, err := update.GetLatestReleaseInfo(client, stateFilePath, repo, c.Force)
@@ -86,12 +86,12 @@ func (c *UpgradeCliCmd) Run() error {
 		return errors.Wrap(err, "unable to get latest release info")
 	}
 
-	log.Logger().Infof("Upgrading chilly client to %s", util.ColorInfo(latestRelease.Version))
+	log.Logger().Infof("Upgrading dx client to %s", util.ColorInfo(latestRelease.Version))
 
 	// Check for jx binary in non standard path and install there instead if found...
-	binDir, err := util.ChillyBinaryLocation()
+	binDir, err := util.DxBinaryLocation()
 	if err != nil {
-		return errors.Wrap(err, "unable to get location of chilly binary")
+		return errors.Wrap(err, "unable to get location of dx binary")
 	}
 
 	fileName := binary
@@ -101,7 +101,7 @@ func (c *UpgradeCliCmd) Run() error {
 		extension = "zip"
 	}
 
-	packageName := "chilly"
+	packageName := "dx"
 	assetName := fmt.Sprintf("%s-%s-%s.%s", packageName, runtime.GOOS, runtime.GOARCH, extension)
 	fullPath := filepath.Join(binDir, fileName)
 	if runtime.GOOS == windows {
@@ -110,7 +110,7 @@ func (c *UpgradeCliCmd) Run() error {
 	tmpArchiveFile := fullPath + ".tmp"
 
 	release := Release{}
-	err = client.REST("GET", fmt.Sprintf("repos/plumming/chilly/releases/tags/%s", latestRelease.Version), nil, &release)
+	err = client.REST("GET", fmt.Sprintf("repos/plumming/dx/releases/tags/%s", latestRelease.Version), nil, &release)
 	if err != nil {
 		return err
 	}
@@ -173,12 +173,12 @@ func downloadNewBinary(client *api.Client, archivePath string, url string, binDi
 		if err != nil {
 			return err
 		}
-		err = os.Remove(filepath.Join(binDir, "chilly"))
+		err = os.Remove(filepath.Join(binDir, "dx"))
 		if err != nil {
-			log.Logger().Infof("Skipping removal of old chilly binary: %s", err)
+			log.Logger().Infof("Skipping removal of old dx binary: %s", err)
 		}
 		// Copy over the new binary
-		err = os.Rename(filepath.Join(util.ConfigDir(), "chilly"), filepath.Join(binDir, "chilly"))
+		err = os.Rename(filepath.Join(util.ConfigDir(), "dx"), filepath.Join(binDir, "dx"))
 		if err != nil {
 			return err
 		}
@@ -186,8 +186,8 @@ func downloadNewBinary(client *api.Client, archivePath string, url string, binDi
 		log.Logger().Errorf("Upgrade not supported on windows")
 	}
 
-	fullPath := filepath.Join(binDir, "chilly")
-	log.Logger().Infof("chilly client has been installed into %s", util.ColorInfo(fullPath))
+	fullPath := filepath.Join(binDir, "dx")
+	log.Logger().Infof("dx client has been installed into %s", util.ColorInfo(fullPath))
 	return os.Chmod(fullPath, 0755)
 }
 

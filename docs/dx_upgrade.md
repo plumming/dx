@@ -2,10 +2,6 @@
 
 
 
-### Synopsis
-
-
-
 ```
 dx upgrade [flags]
 ```

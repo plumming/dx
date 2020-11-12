@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/plumming/chilly/pkg/api"
+	"github.com/plumming/dx/pkg/api"
 
 	"github.com/stretchr/testify/assert"
 )
