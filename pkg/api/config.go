@@ -38,28 +38,28 @@ var readConfigFile = func(fn string) ([]byte, error) {
 	return data, nil
 }
 
-func parseConfigFile(fn, hf string) ([]byte, Config, error) {
+func parseConfigFile(fn, hf string) (Config, error) {
 	data, err := readConfigFile(fn)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	var root fileConfig
 	err = yaml.Unmarshal(data, &root)
 	if err != nil {
-		return data, nil, err
+		return nil, err
 	}
 
 	// First step to support new hosts configuration in gh config
 	if root.Hosts == nil {
 		hosts, err := parseHostsFile(hf)
 		if err != nil {
-			return data, nil, err
+			return nil, err
 		}
 		root.Hosts = hosts
 	}
 
-	return data, &root, nil
+	return &root, nil
 }
 
 func parseHostsFile(hf string) (map[string]*HostConfig, error) {
@@ -76,7 +76,7 @@ func parseHostsFile(hf string) (map[string]*HostConfig, error) {
 }
 
 func ParseConfig(fn, hf string) (Config, error) {
-	_, root, err := parseConfigFile(fn, hf)
+	root, err := parseConfigFile(fn, hf)
 	if err != nil {
 		return nil, err
 	}
