@@ -13,11 +13,26 @@ func ConfigFile() string {
 	return path.Join(util.GhConfigDir(), "config.yml")
 }
 
-func ParseDefaultConfig() (Config, error) {
-	return ParseConfig(ConfigFile())
+func HostsFile() string {
+	return path.Join(util.GhConfigDir(), "hosts.yml")
 }
 
-var ReadConfigFile = func(fn string) ([]byte, error) {
+func ParseDefaultConfig(cf, hf string) (Config, error) {
+	// since tokens are now stored as default within
+	// ~/.config/gh/hosts.yml lets try and load from
+	// there initially
+	config, err := parseHostsFile(hf)
+	if err != nil {
+		return nil, err
+	}
+	if config.HasHosts() {
+		return config, nil
+	}
+
+	return parseConfigFile(cf)
+}
+
+var readConfigFile = func(fn string) ([]byte, error) {
 	f, err := os.Open(fn)
 	if err != nil {
 		return nil, err
@@ -32,26 +47,37 @@ var ReadConfigFile = func(fn string) ([]byte, error) {
 	return data, nil
 }
 
-func parseConfigFile(fn string) ([]byte, Config, error) {
-	data, err := ReadConfigFile(fn)
+func parseConfigFile(fn string) (Config, error) {
+	data, err := readConfigFile(fn)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	var root fileConfig
 	err = yaml.Unmarshal(data, &root)
 	if err != nil {
-		return data, nil, err
-	}
-
-	return data, &root, nil
-}
-
-func ParseConfig(fn string) (Config, error) {
-	_, root, err := parseConfigFile(fn)
-	if err != nil {
 		return nil, err
 	}
 
-	return root, nil
+	return &root, nil
+}
+
+func parseHostsFile(hf string) (Config, error) {
+	c := &fileConfig{}
+	var h map[string]*HostConfig
+	data, err := readConfigFile(hf)
+	if err != nil {
+		return c, err
+	}
+
+	err = yaml.Unmarshal(data, &h)
+	if err != nil {
+		return c, err
+	}
+	// check there are values in the map
+	if len(h) > 0 {
+		c.Hosts = h
+	}
+
+	return c, nil
 }
