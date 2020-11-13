@@ -6,6 +6,7 @@ const defaultHostname = "github.com"
 type Config interface {
 	GetToken(hostname string) string
 	GetUser(hostname string) string
+	HasHosts() bool
 }
 
 type fileConfig struct {
@@ -35,4 +36,8 @@ func (c *fileConfig) GetUser(hostname string) string {
 		return c.Hosts[hostname].User
 	}
 	return ""
+}
+
+func (c *fileConfig) HasHosts() bool {
+	return len(c.Hosts) > 0
 }

@@ -25,7 +25,7 @@ func ParseDefaultConfig(cf, hf string) (Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	if config.GetUser(defaultHostname) != "" {
+	if config.HasHosts() {
 		return config, nil
 	}
 
