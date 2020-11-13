@@ -261,7 +261,7 @@ func BasicClient() (*Client, error) {
 
 	opts = append(opts, AddHeader("User-Agent", fmt.Sprintf("dx CLI %s", version.Version)))
 
-	if c, err := ParseDefaultConfig(); err == nil {
+	if c, err := ParseDefaultConfig(ConfigFile(), HostsFile()); err == nil {
 		if token := c.GetToken(defaultHostname); token != "" {
 			log.Logger().Debugf("Using Auth %s", token)
 			opts = append(opts, AddHeader("Authorization", fmt.Sprintf("token %s", token)))

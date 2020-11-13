@@ -19,6 +19,8 @@ var (
       user: testuser
       oauth_token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 `
+	emptyConfigFile = ""
+
 	dummyHostsFile = ` github.com:
       user: testuser
       oauth_token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -27,6 +29,7 @@ var (
       user: testuser
       oauth_token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 `
+	emptyHostsFile = ""
 )
 
 func TestConfigFile(t *testing.T) {
@@ -168,4 +171,60 @@ func TestParseHostsWithNonExistentHostsFile(t *testing.T) {
 	assert.Equal(t, &fileConfig{}, config)
 	assert.Error(t, err)
 	assert.EqualError(t, err, "open hosts-file-does-not-exist: no such file or directory")
+}
+
+func TestParseDefaultConfigWithHostsFile(t *testing.T) {
+	hostsFile, err := ioutil.TempFile(os.TempDir(), "TestParseDefaultConfigWithHostsFile1")
+	if err != nil {
+		panic(err)
+	}
+	defer os.Remove(hostsFile.Name())
+	configFile, err := ioutil.TempFile(os.TempDir(), "TestParseDefaultConfigWithHostsFile2")
+	if err != nil {
+		panic(err)
+	}
+	defer os.Remove(configFile.Name())
+
+	err = ioutil.WriteFile(hostsFile.Name(), []byte(dummyHostsFile), 0600)
+	assert.NoError(t, err)
+
+	err = ioutil.WriteFile(configFile.Name(), []byte(emptyConfigFile), 0600)
+	assert.NoError(t, err)
+
+	config, err := ParseDefaultConfig(configFile.Name(), hostsFile.Name())
+	assert.NoError(t, err)
+
+	user := config.GetUser("github.com")
+	assert.Equal(t, "testuser", user)
+
+	token := config.GetToken("github.com")
+	assert.Equal(t, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", token)
+}
+
+func TestParseDefaultConfigWithConfigFile(t *testing.T) {
+	hostsFile, err := ioutil.TempFile(os.TempDir(), "TestParseDefaultConfigWithConfigFile1")
+	if err != nil {
+		panic(err)
+	}
+	defer os.Remove(hostsFile.Name())
+	configFile, err := ioutil.TempFile(os.TempDir(), "TestParseDefaultConfigWithConfigFile2")
+	if err != nil {
+		panic(err)
+	}
+	defer os.Remove(configFile.Name())
+
+	err = ioutil.WriteFile(hostsFile.Name(), []byte(emptyHostsFile), 0600)
+	assert.NoError(t, err)
+
+	err = ioutil.WriteFile(configFile.Name(), []byte(dummyConfigFile), 0600)
+	assert.NoError(t, err)
+
+	config, err := ParseDefaultConfig(configFile.Name(), hostsFile.Name())
+	assert.NoError(t, err)
+
+	user := config.GetUser("github.com")
+	assert.Equal(t, "testuser", user)
+
+	token := config.GetToken("github.com")
+	assert.Equal(t, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", token)
 }

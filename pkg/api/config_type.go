@@ -24,9 +24,15 @@ type HostConfig struct {
 }
 
 func (c *fileConfig) GetToken(hostname string) string {
-	return c.Hosts[hostname].Token
+	if c.Hosts[hostname] != nil {
+		return c.Hosts[hostname].Token
+	}
+	return ""
 }
 
 func (c *fileConfig) GetUser(hostname string) string {
-	return c.Hosts[hostname].User
+	if c.Hosts[hostname] != nil {
+		return c.Hosts[hostname].User
+	}
+	return ""
 }

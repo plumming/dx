@@ -17,19 +17,19 @@ func HostsFile() string {
 	return path.Join(util.GhConfigDir(), "hosts.yml")
 }
 
-func ParseDefaultConfig() (Config, error) {
+func ParseDefaultConfig(cf, hf string) (Config, error) {
 	// since tokens are now stored as default within
 	// ~/.config/gh/hosts.yml lets try and load from
 	// there initially
-	config, err := parseHostsFile(HostsFile())
+	config, err := parseHostsFile(hf)
 	if err != nil {
 		return nil, err
 	}
-	if config != nil {
+	if config.GetUser(defaultHostname) != "" {
 		return config, nil
 	}
 
-	return parseConfigFile(ConfigFile())
+	return parseConfigFile(cf)
 }
 
 var readConfigFile = func(fn string) ([]byte, error) {
@@ -74,7 +74,10 @@ func parseHostsFile(hf string) (Config, error) {
 	if err != nil {
 		return c, err
 	}
-	c.Hosts = h
+	// check there are values in the map
+	if len(h) > 0 {
+		c.Hosts = h
+	}
 
 	return c, nil
 }
