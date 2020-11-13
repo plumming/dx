@@ -5,8 +5,6 @@ import (
 	"os"
 	"path"
 
-	"github.com/pkg/errors"
-
 	"github.com/ghodss/yaml"
 	"github.com/plumming/dx/pkg/util"
 )
@@ -20,7 +18,18 @@ func HostsFile() string {
 }
 
 func ParseDefaultConfig() (Config, error) {
-	return ParseConfig(ConfigFile(), HostsFile())
+	// since tokens are now stored as default within
+	// ~/.config/gh/hosts.yml lets try and load from
+	// there initially
+	config, err := parseHostsFile(HostsFile())
+	if err != nil {
+		return nil, err
+	}
+	if config != nil {
+		return config, nil
+	}
+
+	return parseConfigFile(ConfigFile())
 }
 
 var readConfigFile = func(fn string) ([]byte, error) {
@@ -38,7 +47,7 @@ var readConfigFile = func(fn string) ([]byte, error) {
 	return data, nil
 }
 
-func parseConfigFile(fn, hf string) (Config, error) {
+func parseConfigFile(fn string) (Config, error) {
 	data, err := readConfigFile(fn)
 	if err != nil {
 		return nil, err
@@ -50,36 +59,22 @@ func parseConfigFile(fn, hf string) (Config, error) {
 		return nil, err
 	}
 
-	// First step to support new hosts configuration in gh config
-	if root.Hosts == nil {
-		hosts, err := parseHostsFile(hf)
-		if err != nil {
-			return nil, err
-		}
-		root.Hosts = hosts
-	}
-
 	return &root, nil
 }
 
-func parseHostsFile(hf string) (map[string]*HostConfig, error) {
+func parseHostsFile(hf string) (Config, error) {
+	c := &fileConfig{}
 	var h map[string]*HostConfig
-	hostsFile, err := readConfigFile(hf)
+	data, err := readConfigFile(hf)
 	if err != nil {
-		return h, err
-	}
-	err = yaml.Unmarshal(hostsFile, &h)
-	if err != nil {
-		return h, errors.Wrap(err, "while unmarshaling hosts file")
-	}
-	return h, nil
-}
-
-func ParseConfig(fn, hf string) (Config, error) {
-	root, err := parseConfigFile(fn, hf)
-	if err != nil {
-		return nil, err
+		return c, err
 	}
 
-	return root, nil
+	err = yaml.Unmarshal(data, &h)
+	if err != nil {
+		return c, err
+	}
+	c.Hosts = h
+
+	return c, nil
 }
