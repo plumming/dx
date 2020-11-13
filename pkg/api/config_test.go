@@ -14,7 +14,16 @@ var (
       user: testuser
       oauth_token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 `
+	errorConfigFile = `hosts
+  github.com:
+      user: testuser
+      oauth_token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+`
 	dummyHostsFile = ` github.com:
+      user: testuser
+      oauth_token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+`
+	errorHostsFile = ` github.com
       user: testuser
       oauth_token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 `
@@ -104,6 +113,21 @@ func TestParseConfigFile(t *testing.T) {
 	assert.Equal(t, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", token)
 }
 
+func TestParseConfigFileWithYamlError(t *testing.T) {
+	configFile, err := ioutil.TempFile(os.TempDir(), "TestParseConfigFileWithYamlError")
+	if err != nil {
+		panic(err)
+	}
+	defer os.Remove(configFile.Name())
+
+	err = ioutil.WriteFile(configFile.Name(), []byte(errorConfigFile), 0600)
+	assert.NoError(t, err)
+
+	config, err := parseConfigFile(configFile.Name())
+	assert.Error(t, err)
+	assert.Equal(t, nil, config)
+}
+
 func TestParseHostsFile(t *testing.T) {
 	hostsFile, err := ioutil.TempFile(os.TempDir(), "TestParseHostsFile")
 	if err != nil {
@@ -122,6 +146,21 @@ func TestParseHostsFile(t *testing.T) {
 
 	token := config.GetToken("github.com")
 	assert.Equal(t, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", token)
+}
+
+func TestParseHostsFileWithYamlError(t *testing.T) {
+	hostsFile, err := ioutil.TempFile(os.TempDir(), "TestParseHostsFileWithYamlError")
+	if err != nil {
+		panic(err)
+	}
+	defer os.Remove(hostsFile.Name())
+
+	err = ioutil.WriteFile(hostsFile.Name(), []byte(errorHostsFile), 0600)
+	assert.NoError(t, err)
+
+	config, err := parseHostsFile(hostsFile.Name())
+	assert.Error(t, err)
+	assert.Equal(t, &fileConfig{}, config)
 }
 
 func TestParseHostsWithNonExistentHostsFile(t *testing.T) {
