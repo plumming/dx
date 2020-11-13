@@ -23,6 +23,16 @@ var (
 	emptyHostsFile = ""
 )
 
+func TestConfigFile(t *testing.T) {
+	configFile := ConfigFile()
+	assert.Contains(t, configFile, "config.yml")
+}
+
+func TestHostsFile(t *testing.T) {
+	hostsFile := HostsFile()
+	assert.Contains(t, hostsFile, "hosts.yml")
+}
+
 func TestCanLoadConfigFromFile(t *testing.T) {
 	configFile, err := ioutil.TempFile(os.TempDir(), "TestCanLoadConfigFromFile")
 	if err != nil {
@@ -49,6 +59,28 @@ func TestCanLoadConfigFromFile(t *testing.T) {
 
 	token := config.GetToken("github.com")
 	assert.Equal(t, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", token)
+}
+
+func TestParseConfigWithNonExistentConfigFile(t *testing.T) {
+	config, err := ParseConfig("config-file-does-not-exist", "host-file-does-not-exist")
+	assert.Nil(t, config)
+	assert.Error(t, err)
+	assert.EqualError(t, err, "open config-file-does-not-exist: no such file or directory")
+}
+
+func TestParseConfigWithNonExistentHostsFile(t *testing.T) {
+	configFile, err := ioutil.TempFile(os.TempDir(), "TestParseConfigWithNonExistentHostsFile")
+	if err != nil {
+		panic(err)
+	}
+	defer os.Remove(configFile.Name())
+	err = ioutil.WriteFile(configFile.Name(), []byte(emptyConfigFile), 0600)
+	assert.NoError(t, err)
+
+	config, err := ParseConfig(configFile.Name(), "hosts-file-does-not-exist")
+	assert.Nil(t, config)
+	assert.Error(t, err)
+	assert.EqualError(t, err, "open hosts-file-does-not-exist: no such file or directory")
 }
 
 func TestCanLoadEmptyConfigFromFile(t *testing.T) {
@@ -125,4 +157,11 @@ func TestParseHostsFile(t *testing.T) {
 
 	token := hosts["github.com"].Token
 	assert.Equal(t, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", token)
+}
+
+func TestParseHostsWithNonExistentHostsFile(t *testing.T) {
+	hosts, err := parseHostsFile("hosts-file-does-not-exist")
+	assert.Nil(t, hosts)
+	assert.Error(t, err)
+	assert.EqualError(t, err, "open hosts-file-does-not-exist: no such file or directory")
 }
