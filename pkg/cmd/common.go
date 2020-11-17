@@ -4,6 +4,8 @@ import (
 	"github.com/plumming/dx/pkg/api"
 	"github.com/plumming/dx/pkg/config"
 	"github.com/plumming/dx/pkg/kube"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 
 	"github.com/plumming/dx/pkg/prompter"
 )
@@ -14,6 +16,7 @@ type CommonOptions struct {
 	githubClient    *api.Client
 	kuber           kube.Kuber
 	config          *config.Config
+	kubeClient      *kubernetes.Clientset
 }
 
 func (c *CommonOptions) SetPrompter(p prompter.Prompter) {
@@ -77,4 +80,14 @@ func (c *CommonOptions) Config() (*config.Config, error) {
 		c.config = &con
 	}
 	return c.config, nil
+}
+func (c *CommonOptions) KubeClient(config *rest.Config) (*kubernetes.Clientset, error) {
+	if c.kubeClient == nil {
+		var err error
+		c.kubeClient, err = kubernetes.NewForConfig(config)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return c.kubeClient, nil
 }

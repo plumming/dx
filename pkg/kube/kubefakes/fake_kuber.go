@@ -5,10 +5,45 @@ import (
 	"sync"
 
 	"github.com/plumming/dx/pkg/kube"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd/api"
 )
 
 type FakeKuber struct {
+	CreateKubeClientConfigStub        func() (*rest.Config, error)
+	createKubeClientConfigMutex       sync.RWMutex
+	createKubeClientConfigArgsForCall []struct {
+	}
+	createKubeClientConfigReturns struct {
+		result1 *rest.Config
+		result2 error
+	}
+	createKubeClientConfigReturnsOnCall map[int]struct {
+		result1 *rest.Config
+		result2 error
+	}
+	GetCurrentContextStub        func(*api.Config) *api.Context
+	getCurrentContextMutex       sync.RWMutex
+	getCurrentContextArgsForCall []struct {
+		arg1 *api.Config
+	}
+	getCurrentContextReturns struct {
+		result1 *api.Context
+	}
+	getCurrentContextReturnsOnCall map[int]struct {
+		result1 *api.Context
+	}
+	GetCurrentNamespaceStub        func(*api.Config) string
+	getCurrentNamespaceMutex       sync.RWMutex
+	getCurrentNamespaceArgsForCall []struct {
+		arg1 *api.Config
+	}
+	getCurrentNamespaceReturns struct {
+		result1 string
+	}
+	getCurrentNamespaceReturnsOnCall map[int]struct {
+		result1 string
+	}
 	LoadConfigStub        func() (*api.Config, error)
 	loadConfigMutex       sync.RWMutex
 	loadConfigArgsForCall []struct {
@@ -35,8 +70,200 @@ type FakeKuber struct {
 		result1 *api.Config
 		result2 error
 	}
+	SetKubeNamespaceStub        func(string, *api.Config) (*api.Config, error)
+	setKubeNamespaceMutex       sync.RWMutex
+	setKubeNamespaceArgsForCall []struct {
+		arg1 string
+		arg2 *api.Config
+	}
+	setKubeNamespaceReturns struct {
+		result1 *api.Config
+		result2 error
+	}
+	setKubeNamespaceReturnsOnCall map[int]struct {
+		result1 *api.Config
+		result2 error
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *FakeKuber) CreateKubeClientConfig() (*rest.Config, error) {
+	fake.createKubeClientConfigMutex.Lock()
+	ret, specificReturn := fake.createKubeClientConfigReturnsOnCall[len(fake.createKubeClientConfigArgsForCall)]
+	fake.createKubeClientConfigArgsForCall = append(fake.createKubeClientConfigArgsForCall, struct {
+	}{})
+	stub := fake.CreateKubeClientConfigStub
+	fakeReturns := fake.createKubeClientConfigReturns
+	fake.recordInvocation("CreateKubeClientConfig", []interface{}{})
+	fake.createKubeClientConfigMutex.Unlock()
+	if stub != nil {
+		return stub()
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeKuber) CreateKubeClientConfigCallCount() int {
+	fake.createKubeClientConfigMutex.RLock()
+	defer fake.createKubeClientConfigMutex.RUnlock()
+	return len(fake.createKubeClientConfigArgsForCall)
+}
+
+func (fake *FakeKuber) CreateKubeClientConfigCalls(stub func() (*rest.Config, error)) {
+	fake.createKubeClientConfigMutex.Lock()
+	defer fake.createKubeClientConfigMutex.Unlock()
+	fake.CreateKubeClientConfigStub = stub
+}
+
+func (fake *FakeKuber) CreateKubeClientConfigReturns(result1 *rest.Config, result2 error) {
+	fake.createKubeClientConfigMutex.Lock()
+	defer fake.createKubeClientConfigMutex.Unlock()
+	fake.CreateKubeClientConfigStub = nil
+	fake.createKubeClientConfigReturns = struct {
+		result1 *rest.Config
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeKuber) CreateKubeClientConfigReturnsOnCall(i int, result1 *rest.Config, result2 error) {
+	fake.createKubeClientConfigMutex.Lock()
+	defer fake.createKubeClientConfigMutex.Unlock()
+	fake.CreateKubeClientConfigStub = nil
+	if fake.createKubeClientConfigReturnsOnCall == nil {
+		fake.createKubeClientConfigReturnsOnCall = make(map[int]struct {
+			result1 *rest.Config
+			result2 error
+		})
+	}
+	fake.createKubeClientConfigReturnsOnCall[i] = struct {
+		result1 *rest.Config
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeKuber) GetCurrentContext(arg1 *api.Config) *api.Context {
+	fake.getCurrentContextMutex.Lock()
+	ret, specificReturn := fake.getCurrentContextReturnsOnCall[len(fake.getCurrentContextArgsForCall)]
+	fake.getCurrentContextArgsForCall = append(fake.getCurrentContextArgsForCall, struct {
+		arg1 *api.Config
+	}{arg1})
+	stub := fake.GetCurrentContextStub
+	fakeReturns := fake.getCurrentContextReturns
+	fake.recordInvocation("GetCurrentContext", []interface{}{arg1})
+	fake.getCurrentContextMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *FakeKuber) GetCurrentContextCallCount() int {
+	fake.getCurrentContextMutex.RLock()
+	defer fake.getCurrentContextMutex.RUnlock()
+	return len(fake.getCurrentContextArgsForCall)
+}
+
+func (fake *FakeKuber) GetCurrentContextCalls(stub func(*api.Config) *api.Context) {
+	fake.getCurrentContextMutex.Lock()
+	defer fake.getCurrentContextMutex.Unlock()
+	fake.GetCurrentContextStub = stub
+}
+
+func (fake *FakeKuber) GetCurrentContextArgsForCall(i int) *api.Config {
+	fake.getCurrentContextMutex.RLock()
+	defer fake.getCurrentContextMutex.RUnlock()
+	argsForCall := fake.getCurrentContextArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeKuber) GetCurrentContextReturns(result1 *api.Context) {
+	fake.getCurrentContextMutex.Lock()
+	defer fake.getCurrentContextMutex.Unlock()
+	fake.GetCurrentContextStub = nil
+	fake.getCurrentContextReturns = struct {
+		result1 *api.Context
+	}{result1}
+}
+
+func (fake *FakeKuber) GetCurrentContextReturnsOnCall(i int, result1 *api.Context) {
+	fake.getCurrentContextMutex.Lock()
+	defer fake.getCurrentContextMutex.Unlock()
+	fake.GetCurrentContextStub = nil
+	if fake.getCurrentContextReturnsOnCall == nil {
+		fake.getCurrentContextReturnsOnCall = make(map[int]struct {
+			result1 *api.Context
+		})
+	}
+	fake.getCurrentContextReturnsOnCall[i] = struct {
+		result1 *api.Context
+	}{result1}
+}
+
+func (fake *FakeKuber) GetCurrentNamespace(arg1 *api.Config) string {
+	fake.getCurrentNamespaceMutex.Lock()
+	ret, specificReturn := fake.getCurrentNamespaceReturnsOnCall[len(fake.getCurrentNamespaceArgsForCall)]
+	fake.getCurrentNamespaceArgsForCall = append(fake.getCurrentNamespaceArgsForCall, struct {
+		arg1 *api.Config
+	}{arg1})
+	stub := fake.GetCurrentNamespaceStub
+	fakeReturns := fake.getCurrentNamespaceReturns
+	fake.recordInvocation("GetCurrentNamespace", []interface{}{arg1})
+	fake.getCurrentNamespaceMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *FakeKuber) GetCurrentNamespaceCallCount() int {
+	fake.getCurrentNamespaceMutex.RLock()
+	defer fake.getCurrentNamespaceMutex.RUnlock()
+	return len(fake.getCurrentNamespaceArgsForCall)
+}
+
+func (fake *FakeKuber) GetCurrentNamespaceCalls(stub func(*api.Config) string) {
+	fake.getCurrentNamespaceMutex.Lock()
+	defer fake.getCurrentNamespaceMutex.Unlock()
+	fake.GetCurrentNamespaceStub = stub
+}
+
+func (fake *FakeKuber) GetCurrentNamespaceArgsForCall(i int) *api.Config {
+	fake.getCurrentNamespaceMutex.RLock()
+	defer fake.getCurrentNamespaceMutex.RUnlock()
+	argsForCall := fake.getCurrentNamespaceArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeKuber) GetCurrentNamespaceReturns(result1 string) {
+	fake.getCurrentNamespaceMutex.Lock()
+	defer fake.getCurrentNamespaceMutex.Unlock()
+	fake.GetCurrentNamespaceStub = nil
+	fake.getCurrentNamespaceReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakeKuber) GetCurrentNamespaceReturnsOnCall(i int, result1 string) {
+	fake.getCurrentNamespaceMutex.Lock()
+	defer fake.getCurrentNamespaceMutex.Unlock()
+	fake.GetCurrentNamespaceStub = nil
+	if fake.getCurrentNamespaceReturnsOnCall == nil {
+		fake.getCurrentNamespaceReturnsOnCall = make(map[int]struct {
+			result1 string
+		})
+	}
+	fake.getCurrentNamespaceReturnsOnCall[i] = struct {
+		result1 string
+	}{result1}
 }
 
 func (fake *FakeKuber) LoadConfig() (*api.Config, error) {
@@ -160,13 +387,86 @@ func (fake *FakeKuber) SetKubeContextReturnsOnCall(i int, result1 *api.Config, r
 	}{result1, result2}
 }
 
+func (fake *FakeKuber) SetKubeNamespace(arg1 string, arg2 *api.Config) (*api.Config, error) {
+	fake.setKubeNamespaceMutex.Lock()
+	ret, specificReturn := fake.setKubeNamespaceReturnsOnCall[len(fake.setKubeNamespaceArgsForCall)]
+	fake.setKubeNamespaceArgsForCall = append(fake.setKubeNamespaceArgsForCall, struct {
+		arg1 string
+		arg2 *api.Config
+	}{arg1, arg2})
+	stub := fake.SetKubeNamespaceStub
+	fakeReturns := fake.setKubeNamespaceReturns
+	fake.recordInvocation("SetKubeNamespace", []interface{}{arg1, arg2})
+	fake.setKubeNamespaceMutex.Unlock()
+	if stub != nil {
+		return stub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeKuber) SetKubeNamespaceCallCount() int {
+	fake.setKubeNamespaceMutex.RLock()
+	defer fake.setKubeNamespaceMutex.RUnlock()
+	return len(fake.setKubeNamespaceArgsForCall)
+}
+
+func (fake *FakeKuber) SetKubeNamespaceCalls(stub func(string, *api.Config) (*api.Config, error)) {
+	fake.setKubeNamespaceMutex.Lock()
+	defer fake.setKubeNamespaceMutex.Unlock()
+	fake.SetKubeNamespaceStub = stub
+}
+
+func (fake *FakeKuber) SetKubeNamespaceArgsForCall(i int) (string, *api.Config) {
+	fake.setKubeNamespaceMutex.RLock()
+	defer fake.setKubeNamespaceMutex.RUnlock()
+	argsForCall := fake.setKubeNamespaceArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
+func (fake *FakeKuber) SetKubeNamespaceReturns(result1 *api.Config, result2 error) {
+	fake.setKubeNamespaceMutex.Lock()
+	defer fake.setKubeNamespaceMutex.Unlock()
+	fake.SetKubeNamespaceStub = nil
+	fake.setKubeNamespaceReturns = struct {
+		result1 *api.Config
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeKuber) SetKubeNamespaceReturnsOnCall(i int, result1 *api.Config, result2 error) {
+	fake.setKubeNamespaceMutex.Lock()
+	defer fake.setKubeNamespaceMutex.Unlock()
+	fake.SetKubeNamespaceStub = nil
+	if fake.setKubeNamespaceReturnsOnCall == nil {
+		fake.setKubeNamespaceReturnsOnCall = make(map[int]struct {
+			result1 *api.Config
+			result2 error
+		})
+	}
+	fake.setKubeNamespaceReturnsOnCall[i] = struct {
+		result1 *api.Config
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeKuber) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.createKubeClientConfigMutex.RLock()
+	defer fake.createKubeClientConfigMutex.RUnlock()
+	fake.getCurrentContextMutex.RLock()
+	defer fake.getCurrentContextMutex.RUnlock()
+	fake.getCurrentNamespaceMutex.RLock()
+	defer fake.getCurrentNamespaceMutex.RUnlock()
 	fake.loadConfigMutex.RLock()
 	defer fake.loadConfigMutex.RUnlock()
 	fake.setKubeContextMutex.RLock()
 	defer fake.setKubeContextMutex.RUnlock()
+	fake.setKubeNamespaceMutex.RLock()
+	defer fake.setKubeNamespaceMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

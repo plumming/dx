@@ -43,6 +43,12 @@ func ConfigDir() string {
 	return configDir
 }
 
+func CreateConfigPath(configPath, configFile string) *string {
+	home := HomeDir()
+	path := filepath.Join(home, configPath, configFile)
+	return &path
+}
+
 func GhConfigDir() string {
 	home := HomeDir()
 	configDir := filepath.Join(home, configDir, ghConfigDir)
