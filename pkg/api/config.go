@@ -4,7 +4,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
-	"strings"
 
 	"github.com/ghodss/yaml"
 	"github.com/plumming/dx/pkg/util"
@@ -22,12 +21,14 @@ func ParseDefaultConfig(cf, hf string) (Config, error) {
 	// since tokens are now stored as default within
 	// ~/.config/gh/hosts.yml lets try and load from
 	// there initially
-	config, err := parseHostsFile(hf)
-	if err != nil && !strings.Contains(err.Error(), "no such file or directory") {
-		return nil, err
-	}
-	if config.HasHosts() {
-		return config, nil
+	if exists, err := util.FileExists(hf); err == nil && exists {
+		config, err := parseHostsFile(hf)
+		if err != nil {
+			return nil, err
+		}
+		if config.HasHosts() {
+			return config, nil
+		}
 	}
 
 	return parseConfigFile(cf)
