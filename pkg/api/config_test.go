@@ -228,3 +228,23 @@ func TestParseDefaultConfigWithConfigFile(t *testing.T) {
 	token := config.GetToken("github.com")
 	assert.Equal(t, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", token)
 }
+
+func TestParseDefaultConfigWithNoHostsFile(t *testing.T) {
+	configFile, err := ioutil.TempFile(os.TempDir(), "TestParseDefaultConfigWithNoHostsFile2")
+	if err != nil {
+		panic(err)
+	}
+	defer os.Remove(configFile.Name())
+
+	err = ioutil.WriteFile(configFile.Name(), []byte(dummyConfigFile), 0600)
+	assert.NoError(t, err)
+
+	config, err := ParseDefaultConfig(configFile.Name(), "hosts-file-does-not-exist")
+	assert.NoError(t, err)
+
+	user := config.GetUser("github.com")
+	assert.Equal(t, "testuser", user)
+
+	token := config.GetToken("github.com")
+	assert.Equal(t, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", token)
+}
