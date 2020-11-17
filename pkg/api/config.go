@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/ghodss/yaml"
 	"github.com/plumming/dx/pkg/util"
@@ -22,7 +23,7 @@ func ParseDefaultConfig(cf, hf string) (Config, error) {
 	// ~/.config/gh/hosts.yml lets try and load from
 	// there initially
 	config, err := parseHostsFile(hf)
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "no such file or directory") {
 		return nil, err
 	}
 	if config.HasHosts() {
