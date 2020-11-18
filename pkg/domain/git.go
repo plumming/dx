@@ -116,7 +116,7 @@ func Status(dir string) (string, error) {
 func LocalChanges(dir string) (bool, error) {
 	c := util.Command{
 		Name: "git",
-		Args: []string{"diff-index", "HEAD", "--"},
+		Args: []string{"status", "--porcelain"},
 		Dir:  dir,
 	}
 	output, err := c.RunWithoutRetry()
