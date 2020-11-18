@@ -22,11 +22,11 @@ func GetOrgAndRepoFromCurrentDir() (string, string, error) {
 	return ExtractOrgAndRepoFromGitRemotes(strings.NewReader(output))
 }
 
-func CurrentBranchName(dir string) (string, error){
+func CurrentBranchName(dir string) (string, error) {
 	c := util.Command{
 		Name: "git",
 		Args: []string{"branch", "--show-current"},
-		Dir: dir,
+		Dir:  dir,
 	}
 	output, err := c.RunWithoutRetry()
 	if err != nil {
@@ -35,11 +35,11 @@ func CurrentBranchName(dir string) (string, error){
 	return output, nil
 }
 
-func SwitchBranch(dir string, name string) (string, error){
+func SwitchBranch(dir string, name string) (string, error) {
 	c := util.Command{
 		Name: "git",
 		Args: []string{"checkout", name},
-		Dir: dir,
+		Dir:  dir,
 	}
 	output, err := c.RunWithoutRetry()
 	if err != nil {
@@ -48,11 +48,11 @@ func SwitchBranch(dir string, name string) (string, error){
 	return output, nil
 }
 
-func Stash(dir string) (string, error){
+func Stash(dir string) (string, error) {
 	c := util.Command{
 		Name: "git",
 		Args: []string{"stash"},
-		Dir: dir,
+		Dir:  dir,
 	}
 	output, err := c.RunWithoutRetry()
 	if err != nil {
@@ -61,11 +61,11 @@ func Stash(dir string) (string, error){
 	return output, nil
 }
 
-func StashPop(dir string) (string, error){
+func StashPop(dir string) (string, error) {
 	c := util.Command{
 		Name: "git",
 		Args: []string{"stash", "pop"},
-		Dir: dir,
+		Dir:  dir,
 	}
 	output, err := c.RunWithoutRetry()
 	if err != nil {
@@ -74,11 +74,11 @@ func StashPop(dir string) (string, error){
 	return output, nil
 }
 
-func Add(dir string, name string) (string, error){
+func Add(dir string, name string) (string, error) {
 	c := util.Command{
 		Name: "git",
 		Args: []string{"add", name},
-		Dir: dir,
+		Dir:  dir,
 	}
 	output, err := c.RunWithoutRetry()
 	if err != nil {
@@ -87,11 +87,11 @@ func Add(dir string, name string) (string, error){
 	return output, nil
 }
 
-func Commit(dir string, message string) (string, error){
+func Commit(dir string, message string) (string, error) {
 	c := util.Command{
 		Name: "git",
 		Args: []string{"commit", "-m", message},
-		Dir: dir,
+		Dir:  dir,
 	}
 	output, err := c.RunWithoutRetry()
 	if err != nil {
@@ -100,11 +100,11 @@ func Commit(dir string, message string) (string, error){
 	return output, nil
 }
 
-func Status(dir string) (string, error){
+func Status(dir string) (string, error) {
 	c := util.Command{
 		Name: "git",
 		Args: []string{"status"},
-		Dir: dir,
+		Dir:  dir,
 	}
 	output, err := c.RunWithoutRetry()
 	if err != nil {
@@ -113,11 +113,11 @@ func Status(dir string) (string, error){
 	return output, nil
 }
 
-func LocalChanges(dir string) (bool, error){
+func LocalChanges(dir string) (bool, error) {
 	c := util.Command{
 		Name: "git",
 		Args: []string{"diff-index", "HEAD", "--"},
-		Dir: dir,
+		Dir:  dir,
 	}
 	output, err := c.RunWithoutRetry()
 	if err != nil {

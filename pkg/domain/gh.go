@@ -2,6 +2,7 @@ package domain
 
 import (
 	"fmt"
+
 	"github.com/plumming/dx/pkg/api"
 )
 

@@ -1,13 +1,14 @@
 package domain_test
 
 import (
-	"github.com/plumming/dx/pkg/domain"
-	"github.com/plumming/dx/pkg/util"
-	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"
 	"path"
 	"testing"
+
+	"github.com/plumming/dx/pkg/domain"
+	"github.com/plumming/dx/pkg/util"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCanDetermineBranchName(t *testing.T) {
@@ -19,7 +20,7 @@ func TestCanDetermineBranchName(t *testing.T) {
 	c := util.Command{
 		Name: "git",
 		Args: []string{"init"},
-		Dir: dir,
+		Dir:  dir,
 	}
 	output, err := c.RunWithoutRetry()
 	assert.NoError(t, err)
@@ -40,7 +41,7 @@ func TestCanStash(t *testing.T) {
 	c := util.Command{
 		Name: "git",
 		Args: []string{"init"},
-		Dir: dir,
+		Dir:  dir,
 	}
 	output, err := c.RunWithoutRetry()
 	assert.NoError(t, err)
@@ -54,7 +55,7 @@ func TestCanStash(t *testing.T) {
 	assert.NoError(t, err)
 	t.Log(output)
 
-	output, err = domain.Commit(dir,"Initial Commit")
+	output, err = domain.Commit(dir, "Initial Commit")
 	assert.NoError(t, err)
 	t.Log(output)
 
@@ -90,6 +91,3 @@ func TestCanStash(t *testing.T) {
 	assert.NoError(t, err)
 	assert.True(t, localChanges)
 }
-
-
-
