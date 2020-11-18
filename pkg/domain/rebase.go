@@ -9,10 +9,10 @@ import (
 
 type Rebase struct {
 	cmd.CommonOptions
-	Org string
-	Repo string
+	Org           string
+	Repo          string
 	DefaultBranch string
-	Config  *api.Config
+	Config        *api.Config
 }
 
 // NewRebase.

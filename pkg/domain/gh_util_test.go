@@ -2,11 +2,12 @@ package domain_test
 
 import (
 	"bytes"
+	"strings"
+	"testing"
+
 	"github.com/plumming/dx/pkg/api"
 	"github.com/plumming/dx/pkg/domain"
 	"github.com/stretchr/testify/assert"
-	"strings"
-	"testing"
 )
 
 func TestGetDefaultBranch_Main(t *testing.T) {
