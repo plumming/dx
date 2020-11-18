@@ -1,9 +1,9 @@
 package domain
 
 import (
+	"github.com/jenkins-x/jx-logging/pkg/log"
 	"github.com/plumming/dx/pkg/cmd"
 	"github.com/plumming/dx/pkg/util"
-	"github.com/sirupsen/logrus"
 	"k8s.io/client-go/tools/clientcmd/api"
 )
 
@@ -32,10 +32,10 @@ func (c *Rebase) Validate() error {
 	if err != nil {
 		return err
 	}
-	logrus.Infof("determined repo as %s/%s", c.Org, c.Repo)
+	log.Logger().Infof("determined repo as %s/%s", c.Org, c.Repo)
 
 	c.DefaultBranch, err = GetDefaultBranch(gh, c.Org, c.Repo)
-	logrus.Infof("determined default branch as %s", c.DefaultBranch)
+	log.Logger().Infof("determined default branch as %s", c.DefaultBranch)
 	if err != nil {
 		return err
 	}
@@ -58,7 +58,7 @@ func (c *Rebase) Run() error {
 	if err != nil {
 		return err
 	}
-	logrus.Info(output)
+	log.Logger().Info(output)
 
 	// git rebase upstream/master
 	cmd = util.Command{
@@ -69,7 +69,7 @@ func (c *Rebase) Run() error {
 	if err != nil {
 		return err
 	}
-	logrus.Info(output)
+	log.Logger().Info(output)
 
 	// git push origin master
 	cmd = util.Command{
@@ -80,7 +80,7 @@ func (c *Rebase) Run() error {
 	if err != nil {
 		return err
 	}
-	logrus.Info(output)
+	log.Logger().Info(output)
 
 	return nil
 }
