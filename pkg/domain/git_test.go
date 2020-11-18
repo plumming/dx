@@ -47,6 +47,9 @@ func TestCanStash(t *testing.T) {
 	assert.NoError(t, err)
 	t.Log(output)
 
+	err = domain.ConfigCommitterInformation(dir, "test@test.com", "test user")
+	assert.NoError(t, err)
+
 	d1 := []byte("# domain_test__TestCanStash\n")
 	err = ioutil.WriteFile(path.Join(dir, "README.md"), d1, 0600)
 	assert.NoError(t, err)

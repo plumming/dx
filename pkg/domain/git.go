@@ -126,6 +126,29 @@ func LocalChanges(dir string) (bool, error) {
 	return output != "", nil
 }
 
+func ConfigCommitterInformation(dir string, email string, name string) error {
+	c := util.Command{
+		Name: "git",
+		Args: []string{"config", "user.email", email},
+		Dir:  dir,
+	}
+	_, err := c.RunWithoutRetry()
+	if err != nil {
+		return err
+	}
+
+	c = util.Command{
+		Name: "git",
+		Args: []string{"config", "user.name", name},
+		Dir:  dir,
+	}
+	_, err = c.RunWithoutRetry()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func ExtractOrgAndRepoFromGitRemotes(reader io.Reader) (string, string, error) {
 	buf := new(strings.Builder)
 	_, err := io.Copy(buf, reader)
