@@ -32,10 +32,10 @@ func (c *Rebase) Validate() error {
 	if err != nil {
 		return err
 	}
-	log.Logger().Infof("determined repo as %s/%s", c.Org, c.Repo)
+	log.Logger().Debugf("determined repo as %s/%s", c.Org, c.Repo)
 
 	c.DefaultBranch, err = GetDefaultBranch(gh, c.Org, c.Repo)
-	log.Logger().Infof("determined default branch as %s", c.DefaultBranch)
+	log.Logger().Debugf("determined default branch as %s", c.DefaultBranch)
 	if err != nil {
 		return err
 	}
@@ -46,8 +46,24 @@ func (c *Rebase) Validate() error {
 // Run the cmd.
 func (c *Rebase) Run() error {
 	// should check if there are local changes
+	localChanges, err := LocalChanges("")
+	if err != nil {
+		return err
+	}
+	if localChanges {
+		log.Logger().Error("There appear to be local changes, please stash and try again")
+		return nil
+	}
 
 	// should check if we are on the non default branch
+	currentBranch, err := CurrentBranchName("")
+	if err != nil {
+		return err
+	}
+	if c.DefaultBranch != currentBranch {
+		log.Logger().Errorf("You appear to not be on the default branch, please switch to %s", c.DefaultBranch)
+		return nil
+	}
 
 	// git fetch --tags upstream master
 	cmd := util.Command{
