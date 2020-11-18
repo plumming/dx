@@ -48,7 +48,7 @@ func TestCanStash(t *testing.T) {
 	t.Log(output)
 
 	d1 := []byte("# domain_test__TestCanStash\n")
-	err = ioutil.WriteFile(path.Join(dir, "README.md"), d1, 0644)
+	err = ioutil.WriteFile(path.Join(dir, "README.md"), d1, 0600)
 	assert.NoError(t, err)
 
 	output, err = domain.Add(dir, "README.md")
@@ -64,7 +64,7 @@ func TestCanStash(t *testing.T) {
 	assert.False(t, localChanges)
 
 	d1 = []byte("hello\ngo\n")
-	err = ioutil.WriteFile(path.Join(dir, "README.md"), d1, 0644)
+	err = ioutil.WriteFile(path.Join(dir, "README.md"), d1, 0600)
 	assert.NoError(t, err)
 
 	localChanges, err = domain.LocalChanges(dir)
