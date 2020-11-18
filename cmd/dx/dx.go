@@ -9,6 +9,8 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"github.com/plumming/dx/pkg/cmd/rebasecmd"
+
 	"github.com/plumming/dx/pkg/cmd/contextcmd"
 
 	"github.com/plumming/dx/pkg/cmd/editcmd"
@@ -74,6 +76,7 @@ func init() {
 	RootCmd.AddCommand(editcmd.NewEditCmd())
 	RootCmd.AddCommand(upgradecmd.NewUpgradeCmd())
 	RootCmd.AddCommand(contextcmd.NewContextCmd())
+	RootCmd.AddCommand(rebasecmd.NewRebaseCmd())
 
 	c := completionCmd
 	c.Flags().StringP("shell", "s", "bash", "Shell type: {bash|zsh|fish|powershell}")
