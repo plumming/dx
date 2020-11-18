@@ -15,9 +15,9 @@ type RebaseCmd struct {
 func NewRebaseCmd() *cobra.Command {
 	c := &RebaseCmd{}
 	cmd := &cobra.Command{
-		Use:     "rebase",
-		Short:   "Rebase the local clone",
-		Long:    "Performs a 'git fetch upstream master && git rebase upstream/master && git push origin master'.  " +
+		Use:   "rebase",
+		Short: "Rebase the local clone",
+		Long: "Performs a 'git fetch upstream master && git rebase upstream/master && git push origin master'.  " +
 			"Uses the default_branch name determined from the GitHub API.",
 		Example: "",
 		Aliases: []string{"rb"},
