@@ -17,7 +17,8 @@ func NewRebaseCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "rebase",
 		Short:   "Rebase the local clone",
-		Long:    "",
+		Long:    "Performs a 'git fetch upstream master && git rebase upstream/master && git push origin master'.  " +
+			"Uses the default_branch name determined from the GitHub API.",
 		Example: "",
 		Aliases: []string{"rb"},
 		Run: func(cmd *cobra.Command, args []string) {

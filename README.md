@@ -50,3 +50,12 @@ hiddenLabels:
 - wip
 - do not merge
 ```
+
+### Rebase the local repository
+
+This will rebase the local repository against the remote called 'upstream'.
+
+```
+dx rebase
+```
+
