@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/plumming/dx/pkg/cmd/rebasecmd"
 	"os"
 	"path"
 	"path/filepath"
@@ -74,6 +75,7 @@ func init() {
 	RootCmd.AddCommand(editcmd.NewEditCmd())
 	RootCmd.AddCommand(upgradecmd.NewUpgradeCmd())
 	RootCmd.AddCommand(contextcmd.NewContextCmd())
+	RootCmd.AddCommand(rebasecmd.NewRebaseCmd())
 
 	c := completionCmd
 	c.Flags().StringP("shell", "s", "bash", "Shell type: {bash|zsh|fish|powershell}")
