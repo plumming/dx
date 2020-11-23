@@ -1,8 +1,6 @@
 package domain
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	"github.com/plumming/dx/pkg/cmd"
@@ -39,7 +37,6 @@ func (c *Context) Validate() error {
 
 // Run the cmd.
 func (c *Context) Run() error {
-	fmt.Printf("you selected context %s", c.Context)
 	k := c.Kuber()
 	var err error
 	c.Config, err = k.SetKubeContext(c.Context, c.Config)
