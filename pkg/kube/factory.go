@@ -13,7 +13,6 @@ type factory struct {
 }
 
 func (f *factory) SetKubeContext(context string, config *api.Config) (*api.Config, error) {
-	fmt.Printf("you selected context %s", context)
 	ctx := config.Contexts[context]
 	if ctx == nil {
 		return nil, fmt.Errorf("could not find Kubernetes context %s", context)
