@@ -10,17 +10,17 @@ import (
 )
 
 type PullRequest struct {
-	Number     int        `json:"number"`
-	Title      string     `json:"title"`
-	URL        string     `json:"url"`
-	Mergeable  string     `json:"mergeable"`
-	CreatedAt  time.Time  `json:"createdAt"`
-	Author     Author     `json:"author"`
-	Labels     Labels     `json:"labels"`
-	Commits    Commits    `json:"commits"`
-	Closed     bool       `json:"closed"`
-	Repository Repository `json:"repository"`
-	ReviewDecision string `json:"reviewDecision"`
+	Number         int        `json:"number"`
+	Title          string     `json:"title"`
+	URL            string     `json:"url"`
+	Mergeable      string     `json:"mergeable"`
+	CreatedAt      time.Time  `json:"createdAt"`
+	Author         Author     `json:"author"`
+	Labels         Labels     `json:"labels"`
+	Commits        Commits    `json:"commits"`
+	Closed         bool       `json:"closed"`
+	Repository     Repository `json:"repository"`
+	ReviewDecision string     `json:"reviewDecision"`
 }
 
 const (
