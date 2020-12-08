@@ -3,6 +3,7 @@ package domain
 import (
 	"bytes"
 	"fmt"
+	"github.com/plumming/dx/pkg/config"
 	"testing"
 
 	"github.com/plumming/dx/pkg/pr"
@@ -40,6 +41,7 @@ func TestGetPrs_Run(t *testing.T) {
 	http := &api.FakeHTTP{}
 	client := api.NewClient(api.ReplaceTripper(http))
 	d.SetGithubClient(client)
+	d.SetConfig(&config.Config{MaxAge: -1})
 
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(expectedResponse)))
 
@@ -61,6 +63,7 @@ func TestGetPrs_Run_ShowOnHold(t *testing.T) {
 	http := &api.FakeHTTP{}
 	client := api.NewClient(api.ReplaceTripper(http))
 	d.SetGithubClient(client)
+	d.SetConfig(&config.Config{MaxAge: -1})
 
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(expectedResponse)))
 
@@ -82,6 +85,7 @@ func TestGetPrs_Run_ShowDependabot(t *testing.T) {
 	http := &api.FakeHTTP{}
 	client := api.NewClient(api.ReplaceTripper(http))
 	d.SetGithubClient(client)
+	d.SetConfig(&config.Config{MaxAge: -1})
 
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(expectedResponse)))
 
