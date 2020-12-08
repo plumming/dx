@@ -36,6 +36,7 @@ func TestCommonCmd_Filter_AllData(t *testing.T) {
     "repository": {
       "nameWithOwner": ""
     },
+    "reviewDecision": "",
     "title": "",
     "url": ""
   },
@@ -56,6 +57,7 @@ func TestCommonCmd_Filter_AllData(t *testing.T) {
     "repository": {
       "nameWithOwner": ""
     },
+    "reviewDecision": "",
     "title": "",
     "url": ""
   },
@@ -76,6 +78,7 @@ func TestCommonCmd_Filter_AllData(t *testing.T) {
     "repository": {
       "nameWithOwner": ""
     },
+    "reviewDecision": "",
     "title": "",
     "url": ""
   }
@@ -111,6 +114,7 @@ func TestCommonCmd_Filter_FilterOnAuthor(t *testing.T) {
     "repository": {
       "nameWithOwner": ""
     },
+    "reviewDecision": "",
     "title": "",
     "url": ""
   }
