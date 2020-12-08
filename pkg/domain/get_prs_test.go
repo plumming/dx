@@ -3,8 +3,9 @@ package domain
 import (
 	"bytes"
 	"fmt"
-	"github.com/plumming/dx/pkg/config"
 	"testing"
+
+	"github.com/plumming/dx/pkg/config"
 
 	"github.com/plumming/dx/pkg/pr"
 

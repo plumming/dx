@@ -71,7 +71,7 @@ func (c *Config) SetDefaults() {
 	}
 
 	if c.MaxAge == 0 {
-		c.MaxAge = defaultMaxAge;
+		c.MaxAge = defaultMaxAge
 	}
 }
 
