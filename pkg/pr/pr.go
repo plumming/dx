@@ -31,7 +31,7 @@ const (
 	unknown     = "UNKNOWN"
 )
 
-func (p *PullRequest) Display(showDependabot bool, showOnHold bool, maxAge int, hiddenLabels ...string) bool {
+func (p *PullRequest) Display(showDependabot bool, showOnHold bool, hiddenLabels ...string) bool {
 	display := true
 	// exit early
 	if p.Closed {
@@ -41,13 +41,6 @@ func (p *PullRequest) Display(showDependabot bool, showOnHold bool, maxAge int, 
 	for _, label := range hiddenLabels {
 		if p.HasLabel(label) {
 			return false
-		}
-	}
-
-	if maxAge != -1 {
-		display = p.CreatedAt.After(time.Now().AddDate(0, 0, -1*maxAge))
-		if !display {
-			return display
 		}
 	}
 

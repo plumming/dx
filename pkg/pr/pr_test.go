@@ -224,33 +224,33 @@ func TestPullRequest_HasContext(t *testing.T) {
 
 func TestPullRequest_Display(t *testing.T) {
 	pr := PullRequest{Closed: true}
-	assert.Equal(t, pr.Display(true, true, -1), false)
-	assert.Equal(t, pr.Display(true, false, -1), false)
-	assert.Equal(t, pr.Display(false, true, -1), false)
-	assert.Equal(t, pr.Display(false, false, -1), false)
+	assert.Equal(t, pr.Display(true, true), false)
+	assert.Equal(t, pr.Display(true, false), false)
+	assert.Equal(t, pr.Display(false, true), false)
+	assert.Equal(t, pr.Display(false, false), false)
 
 	pr = PullRequest{Author: Author{Login: "jenkins-x-bot"}}
 
-	assert.Equal(t, pr.Display(true, true, -1), true)
-	assert.Equal(t, pr.Display(true, false, -1), true)
-	assert.Equal(t, pr.Display(false, true, -1), true)
-	assert.Equal(t, pr.Display(false, false, -1), true)
+	assert.Equal(t, pr.Display(true, true), true)
+	assert.Equal(t, pr.Display(true, false), true)
+	assert.Equal(t, pr.Display(false, true), true)
+	assert.Equal(t, pr.Display(false, false), true)
 
 	pr = PullRequest{Author: Author{Login: "dependabot-preview"}}
 
-	assert.Equal(t, pr.Display(true, true, -1), true)
-	assert.Equal(t, pr.Display(true, false, -1), true)
-	assert.Equal(t, pr.Display(false, true, -1), false)
-	assert.Equal(t, pr.Display(false, false, -1), false)
+	assert.Equal(t, pr.Display(true, true), true)
+	assert.Equal(t, pr.Display(true, false), true)
+	assert.Equal(t, pr.Display(false, true), false)
+	assert.Equal(t, pr.Display(false, false), false)
 
 	pr = PullRequest{Labels: Labels{
 		Nodes: []Label{{Name: "do-not-merge/hold"}},
 	}}
 
-	assert.Equal(t, pr.Display(true, true, -1), true)
-	assert.Equal(t, pr.Display(true, false, -1), false)
-	assert.Equal(t, pr.Display(false, true, -1), true)
-	assert.Equal(t, pr.Display(false, false, -1), false)
+	assert.Equal(t, pr.Display(true, true), true)
+	assert.Equal(t, pr.Display(true, false), false)
+	assert.Equal(t, pr.Display(false, true), true)
+	assert.Equal(t, pr.Display(false, false), false)
 }
 
 func TestPullRequest_LabelsString(t *testing.T) {

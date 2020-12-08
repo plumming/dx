@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/plumming/dx/pkg/pr"
 
@@ -102,7 +103,14 @@ func (g *GetPrs) Run() error {
 	if err != nil {
 		return err
 	}
-	queryToRun := fmt.Sprintf(query, strings.Join(cfg.ReposToQuery(), " "), cfg.MaxNumberOfPRs)
+
+	queryString := strings.Join(cfg.ReposToQuery(), " ")
+	if cfg.MaxAge != -1 {
+		dateString := time.Now().AddDate(0, 0, -1*cfg.MaxAge).Format("2006-01-02")
+		queryString = queryString + " created:>" + dateString
+	}
+
+	queryToRun := fmt.Sprintf(query, queryString, cfg.MaxNumberOfPRs)
 	log.Logger().Debugf("running query %s", queryToRun)
 
 	err = client.GraphQL(queryToRun, nil, &data)
@@ -117,7 +125,7 @@ func (g *GetPrs) Run() error {
 
 	for _, pr := range pulls {
 		pullRequest := pr
-		if pr.Display(g.ShowDependabot, g.ShowOnHold, cfg.MaxAge, cfg.HiddenLabels...) {
+		if pr.Display(g.ShowDependabot, g.ShowOnHold, cfg.HiddenLabels...) {
 			pullsToReturn = append(pullsToReturn, pullRequest)
 		}
 	}
