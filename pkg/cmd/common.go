@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/plumming/dx/pkg/api"
+	"github.com/plumming/dx/pkg/config"
 	"github.com/plumming/dx/pkg/kube"
 
 	"github.com/plumming/dx/pkg/prompter"
@@ -12,6 +13,7 @@ type CommonOptions struct {
 	nonGithubClient *api.Client
 	githubClient    *api.Client
 	kuber           kube.Kuber
+	config          *config.Config
 }
 
 func (c *CommonOptions) SetPrompter(p prompter.Prompter) {
@@ -60,4 +62,19 @@ func (c *CommonOptions) Kuber() kube.Kuber {
 		c.kuber = kube.NewKuber()
 	}
 	return c.kuber
+}
+
+func (c *CommonOptions) SetConfig(config *config.Config) {
+	c.config = config
+}
+
+func (c *CommonOptions) Config() (*config.Config, error) {
+	if c.config == nil {
+		con, err := config.LoadFromDefaultLocation()
+		if err != nil {
+			return nil, err
+		}
+		c.config = &con
+	}
+	return c.config, nil
 }

@@ -13,6 +13,7 @@ var (
 	defaultRepos          = []string{"plumming/dx"}
 	defaultHiddenLabels   = []string{"hide-this"}
 	defaultMaxNumberOfPRs = 100
+	defaultMaxAge         = -1
 )
 
 // Config defines repos to watch.
@@ -20,6 +21,7 @@ type Config struct {
 	Repos          []string `json:"repos"`
 	HiddenLabels   []string `json:"hiddenLabels"`
 	MaxNumberOfPRs int      `json:"maxNumberOfPRs"`
+	MaxAge         int      `json:"maxAgeOfPRs"`
 }
 
 func (c *Config) ReposToQuery() []string {
@@ -66,6 +68,10 @@ func (c *Config) SetDefaults() {
 
 	if c.MaxNumberOfPRs == 0 {
 		c.MaxNumberOfPRs = defaultMaxNumberOfPRs
+	}
+
+	if c.MaxAge == 0 {
+		c.MaxAge = defaultMaxAge
 	}
 }
 

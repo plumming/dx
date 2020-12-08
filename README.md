@@ -51,6 +51,22 @@ hiddenLabels:
 - do not merge
 ```
 
+### Exclude PRs older than X days
+
+```
+dx edit config
+```
+
+```
+maxAgeOfPRs: 180
+```
+
+or for all PRs 
+
+```
+maxAgeOfPRs: -1
+```
+
 ### Rebase the local repository
 
 This will rebase the local repository against the remote called 'upstream'.

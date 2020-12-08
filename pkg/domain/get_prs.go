@@ -5,8 +5,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/plumming/dx/pkg/config"
-
 	"github.com/plumming/dx/pkg/pr"
 
 	"github.com/jenkins-x/jx-logging/pkg/log"
@@ -100,7 +98,7 @@ func (g *GetPrs) Run() error {
 }`
 
 	data := Data{}
-	cfg, err := config.LoadFromDefaultLocation()
+	cfg, err := g.Config()
 	if err != nil {
 		return err
 	}
@@ -119,7 +117,7 @@ func (g *GetPrs) Run() error {
 
 	for _, pr := range pulls {
 		pullRequest := pr
-		if pr.Display(g.ShowDependabot, g.ShowOnHold, cfg.HiddenLabels...) {
+		if pr.Display(g.ShowDependabot, g.ShowOnHold, cfg.MaxAge, cfg.HiddenLabels...) {
 			pullsToReturn = append(pullsToReturn, pullRequest)
 		}
 	}
