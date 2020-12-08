@@ -10,16 +10,17 @@ import (
 )
 
 type PullRequest struct {
-	Number     int        `json:"number"`
-	Title      string     `json:"title"`
-	URL        string     `json:"url"`
-	Mergeable  string     `json:"mergeable"`
-	CreatedAt  time.Time  `json:"createdAt"`
-	Author     Author     `json:"author"`
-	Labels     Labels     `json:"labels"`
-	Commits    Commits    `json:"commits"`
-	Closed     bool       `json:"closed"`
-	Repository Repository `json:"repository"`
+	Number         int        `json:"number"`
+	Title          string     `json:"title"`
+	URL            string     `json:"url"`
+	Mergeable      string     `json:"mergeable"`
+	CreatedAt      time.Time  `json:"createdAt"`
+	Author         Author     `json:"author"`
+	Labels         Labels     `json:"labels"`
+	Commits        Commits    `json:"commits"`
+	Closed         bool       `json:"closed"`
+	Repository     Repository `json:"repository"`
+	ReviewDecision string     `json:"reviewDecision"`
 }
 
 const (
@@ -109,6 +110,18 @@ func (p *PullRequest) ColoredTitle() string {
 		return util.ColorWarning(p.TrimmedTitle())
 	} else {
 		return util.ColorError(p.TrimmedTitle())
+	}
+}
+
+func (p *PullRequest) ColoredReviewDecision() string {
+	if p.ReviewDecision == "APPROVED" {
+		return util.ColorInfo("Approved")
+	} else if p.ReviewDecision == "REVIEW_REQUIRED" {
+		return util.ColorWarning("Required")
+	} else if p.ReviewDecision == "CHANGES_REQUESTED" {
+		return util.ColorError("Changes Requested")
+	} else {
+		return p.ReviewDecision
 	}
 }
 

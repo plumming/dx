@@ -97,6 +97,7 @@ func (c *GetPrsCmd) Run() error {
 				"Author",
 				"Title",
 				"Age",
+				"Review",
 				"Labels",
 				"Mergeable",
 			)
@@ -111,6 +112,7 @@ func (c *GetPrsCmd) Run() error {
 				pr.Author.Login,
 				pr.ColoredTitle(),
 				util.SafeTime(&pr.CreatedAt),
+				pr.ColoredReviewDecision(),
 				pr.LabelsString(),
 				pr.MergeableString(),
 			)

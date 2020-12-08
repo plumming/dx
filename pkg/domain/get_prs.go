@@ -69,6 +69,7 @@ func (g *GetPrs) Run() error {
             name
           }
         }
+        reviewDecision
         commits(last: 1){
           nodes{
             commit{
