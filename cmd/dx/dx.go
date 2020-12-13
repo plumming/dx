@@ -9,8 +9,8 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/plumming/dx/pkg/cmd/rebasecmd"
 	"github.com/plumming/dx/pkg/cmd/namespacecmd"
+	"github.com/plumming/dx/pkg/cmd/rebasecmd"
 
 	"github.com/plumming/dx/pkg/cmd/contextcmd"
 
