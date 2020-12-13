@@ -3,11 +3,12 @@ package kube
 import (
 	"errors"
 	"fmt"
+	"net/http"
+	"os"
+
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/tools/clientcmd/api"
-	"net/http"
-	"os"
 )
 
 type factory struct {
@@ -50,17 +51,37 @@ func NewKuber() Kuber {
 	return &factory{}
 }
 
-func (f *factory) LoadConfig() (*api.Config, error) {
+func (f *factory) LoadAPIConfig() (*api.Config, error) {
 	po := clientcmd.NewDefaultPathOptions()
 	if po == nil {
 		return nil, errors.New("unable to get kube config path options")
 	}
-	config, err := po.GetStartingConfig()
+	apiConfig, err := po.GetStartingConfig()
 	if err != nil {
 		return nil, err
 	}
 
-	return config, nil
+	return apiConfig, nil
+}
+
+func (f *factory) LoadClientConfig() (*rest.Config, error) {
+	po := clientcmd.NewDefaultPathOptions()
+	if po == nil {
+		return nil, errors.New("unable to get kube config path options")
+	}
+	restConfig, err := clientcmd.BuildConfigFromFlags("", po.GlobalFile)
+	if err != nil {
+		return nil, err
+	}
+	// for testing purposes one can enable tracing of Kube REST API calls
+	traceKubeAPI := os.Getenv("TRACE_KUBE_API")
+	if traceKubeAPI == "1" || traceKubeAPI == "on" {
+		restConfig.WrapTransport = func(rt http.RoundTripper) http.RoundTripper {
+			return &Tracer{RoundTripper: rt}
+		}
+	}
+
+	return restConfig, nil
 }
 
 func (f *factory) GetCurrentContext(config *api.Config) *api.Context {
@@ -82,23 +103,4 @@ func (f *factory) GetCurrentNamespace(config *api.Config) string {
 		}
 	}
 	return "default"
-}
-
-func (f *factory) CreateKubeClientConfig() (*rest.Config, error) {
-	po := clientcmd.NewDefaultPathOptions()
-	if po == nil {
-		return nil, errors.New("unable to get kube config path options")
-	}
-	restConfig, err := clientcmd.BuildConfigFromFlags("", po.GlobalFile)
-	if err != nil {
-		return nil, err
-	}
-	// for testing purposes one can enable tracing of Kube REST API calls
-	traceKubeAPI := os.Getenv("TRACE_KUBE_API")
-	if traceKubeAPI == "1" || traceKubeAPI == "on" {
-		restConfig.WrapTransport = func(rt http.RoundTripper) http.RoundTripper {
-			return &Tracer{RoundTripper: rt}
-		}
-	}
-	return restConfig, nil
 }

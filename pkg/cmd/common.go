@@ -8,6 +8,7 @@ import (
 	"k8s.io/client-go/rest"
 
 	"github.com/plumming/dx/pkg/prompter"
+	"k8s.io/client-go/kubernetes/fake"
 )
 
 type CommonOptions struct {
@@ -16,7 +17,7 @@ type CommonOptions struct {
 	githubClient    *api.Client
 	kuber           kube.Kuber
 	config          *config.Config
-	kubeClient      *kubernetes.Clientset
+	kubeClient      kubernetes.Interface
 }
 
 func (c *CommonOptions) SetPrompter(p prompter.Prompter) {
@@ -81,7 +82,15 @@ func (c *CommonOptions) Config() (*config.Config, error) {
 	}
 	return c.config, nil
 }
-func (c *CommonOptions) KubeClient(config *rest.Config) (*kubernetes.Clientset, error) {
+
+func (c *CommonOptions) FakeKubeClient() kubernetes.Interface {
+	if c.kubeClient == nil {
+		c.kubeClient = fake.NewSimpleClientset()
+	}
+	return c.kubeClient
+}
+
+func (c *CommonOptions) KubeClient(config *rest.Config) (kubernetes.Interface, error) {
 	if c.kubeClient == nil {
 		var err error
 		c.kubeClient, err = kubernetes.NewForConfig(config)

@@ -10,18 +10,6 @@ import (
 )
 
 type FakeKuber struct {
-	CreateKubeClientConfigStub        func() (*rest.Config, error)
-	createKubeClientConfigMutex       sync.RWMutex
-	createKubeClientConfigArgsForCall []struct {
-	}
-	createKubeClientConfigReturns struct {
-		result1 *rest.Config
-		result2 error
-	}
-	createKubeClientConfigReturnsOnCall map[int]struct {
-		result1 *rest.Config
-		result2 error
-	}
 	GetCurrentContextStub        func(*api.Config) *api.Context
 	getCurrentContextMutex       sync.RWMutex
 	getCurrentContextArgsForCall []struct {
@@ -44,16 +32,28 @@ type FakeKuber struct {
 	getCurrentNamespaceReturnsOnCall map[int]struct {
 		result1 string
 	}
-	LoadConfigStub        func() (*api.Config, error)
-	loadConfigMutex       sync.RWMutex
-	loadConfigArgsForCall []struct {
+	LoadAPIConfigStub        func() (*api.Config, error)
+	loadAPIConfigMutex       sync.RWMutex
+	loadAPIConfigArgsForCall []struct {
 	}
-	loadConfigReturns struct {
+	loadAPIConfigReturns struct {
 		result1 *api.Config
 		result2 error
 	}
-	loadConfigReturnsOnCall map[int]struct {
+	loadAPIConfigReturnsOnCall map[int]struct {
 		result1 *api.Config
+		result2 error
+	}
+	LoadClientConfigStub        func() (*rest.Config, error)
+	loadClientConfigMutex       sync.RWMutex
+	loadClientConfigArgsForCall []struct {
+	}
+	loadClientConfigReturns struct {
+		result1 *rest.Config
+		result2 error
+	}
+	loadClientConfigReturnsOnCall map[int]struct {
+		result1 *rest.Config
 		result2 error
 	}
 	SetKubeContextStub        func(string, *api.Config) (*api.Config, error)
@@ -86,62 +86,6 @@ type FakeKuber struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
-}
-
-func (fake *FakeKuber) CreateKubeClientConfig() (*rest.Config, error) {
-	fake.createKubeClientConfigMutex.Lock()
-	ret, specificReturn := fake.createKubeClientConfigReturnsOnCall[len(fake.createKubeClientConfigArgsForCall)]
-	fake.createKubeClientConfigArgsForCall = append(fake.createKubeClientConfigArgsForCall, struct {
-	}{})
-	stub := fake.CreateKubeClientConfigStub
-	fakeReturns := fake.createKubeClientConfigReturns
-	fake.recordInvocation("CreateKubeClientConfig", []interface{}{})
-	fake.createKubeClientConfigMutex.Unlock()
-	if stub != nil {
-		return stub()
-	}
-	if specificReturn {
-		return ret.result1, ret.result2
-	}
-	return fakeReturns.result1, fakeReturns.result2
-}
-
-func (fake *FakeKuber) CreateKubeClientConfigCallCount() int {
-	fake.createKubeClientConfigMutex.RLock()
-	defer fake.createKubeClientConfigMutex.RUnlock()
-	return len(fake.createKubeClientConfigArgsForCall)
-}
-
-func (fake *FakeKuber) CreateKubeClientConfigCalls(stub func() (*rest.Config, error)) {
-	fake.createKubeClientConfigMutex.Lock()
-	defer fake.createKubeClientConfigMutex.Unlock()
-	fake.CreateKubeClientConfigStub = stub
-}
-
-func (fake *FakeKuber) CreateKubeClientConfigReturns(result1 *rest.Config, result2 error) {
-	fake.createKubeClientConfigMutex.Lock()
-	defer fake.createKubeClientConfigMutex.Unlock()
-	fake.CreateKubeClientConfigStub = nil
-	fake.createKubeClientConfigReturns = struct {
-		result1 *rest.Config
-		result2 error
-	}{result1, result2}
-}
-
-func (fake *FakeKuber) CreateKubeClientConfigReturnsOnCall(i int, result1 *rest.Config, result2 error) {
-	fake.createKubeClientConfigMutex.Lock()
-	defer fake.createKubeClientConfigMutex.Unlock()
-	fake.CreateKubeClientConfigStub = nil
-	if fake.createKubeClientConfigReturnsOnCall == nil {
-		fake.createKubeClientConfigReturnsOnCall = make(map[int]struct {
-			result1 *rest.Config
-			result2 error
-		})
-	}
-	fake.createKubeClientConfigReturnsOnCall[i] = struct {
-		result1 *rest.Config
-		result2 error
-	}{result1, result2}
 }
 
 func (fake *FakeKuber) GetCurrentContext(arg1 *api.Config) *api.Context {
@@ -266,15 +210,15 @@ func (fake *FakeKuber) GetCurrentNamespaceReturnsOnCall(i int, result1 string) {
 	}{result1}
 }
 
-func (fake *FakeKuber) LoadConfig() (*api.Config, error) {
-	fake.loadConfigMutex.Lock()
-	ret, specificReturn := fake.loadConfigReturnsOnCall[len(fake.loadConfigArgsForCall)]
-	fake.loadConfigArgsForCall = append(fake.loadConfigArgsForCall, struct {
+func (fake *FakeKuber) LoadAPIConfig() (*api.Config, error) {
+	fake.loadAPIConfigMutex.Lock()
+	ret, specificReturn := fake.loadAPIConfigReturnsOnCall[len(fake.loadAPIConfigArgsForCall)]
+	fake.loadAPIConfigArgsForCall = append(fake.loadAPIConfigArgsForCall, struct {
 	}{})
-	stub := fake.LoadConfigStub
-	fakeReturns := fake.loadConfigReturns
-	fake.recordInvocation("LoadConfig", []interface{}{})
-	fake.loadConfigMutex.Unlock()
+	stub := fake.LoadAPIConfigStub
+	fakeReturns := fake.loadAPIConfigReturns
+	fake.recordInvocation("LoadAPIConfig", []interface{}{})
+	fake.loadAPIConfigMutex.Unlock()
 	if stub != nil {
 		return stub()
 	}
@@ -284,40 +228,96 @@ func (fake *FakeKuber) LoadConfig() (*api.Config, error) {
 	return fakeReturns.result1, fakeReturns.result2
 }
 
-func (fake *FakeKuber) LoadConfigCallCount() int {
-	fake.loadConfigMutex.RLock()
-	defer fake.loadConfigMutex.RUnlock()
-	return len(fake.loadConfigArgsForCall)
+func (fake *FakeKuber) LoadAPIConfigCallCount() int {
+	fake.loadAPIConfigMutex.RLock()
+	defer fake.loadAPIConfigMutex.RUnlock()
+	return len(fake.loadAPIConfigArgsForCall)
 }
 
-func (fake *FakeKuber) LoadConfigCalls(stub func() (*api.Config, error)) {
-	fake.loadConfigMutex.Lock()
-	defer fake.loadConfigMutex.Unlock()
-	fake.LoadConfigStub = stub
+func (fake *FakeKuber) LoadAPIConfigCalls(stub func() (*api.Config, error)) {
+	fake.loadAPIConfigMutex.Lock()
+	defer fake.loadAPIConfigMutex.Unlock()
+	fake.LoadAPIConfigStub = stub
 }
 
-func (fake *FakeKuber) LoadConfigReturns(result1 *api.Config, result2 error) {
-	fake.loadConfigMutex.Lock()
-	defer fake.loadConfigMutex.Unlock()
-	fake.LoadConfigStub = nil
-	fake.loadConfigReturns = struct {
+func (fake *FakeKuber) LoadAPIConfigReturns(result1 *api.Config, result2 error) {
+	fake.loadAPIConfigMutex.Lock()
+	defer fake.loadAPIConfigMutex.Unlock()
+	fake.LoadAPIConfigStub = nil
+	fake.loadAPIConfigReturns = struct {
 		result1 *api.Config
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeKuber) LoadConfigReturnsOnCall(i int, result1 *api.Config, result2 error) {
-	fake.loadConfigMutex.Lock()
-	defer fake.loadConfigMutex.Unlock()
-	fake.LoadConfigStub = nil
-	if fake.loadConfigReturnsOnCall == nil {
-		fake.loadConfigReturnsOnCall = make(map[int]struct {
+func (fake *FakeKuber) LoadAPIConfigReturnsOnCall(i int, result1 *api.Config, result2 error) {
+	fake.loadAPIConfigMutex.Lock()
+	defer fake.loadAPIConfigMutex.Unlock()
+	fake.LoadAPIConfigStub = nil
+	if fake.loadAPIConfigReturnsOnCall == nil {
+		fake.loadAPIConfigReturnsOnCall = make(map[int]struct {
 			result1 *api.Config
 			result2 error
 		})
 	}
-	fake.loadConfigReturnsOnCall[i] = struct {
+	fake.loadAPIConfigReturnsOnCall[i] = struct {
 		result1 *api.Config
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeKuber) LoadClientConfig() (*rest.Config, error) {
+	fake.loadClientConfigMutex.Lock()
+	ret, specificReturn := fake.loadClientConfigReturnsOnCall[len(fake.loadClientConfigArgsForCall)]
+	fake.loadClientConfigArgsForCall = append(fake.loadClientConfigArgsForCall, struct {
+	}{})
+	stub := fake.LoadClientConfigStub
+	fakeReturns := fake.loadClientConfigReturns
+	fake.recordInvocation("LoadClientConfig", []interface{}{})
+	fake.loadClientConfigMutex.Unlock()
+	if stub != nil {
+		return stub()
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeKuber) LoadClientConfigCallCount() int {
+	fake.loadClientConfigMutex.RLock()
+	defer fake.loadClientConfigMutex.RUnlock()
+	return len(fake.loadClientConfigArgsForCall)
+}
+
+func (fake *FakeKuber) LoadClientConfigCalls(stub func() (*rest.Config, error)) {
+	fake.loadClientConfigMutex.Lock()
+	defer fake.loadClientConfigMutex.Unlock()
+	fake.LoadClientConfigStub = stub
+}
+
+func (fake *FakeKuber) LoadClientConfigReturns(result1 *rest.Config, result2 error) {
+	fake.loadClientConfigMutex.Lock()
+	defer fake.loadClientConfigMutex.Unlock()
+	fake.LoadClientConfigStub = nil
+	fake.loadClientConfigReturns = struct {
+		result1 *rest.Config
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeKuber) LoadClientConfigReturnsOnCall(i int, result1 *rest.Config, result2 error) {
+	fake.loadClientConfigMutex.Lock()
+	defer fake.loadClientConfigMutex.Unlock()
+	fake.LoadClientConfigStub = nil
+	if fake.loadClientConfigReturnsOnCall == nil {
+		fake.loadClientConfigReturnsOnCall = make(map[int]struct {
+			result1 *rest.Config
+			result2 error
+		})
+	}
+	fake.loadClientConfigReturnsOnCall[i] = struct {
+		result1 *rest.Config
 		result2 error
 	}{result1, result2}
 }
@@ -455,14 +455,14 @@ func (fake *FakeKuber) SetKubeNamespaceReturnsOnCall(i int, result1 *api.Config,
 func (fake *FakeKuber) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.createKubeClientConfigMutex.RLock()
-	defer fake.createKubeClientConfigMutex.RUnlock()
 	fake.getCurrentContextMutex.RLock()
 	defer fake.getCurrentContextMutex.RUnlock()
 	fake.getCurrentNamespaceMutex.RLock()
 	defer fake.getCurrentNamespaceMutex.RUnlock()
-	fake.loadConfigMutex.RLock()
-	defer fake.loadConfigMutex.RUnlock()
+	fake.loadAPIConfigMutex.RLock()
+	defer fake.loadAPIConfigMutex.RUnlock()
+	fake.loadClientConfigMutex.RLock()
+	defer fake.loadClientConfigMutex.RUnlock()
 	fake.setKubeContextMutex.RLock()
 	defer fake.setKubeContextMutex.RUnlock()
 	fake.setKubeNamespaceMutex.RLock()

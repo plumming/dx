@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/plumming/dx/pkg/cmd/namespacecmd"
 	"os"
 	"path"
 	"path/filepath"
@@ -11,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/plumming/dx/pkg/cmd/rebasecmd"
+	"github.com/plumming/dx/pkg/cmd/namespacecmd"
 
 	"github.com/plumming/dx/pkg/cmd/contextcmd"
 

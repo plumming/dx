@@ -24,7 +24,7 @@ func NewContext() *Context {
 func (c *Context) Validate() error {
 	kuber := c.Kuber()
 	var err error
-	c.Config, err = kuber.LoadConfig()
+	c.Config, err = kuber.LoadAPIConfig()
 	if err != nil {
 		return err
 	}

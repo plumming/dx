@@ -10,8 +10,8 @@ import (
 type Kuber interface {
 	SetKubeContext(string, *api.Config) (*api.Config, error)
 	SetKubeNamespace(string, *api.Config) (*api.Config, error)
-	LoadConfig() (*api.Config, error)
+	LoadAPIConfig() (*api.Config, error)
+	LoadClientConfig() (*rest.Config, error)
 	GetCurrentContext(*api.Config) *api.Context
 	GetCurrentNamespace(*api.Config) string
-	CreateKubeClientConfig() (*rest.Config, error)
 }
