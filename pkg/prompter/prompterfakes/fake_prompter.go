@@ -22,6 +22,21 @@ type FakePrompter struct {
 		result1 string
 		result2 error
 	}
+	SelectFromOptionsWithDefaultStub        func(string, string, []string) (string, error)
+	selectFromOptionsWithDefaultMutex       sync.RWMutex
+	selectFromOptionsWithDefaultArgsForCall []struct {
+		arg1 string
+		arg2 string
+		arg3 []string
+	}
+	selectFromOptionsWithDefaultReturns struct {
+		result1 string
+		result2 error
+	}
+	selectFromOptionsWithDefaultReturnsOnCall map[int]struct {
+		result1 string
+		result2 error
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -96,11 +111,84 @@ func (fake *FakePrompter) SelectFromOptionsReturnsOnCall(i int, result1 string, 
 	}{result1, result2}
 }
 
+func (fake *FakePrompter) SelectFromOptionsWithDefault(arg1 string, arg2 string, arg3 []string) (string, error) {
+	var arg3Copy []string
+	if arg3 != nil {
+		arg3Copy = make([]string, len(arg3))
+		copy(arg3Copy, arg3)
+	}
+	fake.selectFromOptionsWithDefaultMutex.Lock()
+	ret, specificReturn := fake.selectFromOptionsWithDefaultReturnsOnCall[len(fake.selectFromOptionsWithDefaultArgsForCall)]
+	fake.selectFromOptionsWithDefaultArgsForCall = append(fake.selectFromOptionsWithDefaultArgsForCall, struct {
+		arg1 string
+		arg2 string
+		arg3 []string
+	}{arg1, arg2, arg3Copy})
+	stub := fake.SelectFromOptionsWithDefaultStub
+	fakeReturns := fake.selectFromOptionsWithDefaultReturns
+	fake.recordInvocation("SelectFromOptionsWithDefault", []interface{}{arg1, arg2, arg3Copy})
+	fake.selectFromOptionsWithDefaultMutex.Unlock()
+	if stub != nil {
+		return stub(arg1, arg2, arg3)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakePrompter) SelectFromOptionsWithDefaultCallCount() int {
+	fake.selectFromOptionsWithDefaultMutex.RLock()
+	defer fake.selectFromOptionsWithDefaultMutex.RUnlock()
+	return len(fake.selectFromOptionsWithDefaultArgsForCall)
+}
+
+func (fake *FakePrompter) SelectFromOptionsWithDefaultCalls(stub func(string, string, []string) (string, error)) {
+	fake.selectFromOptionsWithDefaultMutex.Lock()
+	defer fake.selectFromOptionsWithDefaultMutex.Unlock()
+	fake.SelectFromOptionsWithDefaultStub = stub
+}
+
+func (fake *FakePrompter) SelectFromOptionsWithDefaultArgsForCall(i int) (string, string, []string) {
+	fake.selectFromOptionsWithDefaultMutex.RLock()
+	defer fake.selectFromOptionsWithDefaultMutex.RUnlock()
+	argsForCall := fake.selectFromOptionsWithDefaultArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
+}
+
+func (fake *FakePrompter) SelectFromOptionsWithDefaultReturns(result1 string, result2 error) {
+	fake.selectFromOptionsWithDefaultMutex.Lock()
+	defer fake.selectFromOptionsWithDefaultMutex.Unlock()
+	fake.SelectFromOptionsWithDefaultStub = nil
+	fake.selectFromOptionsWithDefaultReturns = struct {
+		result1 string
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakePrompter) SelectFromOptionsWithDefaultReturnsOnCall(i int, result1 string, result2 error) {
+	fake.selectFromOptionsWithDefaultMutex.Lock()
+	defer fake.selectFromOptionsWithDefaultMutex.Unlock()
+	fake.SelectFromOptionsWithDefaultStub = nil
+	if fake.selectFromOptionsWithDefaultReturnsOnCall == nil {
+		fake.selectFromOptionsWithDefaultReturnsOnCall = make(map[int]struct {
+			result1 string
+			result2 error
+		})
+	}
+	fake.selectFromOptionsWithDefaultReturnsOnCall[i] = struct {
+		result1 string
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakePrompter) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
 	fake.selectFromOptionsMutex.RLock()
 	defer fake.selectFromOptionsMutex.RUnlock()
+	fake.selectFromOptionsWithDefaultMutex.RLock()
+	defer fake.selectFromOptionsWithDefaultMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value
