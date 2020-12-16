@@ -42,7 +42,7 @@ func (c *ContextCmd) Run() error {
 	}
 	err = d.Run()
 	if err != nil {
-		return errors.Wrap(err, "validate failed")
+		return errors.Wrap(err, "run failed")
 	}
 	return nil
 }
