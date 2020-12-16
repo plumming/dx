@@ -28,7 +28,7 @@ func (c *Context) Validate() error {
 	if err != nil {
 		return err
 	}
-	c.Context, err = c.selectContext()
+	c.Context, err = c.selectContext(c.Config.CurrentContext)
 	if err != nil {
 		return errors.Wrap(err, "failed to select context")
 	}
@@ -46,10 +46,10 @@ func (c *Context) Run() error {
 	return nil
 }
 
-func (c *Context) selectContext() (string, error) {
+func (c *Context) selectContext(currentContext string) (string, error) {
 	contexts := c.loadContexts()
 	prompter := c.Prompter()
-	ctx, err := prompter.SelectFromOptions("Select a context:", contexts)
+	ctx, err := prompter.SelectFromOptionsWithDefault("Select a context:", currentContext, contexts)
 	if err != nil {
 		return "", errors.Wrap(err, "failed selecting context from prompter")
 	}

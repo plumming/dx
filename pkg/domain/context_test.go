@@ -23,7 +23,7 @@ func TestConnectWorkspace_Validate_AllDataSupplied(t *testing.T) {
 
 	var prompter = &prompterfakes.FakePrompter{}
 	d.SetPrompter(prompter)
-	prompter.SelectFromOptionsReturns(testContext, nil)
+	prompter.SelectFromOptionsWithDefaultReturns(testContext, nil)
 
 	err := d.Validate()
 	assert.NoError(t, err)

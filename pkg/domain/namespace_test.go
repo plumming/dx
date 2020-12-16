@@ -31,7 +31,7 @@ func Test_Namespace_Validate_AllDataSupplied(t *testing.T) {
 
 	var prompter = &prompterfakes.FakePrompter{}
 	want.SetPrompter(prompter)
-	prompter.SelectFromOptionsReturns(testNamespace, nil)
+	prompter.SelectFromOptionsWithDefaultReturns(testNamespace, nil)
 
 	want.FakeKubeClient()
 
@@ -80,7 +80,6 @@ func TestSelectNamespaceUsingConfigFile_Run(t *testing.T) {
 	assert.NoError(t, err)
 
 	testNamespace := getNamespaceKey(want.APIConfig, 0)
-	assert.NotEqual(t, testNamespace, want.APIConfig.Contexts[want.APIConfig.CurrentContext].Namespace)
 	want.Namespace = testNamespace
 
 	err = want.Run()

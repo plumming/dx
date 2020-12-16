@@ -4,4 +4,5 @@ package prompter
 
 type Prompter interface {
 	SelectFromOptions(question string, options []string) (string, error)
+	SelectFromOptionsWithDefault(question, defaultValue string, options []string) (string, error)
 }
