@@ -11,9 +11,9 @@ import (
 
 type DeleteReposCmd struct {
 	cmd.CommonCmd
-	Org string
-	Cmd            *cobra.Command
-	Args           []string
+	Org  string
+	Cmd  *cobra.Command
+	Args []string
 }
 
 func NewDeleteReposCmd() *cobra.Command {

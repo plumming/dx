@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/plumming/dx/pkg/cmd/contextcmd"
-	"github.com/plumming/dx/pkg/cmd/deletecmd"
-	"github.com/plumming/dx/pkg/cmd/getcmd"
 	"os"
 	"path"
 	"path/filepath"
 	"regexp"
 	"runtime/debug"
 	"strings"
+
+	"github.com/plumming/dx/pkg/cmd/contextcmd"
+	"github.com/plumming/dx/pkg/cmd/deletecmd"
+	"github.com/plumming/dx/pkg/cmd/getcmd"
 
 	"github.com/plumming/dx/pkg/cmd/rebasecmd"
 

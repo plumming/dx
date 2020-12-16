@@ -2,6 +2,7 @@ package domain
 
 import (
 	"fmt"
+
 	"github.com/jenkins-x/jx-logging/pkg/log"
 	"github.com/plumming/dx/pkg/cmd"
 )
@@ -65,13 +66,13 @@ func (r *Repo) DeleteRepositories(org string) error {
 
 func reposAsStringArray(repos []RepoInfo) []string {
 	var reposAsString = []string{}
-	for _,r := range repos {
+	for _, r := range repos {
 		reposAsString = append(reposAsString, r.Name)
 	}
 	return reposAsString
 }
 
 type RepoInfo struct {
-	Name string `json:"name"`
+	Name     string `json:"name"`
 	FullName string `json:"full_name"`
 }

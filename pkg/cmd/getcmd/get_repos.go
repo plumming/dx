@@ -11,9 +11,9 @@ import (
 
 type GetReposCmd struct {
 	cmd.CommonCmd
-	Filter         string
-	Cmd            *cobra.Command
-	Args           []string
+	Filter string
+	Cmd    *cobra.Command
+	Args   []string
 }
 
 func NewGetReposCmd() *cobra.Command {
@@ -50,8 +50,6 @@ func (c *GetReposCmd) Run() error {
 	if err != nil {
 		return err
 	}
-
-
 
 	for _, r := range repos {
 		table.AddRow(r.Name)
