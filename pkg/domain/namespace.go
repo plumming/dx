@@ -36,12 +36,11 @@ func (n *Namespace) Validate() error {
 	if err != nil {
 		return errors.Wrap(err, "failed to create load api config")
 	}
-	currentNS := kuber.GetCurrentNamespace(n.APIConfig)
 	n.RESTConfig, err = kuber.LoadClientConfig()
 	if err != nil {
 		return errors.Wrap(err, "failed to create load client config")
 	}
-	n.Namespace, err = n.selectNamespace(currentNS)
+	n.Namespace, err = n.selectNamespace()
 	if err != nil {
 		return errors.Wrap(err, "failed to select namespace")
 	}
@@ -60,7 +59,8 @@ func (n *Namespace) Run() error {
 	return nil
 }
 
-func (n *Namespace) selectNamespace(currentNamespace string) (string, error) {
+func (n *Namespace) selectNamespace() (string, error) {
+	currentNamespace := n.Kuber().GetCurrentNamespace(n.APIConfig)
 	namespaces, err := n.loadNamespaces()
 	if err != nil {
 		return "", errors.Wrap(err, "while loading namespaces")
