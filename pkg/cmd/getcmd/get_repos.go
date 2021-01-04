@@ -48,7 +48,7 @@ func NewGetReposCmd() *cobra.Command {
 }
 
 func (c *GetReposCmd) Run() error {
-	if c.Org == "" || c.User == "" {
+	if c.Org == "" && c.User == "" {
 		return errors.New("need to supply an --org or a --user to query")
 	}
 
