@@ -12,6 +12,8 @@ import (
 	"github.com/plumming/dx/pkg/cmd"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/clientcmd/api"
+
+	_ "k8s.io/client-go/plugin/pkg/client/auth"
 )
 
 // Namespace defines Kubernetes namespace.
