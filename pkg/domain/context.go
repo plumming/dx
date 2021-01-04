@@ -24,7 +24,7 @@ func NewContext() *Context {
 func (c *Context) Validate() error {
 	kuber := c.Kuber()
 	var err error
-	c.Config, err = kuber.LoadConfig()
+	c.Config, err = kuber.LoadAPIConfig()
 	if err != nil {
 		return err
 	}
@@ -49,7 +49,8 @@ func (c *Context) Run() error {
 func (c *Context) selectContext() (string, error) {
 	contexts := c.loadContexts()
 	prompter := c.Prompter()
-	ctx, err := prompter.SelectFromOptions("Select a context:", contexts)
+	currentContext := c.Config.CurrentContext
+	ctx, err := prompter.SelectFromOptionsWithDefault("Select a context:", currentContext, contexts)
 	if err != nil {
 		return "", errors.Wrap(err, "failed selecting context from prompter")
 	}

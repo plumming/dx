@@ -1,4 +1,4 @@
-package contextcmd
+package namespacecmd
 
 import (
 	"github.com/jenkins-x/jx-logging/pkg/log"
@@ -7,19 +7,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type ContextCmd struct {
+type NamespaceCmd struct {
 	Cmd  *cobra.Command
 	Args []string
 }
 
-func NewContextCmd() *cobra.Command {
-	c := &ContextCmd{}
+func NewNamespaceCmd() *cobra.Command {
+	c := &NamespaceCmd{}
 	cmd := &cobra.Command{
-		Use:     "context",
-		Short:   "View or change the current Kubernetes context",
+		Use:     "namespace",
+		Short:   "View or change the current Kubernetes cluster namespace",
 		Long:    "",
 		Example: "",
-		Aliases: []string{"ctx"},
+		Aliases: []string{"ns"},
 		Run: func(cmd *cobra.Command, args []string) {
 			c.Cmd = cmd
 			c.Args = args
@@ -33,8 +33,8 @@ func NewContextCmd() *cobra.Command {
 	return cmd
 }
 
-func (c *ContextCmd) Run() error {
-	d := domain.NewContext()
+func (c *NamespaceCmd) Run() error {
+	d := domain.NewNamespace()
 
 	err := d.Validate()
 	if err != nil {

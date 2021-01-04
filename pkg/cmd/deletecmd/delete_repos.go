@@ -45,7 +45,7 @@ func NewDeleteReposCmd() *cobra.Command {
 
 func (c *DeleteReposCmd) Run() error {
 	if c.Org == "" {
-		return errors.New("Need to select an --org to query")
+		return errors.New("need to select an --org to query")
 	}
 
 	d := domain.Repo{}

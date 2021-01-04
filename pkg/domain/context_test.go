@@ -17,13 +17,13 @@ func TestConnectWorkspace_Validate_AllDataSupplied(t *testing.T) {
 	c := testKubeConfig()
 	var kuber = &kubefakes.FakeKuber{}
 	d.SetKuber(kuber)
-	kuber.LoadConfigReturns(&c, nil)
+	kuber.LoadAPIConfigReturns(&c, nil)
 
 	testContext := getContextKey(c.Contexts, 0)
 
 	var prompter = &prompterfakes.FakePrompter{}
 	d.SetPrompter(prompter)
-	prompter.SelectFromOptionsReturns(testContext, nil)
+	prompter.SelectFromOptionsWithDefaultReturns(testContext, nil)
 
 	err := d.Validate()
 	assert.NoError(t, err)
