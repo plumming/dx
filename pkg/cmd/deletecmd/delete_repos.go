@@ -12,6 +12,7 @@ import (
 type DeleteReposCmd struct {
 	cmd.CommonCmd
 	Org  string
+	User string
 	Cmd  *cobra.Command
 	Args []string
 }
@@ -35,8 +36,10 @@ func NewDeleteReposCmd() *cobra.Command {
 		Args: cobra.NoArgs,
 	}
 
-	cmd.Flags().StringVarP(&c.Org, "org", "", "",
+	cmd.Flags().StringVarP(&c.Org, "org", "o", "",
 		"Organization to query")
+	cmd.Flags().StringVarP(&c.User, "user", "u", "",
+		"User to query")
 
 	c.AddOptions(cmd)
 
@@ -44,14 +47,22 @@ func NewDeleteReposCmd() *cobra.Command {
 }
 
 func (c *DeleteReposCmd) Run() error {
-	if c.Org == "" {
-		return errors.New("need to select an --org to query")
+	if c.Org == "" || c.User == "" {
+		return errors.New("need to supply an --org or a --user to query")
 	}
 
 	d := domain.Repo{}
-	err := d.DeleteRepositories(c.Org)
-	if err != nil {
-		return err
+
+	if c.Org != "" {
+		err := d.DeleteRepositoriesFromOrg(c.Org)
+		if err != nil {
+			return err
+		}
+	} else {
+		err := d.DeleteRepositoriesFromUser(c.User)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

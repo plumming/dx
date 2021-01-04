@@ -7,11 +7,13 @@ import (
 	"github.com/plumming/dx/pkg/cmd"
 )
 
+type repoGetter func(string) ([]RepoInfo, error)
+
 type Repo struct {
 	cmd.CommonOptions
 }
 
-func (r *Repo) ListRepositories(org string) ([]RepoInfo, error) {
+func (r *Repo) ListRepositoriesForOrg(org string) ([]RepoInfo, error) {
 	client, err := r.GithubClient()
 	if err != nil {
 		return nil, err
@@ -26,8 +28,23 @@ func (r *Repo) ListRepositories(org string) ([]RepoInfo, error) {
 	return repos, nil
 }
 
-func (r *Repo) SelectRepositories(org string) ([]string, error) {
-	repos, err := r.ListRepositories(org)
+func (r *Repo) ListRepositoriesForUser(user string) ([]RepoInfo, error) {
+	client, err := r.GithubClient()
+	if err != nil {
+		return nil, err
+	}
+
+	var repos = []RepoInfo{}
+	err = client.REST("GET", fmt.Sprintf("users/%s/repos", user), nil, &repos)
+	if err != nil {
+		return nil, err
+	}
+
+	return repos, nil
+}
+
+func (r *Repo) SelectRepositories(filter string, in repoGetter) ([]string, error) {
+	repos, err := in(filter)
 	if err != nil {
 		return nil, err
 	}
@@ -42,13 +59,13 @@ func (r *Repo) SelectRepositories(org string) ([]string, error) {
 	return selected, nil
 }
 
-func (r *Repo) DeleteRepositories(org string) error {
+func (r *Repo) DeleteRepositoriesFromOrg(org string) error {
 	client, err := r.GithubClient()
 	if err != nil {
 		return err
 	}
 
-	selected, err := r.SelectRepositories(org)
+	selected, err := r.SelectRepositories(org, r.ListRepositoriesForOrg)
 	if err != nil {
 		return err
 	}
@@ -56,6 +73,28 @@ func (r *Repo) DeleteRepositories(org string) error {
 	for _, s := range selected {
 		log.Logger().Infof("deleting %s/%s", org, s)
 		err = client.REST("DELETE", fmt.Sprintf("repos/%s/%s", org, s), nil, nil)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (r *Repo) DeleteRepositoriesFromUser(user string) error {
+	client, err := r.GithubClient()
+	if err != nil {
+		return err
+	}
+
+	selected, err := r.SelectRepositories(user, r.ListRepositoriesForUser)
+	if err != nil {
+		return err
+	}
+
+	for _, s := range selected {
+		log.Logger().Infof("deleting %s/%s", user, s)
+		err = client.REST("DELETE", fmt.Sprintf("repos/%s/%s", user, s), nil, nil)
 		if err != nil {
 			return err
 		}

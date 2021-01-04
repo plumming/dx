@@ -1,6 +1,7 @@
 package getcmd
 
 import (
+	"github.com/pkg/errors"
 	"github.com/plumming/dx/pkg/cmd"
 	"github.com/plumming/dx/pkg/domain"
 
@@ -11,7 +12,8 @@ import (
 
 type GetReposCmd struct {
 	cmd.CommonCmd
-	Filter string
+	Org string
+	User string
 	Cmd    *cobra.Command
 	Args   []string
 }
@@ -35,20 +37,39 @@ func NewGetReposCmd() *cobra.Command {
 		Args: cobra.NoArgs,
 	}
 
+	cmd.Flags().StringVarP(&c.Org, "org", "o", "",
+		"Organization to query")
+	cmd.Flags().StringVarP(&c.User, "user", "u", "",
+		"User to query")
+
 	c.AddOptions(cmd)
 
 	return cmd
 }
 
 func (c *GetReposCmd) Run() error {
+	if c.Org == "" || c.User == "" {
+		return errors.New("need to supply an --org or a --user to query")
+	}
+
 	d := domain.Repo{}
 
 	table := table.NewTable(c.Cmd.OutOrStdout())
 	table.AddRow("Repository")
 
-	repos, err := d.ListRepositories("garethjevans-test")
-	if err != nil {
-		return err
+	var err error
+	var repos []domain.RepoInfo
+
+	if c.Org != "" {
+		repos, err = d.ListRepositoriesForOrg(c.Org)
+		if err != nil {
+			return err
+		}
+	} else {
+		repos, err = d.ListRepositoriesForUser(c.User)
+		if err != nil {
+			return err
+		}
 	}
 
 	for _, r := range repos {
