@@ -12,10 +12,10 @@ import (
 
 type GetReposCmd struct {
 	cmd.CommonCmd
-	Org string
+	Org  string
 	User string
-	Cmd    *cobra.Command
-	Args   []string
+	Cmd  *cobra.Command
+	Args []string
 }
 
 func NewGetReposCmd() *cobra.Command {

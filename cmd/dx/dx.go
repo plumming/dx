@@ -9,18 +9,17 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/plumming/dx/pkg/cmd/namespacecmd"
 	"github.com/plumming/dx/pkg/cmd/contextcmd"
 	"github.com/plumming/dx/pkg/cmd/deletecmd"
-	"github.com/plumming/dx/pkg/cmd/getcmd"
-	"github.com/plumming/dx/pkg/cmd/rebasecmd"
 	"github.com/plumming/dx/pkg/cmd/editcmd"
+	"github.com/plumming/dx/pkg/cmd/getcmd"
+	"github.com/plumming/dx/pkg/cmd/namespacecmd"
+	"github.com/plumming/dx/pkg/cmd/rebasecmd"
 	"github.com/plumming/dx/pkg/cmd/upgradecmd"
 
 	"github.com/plumming/dx/pkg/deprecation"
 
 	"github.com/spf13/cobra/doc"
-
 
 	"github.com/plumming/dx/pkg/api"
 	"github.com/plumming/dx/pkg/update"
