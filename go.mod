@@ -17,5 +17,5 @@ require (
 	github.com/xeonx/timeago v1.0.0-rc4
 	gopkg.in/AlecAivazis/survey.v1 v1.8.8
 	k8s.io/apimachinery v0.20.1
-	k8s.io/client-go v0.19.4
+	k8s.io/client-go v0.20.1
 )
