@@ -1,9 +1,9 @@
-## dx get
+## dx namespace
 
-
+View or change the current Kubernetes cluster namespace
 
 ```
-dx get [flags]
+dx namespace [flags]
 ```
 
 ### Options inherited from parent commands
@@ -15,6 +15,4 @@ dx get [flags]
 ### SEE ALSO
 
 * [dx](dx.md)	 - Plumming dx
-* [dx get prs](dx_get_prs.md)	 - Gets your open prs
-* [dx get repos](dx_get_repos.md)	 - Lists your repositories
 

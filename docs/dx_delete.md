@@ -1,9 +1,9 @@
-## dx get
+## dx delete
 
 
 
 ```
-dx get [flags]
+dx delete [flags]
 ```
 
 ### Options inherited from parent commands
@@ -15,6 +15,5 @@ dx get [flags]
 ### SEE ALSO
 
 * [dx](dx.md)	 - Plumming dx
-* [dx get prs](dx_get_prs.md)	 - Gets your open prs
-* [dx get repos](dx_get_repos.md)	 - Lists your repositories
+* [dx delete repos](dx_delete_repos.md)	 - Delete your repositories
 
