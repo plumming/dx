@@ -539,7 +539,6 @@ func TestRepos_DeleteRepositoriesForOrg(t *testing.T) {
 	assert.Equal(t, http.Requests[1].URL.Path, "/repos/o/Hello-World")
 	assert.Equal(t, http.Requests[1].URL.Host, "api.github.com")
 	assert.Equal(t, http.Requests[1].URL.RawQuery, "")
-
 }
 
 func TestRepos_DeleteRepositoriesForUser(t *testing.T) {
@@ -570,5 +569,4 @@ func TestRepos_DeleteRepositoriesForUser(t *testing.T) {
 	assert.Equal(t, http.Requests[1].URL.Path, "/repos/u/Hello-World")
 	assert.Equal(t, http.Requests[1].URL.Host, "api.github.com")
 	assert.Equal(t, http.Requests[1].URL.RawQuery, "")
-
 }
