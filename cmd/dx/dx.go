@@ -9,25 +9,22 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"github.com/plumming/dx/pkg/cmd/contextcmd"
+	"github.com/plumming/dx/pkg/cmd/deletecmd"
+	"github.com/plumming/dx/pkg/cmd/editcmd"
+	"github.com/plumming/dx/pkg/cmd/getcmd"
 	"github.com/plumming/dx/pkg/cmd/namespacecmd"
 	"github.com/plumming/dx/pkg/cmd/rebasecmd"
-
-	"github.com/plumming/dx/pkg/cmd/contextcmd"
-
-	"github.com/plumming/dx/pkg/cmd/editcmd"
+	"github.com/plumming/dx/pkg/cmd/upgradecmd"
 
 	"github.com/plumming/dx/pkg/deprecation"
 
 	"github.com/spf13/cobra/doc"
 
-	"github.com/plumming/dx/pkg/cmd/upgradecmd"
-
 	"github.com/plumming/dx/pkg/api"
 	"github.com/plumming/dx/pkg/update"
 	"github.com/plumming/dx/pkg/util"
 	"github.com/plumming/dx/pkg/version"
-
-	"github.com/plumming/dx/pkg/cmd/getcmd"
 
 	"github.com/jenkins-x/jx-logging/pkg/log"
 	"github.com/spf13/cobra"
@@ -73,10 +70,11 @@ func init() {
 		return &FlagError{Err: err}
 	})
 
-	RootCmd.AddCommand(getcmd.NewGetCmd())
-	RootCmd.AddCommand(editcmd.NewEditCmd())
-	RootCmd.AddCommand(upgradecmd.NewUpgradeCmd())
 	RootCmd.AddCommand(contextcmd.NewContextCmd())
+	RootCmd.AddCommand(deletecmd.NewDeleteCmd())
+	RootCmd.AddCommand(editcmd.NewEditCmd())
+	RootCmd.AddCommand(getcmd.NewGetCmd())
+	RootCmd.AddCommand(upgradecmd.NewUpgradeCmd())
 	RootCmd.AddCommand(rebasecmd.NewRebaseCmd())
 	RootCmd.AddCommand(namespacecmd.NewNamespaceCmd())
 

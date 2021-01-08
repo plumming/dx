@@ -1,21 +1,21 @@
-package getcmd
+package deletecmd
 
 import (
 	"github.com/jenkins-x/jx-logging/pkg/log"
 	"github.com/spf13/cobra"
 )
 
-// GetCmd defines parent get.
-type GetCmd struct {
+// DeleteCmd defines parent get.
+type DeleteCmd struct {
 	Cmd  *cobra.Command
 	Args []string
 }
 
-// NewGetCmd creates get cmd.
-func NewGetCmd() *cobra.Command {
-	c := &GetCmd{}
+// NewDeleteCmd creates delete cmd.
+func NewDeleteCmd() *cobra.Command {
+	c := &DeleteCmd{}
 	cmd := &cobra.Command{
-		Use:     "get",
+		Use:     "delete",
 		Short:   "",
 		Long:    "",
 		Example: "",
@@ -29,13 +29,12 @@ func NewGetCmd() *cobra.Command {
 		},
 	}
 
-	cmd.AddCommand(NewGetPrsCmd())
-	cmd.AddCommand(NewGetReposCmd())
+	cmd.AddCommand(NewDeleteReposCmd())
 
 	return cmd
 }
 
 // Run get help.
-func (c *GetCmd) Run() error {
+func (c *DeleteCmd) Run() error {
 	return c.Cmd.Help()
 }
