@@ -18,6 +18,7 @@ Have you got the chillies.
 * [dx context](dx_context.md)	 - View or change the current Kubernetes context
 * [dx edit](dx_edit.md)	 - 
 * [dx get](dx_get.md)	 - 
+* [dx namespace](dx_namespace.md)	 - View or change the current Kubernetes cluster namespace
 * [dx rebase](dx_rebase.md)	 - Rebase the local clone
 * [dx upgrade](dx_upgrade.md)	 - 
 
