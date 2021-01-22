@@ -118,6 +118,8 @@ goreleaser:
 
 docs: build
 	./build/dx docs
+	./hack/generate_docs_links.sh
 
 lint:
 	golangci-lint run
+

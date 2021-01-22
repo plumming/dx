@@ -75,3 +75,16 @@ This will rebase the local repository against the remote called 'upstream'.
 dx rebase
 ```
 
+
+### Commands
+
+- [dx](./docs/dx.md)
+- [dx context](./docs/dx_context.md)
+- [dx edit](./docs/dx_edit.md)
+- [dx edit config](./docs/dx_edit_config.md)
+- [dx get](./docs/dx_get.md)
+- [dx get prs](./docs/dx_get_prs.md)
+- [dx namespace](./docs/dx_namespace.md)
+- [dx rebase](./docs/dx_rebase.md)
+- [dx upgrade](./docs/dx_upgrade.md)
+- [dx upgrade cli](./docs/dx_upgrade_cli.md)
