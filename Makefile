@@ -116,7 +116,7 @@ generate-all: generate-fakes
 goreleaser:
 	step-go-releaser --organisation=$(ORG) --revision=$(REV) --branch=$(BRANCH) --build-date=$(BUILD_DATE) --go-version=$(GO_VERSION) --root-package=$(ROOT_PACKAGE) --version=$(VERSION)
 
-docs: build
+docs: clean build
 	./build/dx docs
 	./hack/generate_docs_links.sh
 
