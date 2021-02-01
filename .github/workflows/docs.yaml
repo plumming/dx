@@ -1,0 +1,29 @@
+---
+name: Build and test Go
+on: [push, pull_request]
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.14
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.14
+
+      - name: Check out source code
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: make build
+
+      - name: Docs
+        run: ./build/dx docs
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: 'chore(docs): regenerated docs'
+          signoff: false
+          title: 'chore(docs): regenerated docs'
