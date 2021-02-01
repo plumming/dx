@@ -1,9 +1,13 @@
 ---
-name: Build and test Go
-on: [push, pull_request]
+name: Update Docs
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+
 jobs:
   build:
-    name: Build
+    name: Update Docs
     runs-on: ubuntu-latest
     steps:
       - name: Set up Go 1.14
