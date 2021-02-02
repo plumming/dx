@@ -131,7 +131,7 @@ func LocalChanges(dir string) (bool, error) {
 		}
 	}
 
-	log.Logger().Infof("changed files %s, len=%d", changed, len(changed))
+	log.Logger().Debugf("changed files %s, len=%d", changed, len(changed))
 
 	return len(changed) > 0, nil
 }

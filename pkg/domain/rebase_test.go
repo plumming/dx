@@ -16,13 +16,18 @@ import (
 func TestCanRebase(t *testing.T) {
 	type test struct {
 		name          string
+		remotes       string
 		defaultBranch string
 		expected      []string
 	}
 
 	tests := []test{
 		{
-			name:          "simple rebase on master",
+			name: "simple rebase on master",
+			remotes: `origin https://github.com/origin/clone (fetch)
+origin https://github.com/origin/clone (push)
+upstream https://github.com/upstream/repo (fetch)
+upstream https://github.com/upstream/repo (push)`,
 			defaultBranch: "master",
 			expected: []string{
 				"git remote -v",
@@ -35,7 +40,11 @@ func TestCanRebase(t *testing.T) {
 			},
 		},
 		{
-			name:          "simple rebase on main",
+			name: "simple rebase on main",
+			remotes: `origin https://github.com/origin/clone (fetch)
+origin https://github.com/origin/clone (push)
+upstream https://github.com/upstream/repo (fetch)
+upstream https://github.com/upstream/repo (push)`,
 			defaultBranch: "main",
 			expected: []string{
 				"git remote -v",
@@ -45,6 +54,19 @@ func TestCanRebase(t *testing.T) {
 				"git fetch --tags upstream main",
 				"git rebase upstream/main",
 				"git push origin main",
+			},
+		},
+		{
+			name: "simple rebase on main with no upstream",
+			remotes: `origin https://github.com/origin/clone (fetch)
+origin https://github.com/origin/clone (push)`,
+			defaultBranch: "main",
+			expected: []string{
+				"git remote -v",
+				"git remote -v",
+				"git status --porcelain",
+				"git branch --show-current",
+				"git pull --tags origin main",
 			},
 		},
 	}
@@ -68,10 +90,7 @@ func TestCanRebase(t *testing.T) {
 				}
 
 				if c.String() == "git remote -v" {
-					return `origin https://github.com/origin/clone (fetch)
-origin https://github.com/origin/clone (push)
-upstream https://github.com/upstream/repo (fetch)
-upstream https://github.com/upstream/repo (push)`, nil
+					return tc.remotes, nil
 				}
 
 				return "", nil

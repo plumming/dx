@@ -80,6 +80,7 @@ func (c *Rebase) Run() error {
 	if err != nil {
 		return err
 	}
+
 	if localChanges {
 		log.Logger().Error("There appear to be local changes, please stash and try again")
 		return nil
@@ -95,38 +96,51 @@ func (c *Rebase) Run() error {
 		return nil
 	}
 
-	// git fetch --tags upstream master
-	cmd := util.Command{
-		Name: "git",
-		Args: []string{"fetch", "--tags", "upstream", c.DefaultBranch},
-	}
-	output, err := Runner.RunWithoutRetry(&cmd)
-	if err != nil {
-		return err
-	}
-	log.Logger().Info(output)
+	if c.UpstreamRepo == "" && c.UpstreamOrg == "" {
+		// git fetch --tags upstream master
+		cmd := util.Command{
+			Name: "git",
+			Args: []string{"pull", "--tags", "origin", c.DefaultBranch},
+		}
+		output, err := Runner.RunWithoutRetry(&cmd)
+		if err != nil {
+			return err
+		}
+		log.Logger().Info(output)
+	} else {
+		// git fetch --tags upstream master
+		cmd := util.Command{
+			Name: "git",
+			Args: []string{"fetch", "--tags", "upstream", c.DefaultBranch},
+		}
+		output, err := Runner.RunWithoutRetry(&cmd)
+		if err != nil {
+			return err
+		}
+		log.Logger().Info(output)
 
-	// git rebase upstream/master
-	cmd = util.Command{
-		Name: "git",
-		Args: []string{"rebase", fmt.Sprintf("upstream/%s", c.DefaultBranch)},
-	}
-	output, err = Runner.RunWithoutRetry(&cmd)
-	if err != nil {
-		return err
-	}
-	log.Logger().Info(output)
+		// git rebase upstream/master
+		cmd = util.Command{
+			Name: "git",
+			Args: []string{"rebase", fmt.Sprintf("upstream/%s", c.DefaultBranch)},
+		}
+		output, err = Runner.RunWithoutRetry(&cmd)
+		if err != nil {
+			return err
+		}
+		log.Logger().Info(output)
 
-	// git push origin master
-	cmd = util.Command{
-		Name: "git",
-		Args: []string{"push", "origin", c.DefaultBranch},
+		// git push origin master
+		cmd = util.Command{
+			Name: "git",
+			Args: []string{"push", "origin", c.DefaultBranch},
+		}
+		output, err = Runner.RunWithoutRetry(&cmd)
+		if err != nil {
+			return err
+		}
+		log.Logger().Info(output)
 	}
-	output, err = Runner.RunWithoutRetry(&cmd)
-	if err != nil {
-		return err
-	}
-	log.Logger().Info(output)
 
 	return nil
 }
