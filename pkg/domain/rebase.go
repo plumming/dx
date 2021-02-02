@@ -1,7 +1,10 @@
 package domain
 
 import (
+	"fmt"
+
 	"github.com/jenkins-x/jx-logging/pkg/log"
+	"github.com/pkg/errors"
 	"github.com/plumming/dx/pkg/cmd"
 	"github.com/plumming/dx/pkg/util"
 	"k8s.io/client-go/tools/clientcmd/api"
@@ -26,6 +29,19 @@ func (c *Rebase) Validate() error {
 	gh, err := c.GithubClient()
 	if err != nil {
 		return err
+	}
+
+	origin, err := GetRemote("origin")
+	if err != nil {
+		return err
+	}
+	upstream, err := GetRemote("upstream")
+	if err != nil {
+		return err
+	}
+
+	if origin == upstream {
+		return errors.New("origin & upstream appear to be the same: " + origin)
 	}
 
 	c.Org, c.Repo, err = GetOrgAndRepoFromCurrentDir()
@@ -79,7 +95,7 @@ func (c *Rebase) Run() error {
 	// git rebase upstream/master
 	cmd = util.Command{
 		Name: "git",
-		Args: []string{"rebase", "upstream/" + c.DefaultBranch},
+		Args: []string{"rebase", fmt.Sprintf("upstream/%s", c.DefaultBranch)},
 	}
 	output, err = cmd.RunWithoutRetry()
 	if err != nil {

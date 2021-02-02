@@ -1,9 +1,11 @@
 package domain_test
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 	"testing"
 
 	"github.com/plumming/dx/pkg/domain"
@@ -19,7 +21,7 @@ func TestCanDetermineBranchName(t *testing.T) {
 
 	c := util.Command{
 		Name: "git",
-		Args: []string{"init"},
+		Args: []string{"init", "-b", "master"},
 		Dir:  dir,
 	}
 	output, err := c.RunWithoutRetry()
@@ -40,7 +42,7 @@ func TestCanStash(t *testing.T) {
 
 	c := util.Command{
 		Name: "git",
-		Args: []string{"init"},
+		Args: []string{"init", "-b", "master"},
 		Dir:  dir,
 	}
 	output, err := c.RunWithoutRetry()
@@ -93,4 +95,38 @@ func TestCanStash(t *testing.T) {
 	localChanges, err = domain.LocalChanges(dir)
 	assert.NoError(t, err)
 	assert.True(t, localChanges)
+}
+
+func TestCanDetermineRemoteNames(t *testing.T) {
+	type test struct {
+		raw         string
+		remote      string
+		expectedURL string
+	}
+
+	tests := []test{
+		{
+			raw: `origin  https://github.com/garethjevans/chilly (fetch)
+origin  https://github.com/garethjevans/chilly (push)
+upstream        https://github.com/plumming/dx (fetch)
+upstream        https://github.com/plumming/dx (push)`,
+			remote:      "origin",
+			expectedURL: "https://github.com/garethjevans/chilly",
+		},
+		{
+			raw: `origin  https://github.com/garethjevans/chilly (fetch)
+origin  https://github.com/garethjevans/chilly (push)
+upstream        https://github.com/plumming/dx (fetch)
+upstream        https://github.com/plumming/dx (push)`,
+			remote:      "upstream",
+			expectedURL: "https://github.com/plumming/dx",
+		},
+	}
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("TestCanDetermineRemoteNames-%s", tc.remote), func(t *testing.T) {
+			url, err := domain.ExtractURLFromRemote(strings.NewReader(tc.raw), tc.remote)
+			assert.NoError(t, err)
+			assert.Equal(t, tc.expectedURL, url)
+		})
+	}
 }
