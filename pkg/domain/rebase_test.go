@@ -1,7 +1,11 @@
 package domain_test
 
 import (
+	"bytes"
+	"fmt"
 	"testing"
+
+	"github.com/plumming/dx/pkg/api"
 
 	"github.com/plumming/dx/pkg/domain"
 	"github.com/plumming/dx/pkg/util"
@@ -21,6 +25,8 @@ func TestCanRebase(t *testing.T) {
 			name:          "simple rebase on master",
 			defaultBranch: "master",
 			expected: []string{
+				"git remote -v",
+				"git remote -v",
 				"git status --porcelain",
 				"git branch --show-current",
 				"git fetch --tags upstream master",
@@ -32,6 +38,8 @@ func TestCanRebase(t *testing.T) {
 			name:          "simple rebase on main",
 			defaultBranch: "main",
 			expected: []string{
+				"git remote -v",
+				"git remote -v",
 				"git status --porcelain",
 				"git branch --show-current",
 				"git fetch --tags upstream main",
@@ -43,8 +51,14 @@ func TestCanRebase(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
+			http := &api.FakeHTTP{}
+			client := api.NewClient(api.ReplaceTripper(http))
+
+			http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf("{ \"default_branch\":\"%s\"}", tc.defaultBranch)))
+
 			rb := domain.NewRebase()
 			rb.DefaultBranch = tc.defaultBranch
+			rb.SetGithubClient(client)
 
 			r := mocks.MockCommandRunner{}
 			domain.Runner = &r
@@ -52,11 +66,21 @@ func TestCanRebase(t *testing.T) {
 				if c.String() == "git branch --show-current" {
 					return tc.defaultBranch, nil
 				}
+
+				if c.String() == "git remote -v" {
+					return `origin https://github.com/origin/clone (fetch)
+origin https://github.com/origin/clone (push)
+upstream https://github.com/upstream/repo (fetch)
+upstream https://github.com/upstream/repo (push)`, nil
+				}
+
 				return "", nil
 			}
 
-			err := rb.Run()
+			err := rb.Validate()
+			assert.NoError(t, err)
 
+			err = rb.Run()
 			assert.NoError(t, err)
 			assert.Equal(t, tc.expected, r.Commands)
 		})

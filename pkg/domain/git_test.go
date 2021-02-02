@@ -196,6 +196,12 @@ upstream        https://github.com/plumming/dx (push)`,
 			remote:      "upstream",
 			expectedURL: "https://github.com/plumming/dx",
 		},
+		{
+			raw: `origin  https://github.com/garethjevans/chilly (fetch)
+origin  https://github.com/garethjevans/chilly (push)`,
+			remote:      "upstream",
+			expectedURL: "",
+		},
 	}
 	for _, tc := range tests {
 		t.Run(fmt.Sprintf("TestCanDetermineRemoteNames-%s", tc.remote), func(t *testing.T) {

@@ -2,7 +2,6 @@ package domain_test
 
 import (
 	"bytes"
-	"strings"
 	"testing"
 
 	"github.com/plumming/dx/pkg/api"
@@ -35,13 +34,13 @@ func TestGetDefaultBranch_Master(t *testing.T) {
 }
 
 func TestGetOrgAndRepo(t *testing.T) {
-	output := `origin	https://github.com/clone/chilly (fetch)
-origin	https://github.com/clone/chilly (push)
-upstream	https://github.com/plumming/dx (fetch)
-upstream	https://github.com/plumming/dx (push)`
-
-	org, repo, err := domain.ExtractOrgAndRepoFromGitRemotes(strings.NewReader(output))
+	org, repo, err := domain.ExtractOrgAndRepoURL("https://github.com/clone/chilly")
 	assert.NoError(t, err)
 	assert.Equal(t, org, "clone")
 	assert.Equal(t, repo, "chilly")
+
+	org, repo, err = domain.ExtractOrgAndRepoURL("https://github.com/plumming/dx")
+	assert.NoError(t, err)
+	assert.Equal(t, org, "plumming")
+	assert.Equal(t, repo, "dx")
 }

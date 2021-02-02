@@ -19,20 +19,6 @@ func init() {
 	Runner = util.DefaultCommandRunner{}
 }
 
-func GetOrgAndRepoFromCurrentDir() (string, string, error) {
-	c := util.Command{
-		Name: "git",
-		Args: []string{"remote", "-v"},
-	}
-
-	output, err := Runner.RunWithoutRetry(&c)
-	if err != nil {
-		return "", "", err
-	}
-
-	return ExtractOrgAndRepoFromGitRemotes(strings.NewReader(output))
-}
-
 func GetRemote(name string) (string, error) {
 	c := util.Command{
 		Name: "git",
@@ -50,19 +36,6 @@ func CurrentBranchName(dir string) (string, error) {
 	c := util.Command{
 		Name: "git",
 		Args: []string{"branch", "--show-current"},
-		Dir:  dir,
-	}
-	output, err := Runner.RunWithoutRetry(&c)
-	if err != nil {
-		return "", err
-	}
-	return output, nil
-}
-
-func SwitchBranch(dir string, name string) (string, error) {
-	c := util.Command{
-		Name: "git",
-		Args: []string{"checkout", name},
 		Dir:  dir,
 	}
 	output, err := Runner.RunWithoutRetry(&c)
@@ -158,7 +131,7 @@ func LocalChanges(dir string) (bool, error) {
 		}
 	}
 
-	log.Logger().Debugf("changed files %s, len=%d", changed, len(changed))
+	log.Logger().Infof("changed files %s, len=%d", changed, len(changed))
 
 	return len(changed) > 0, nil
 }
@@ -209,15 +182,10 @@ func ExtractURLFromRemote(reader io.Reader, name string) (string, error) {
 		}
 	}
 
-	return "", errors.New("unable to find remote named '" + name + "'")
+	return "", nil
 }
 
-func ExtractOrgAndRepoFromGitRemotes(reader io.Reader) (string, string, error) {
-	urlString, err := ExtractURLFromRemote(reader, "origin")
-	if err != nil {
-		return "", "", errors.New("unable to find remote named 'origin'")
-	}
-
+func ExtractOrgAndRepoURL(urlString string) (string, string, error) {
 	url, err := url2.Parse(urlString)
 	if err != nil {
 		return "", "", err
