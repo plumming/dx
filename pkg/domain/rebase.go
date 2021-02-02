@@ -86,7 +86,7 @@ func (c *Rebase) Run() error {
 		Name: "git",
 		Args: []string{"fetch", "--tags", "upstream", c.DefaultBranch},
 	}
-	output, err := cmd.RunWithoutRetry()
+	output, err := Runner.RunWithoutRetry(&cmd)
 	if err != nil {
 		return err
 	}
@@ -97,7 +97,7 @@ func (c *Rebase) Run() error {
 		Name: "git",
 		Args: []string{"rebase", fmt.Sprintf("upstream/%s", c.DefaultBranch)},
 	}
-	output, err = cmd.RunWithoutRetry()
+	output, err = Runner.RunWithoutRetry(&cmd)
 	if err != nil {
 		return err
 	}
@@ -108,7 +108,7 @@ func (c *Rebase) Run() error {
 		Name: "git",
 		Args: []string{"push", "origin", c.DefaultBranch},
 	}
-	output, err = cmd.RunWithoutRetry()
+	output, err = Runner.RunWithoutRetry(&cmd)
 	if err != nil {
 		return err
 	}

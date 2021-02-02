@@ -8,6 +8,11 @@ import (
 	"strings"
 )
 
+// CommandRunner interface that wraps the RunWithoutRetry function.
+type CommandRunner interface {
+	RunWithoutRetry(c *Command) (string, error)
+}
+
 // Command is a struct containing the details of an external command to be executed.
 type Command struct {
 	attempts int
@@ -115,19 +120,6 @@ func (c *Command) Error() error {
 	return nil
 }
 
-// RunWithoutRetry Execute the command without retrying on failure and block waiting for return values.
-func (c *Command) RunWithoutRetry() (string, error) {
-	var r string
-	var e error
-
-	r, e = c.run()
-	c.attempts++
-	if e != nil {
-		c.Errors = append(c.Errors, e)
-	}
-	return r, e
-}
-
 func (c *Command) String() string {
 	var builder strings.Builder
 	for k, v := range c.Env {
@@ -144,7 +136,23 @@ func (c *Command) String() string {
 	return builder.String()
 }
 
-func (c *Command) run() (string, error) {
+type DefaultCommandRunner struct {
+}
+
+// RunWithoutRetry Execute the command without retrying on failure and block waiting for return values.
+func (d DefaultCommandRunner) RunWithoutRetry(c *Command) (string, error) {
+	var r string
+	var e error
+
+	r, e = d.run(c)
+	c.attempts++
+	if e != nil {
+		c.Errors = append(c.Errors, e)
+	}
+	return r, e
+}
+
+func (d *DefaultCommandRunner) run(c *Command) (string, error) {
 	e := exec.Command(c.Name, c.Args...) // #nosec
 	if c.Dir != "" {
 		e.Dir = c.Dir
