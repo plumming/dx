@@ -64,7 +64,7 @@ func (c *Rebase) Validate() error {
 		log.Logger().Debugf("determined upstream repo as %s/%s", c.UpstreamOrg, c.UpstreamRepo)
 	}
 
-	c.DefaultBranch, err = GetDefaultBranch(gh, c.OriginOrg, c.OriginOrg)
+	c.DefaultBranch, err = GetDefaultBranch(gh, c.OriginOrg, c.OriginRepo)
 	log.Logger().Debugf("determined default branch as %s", c.DefaultBranch)
 	if err != nil {
 		return err
