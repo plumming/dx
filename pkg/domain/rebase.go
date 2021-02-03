@@ -12,12 +12,13 @@ import (
 
 type Rebase struct {
 	cmd.CommonOptions
-	OriginOrg     string
-	OriginRepo    string
-	UpstreamOrg   string
-	UpstreamRepo  string
-	DefaultBranch string
-	Config        *api.Config
+	OriginOrg             string
+	OriginRepo            string
+	UpstreamOrg           string
+	UpstreamRepo          string
+	OriginDefaultBranch   string
+	UpstreamDefaultBranch string
+	Config                *api.Config
 }
 
 // NewRebase.
@@ -56,18 +57,23 @@ func (c *Rebase) Validate() error {
 	}
 	log.Logger().Debugf("determined origin repo as %s/%s", c.OriginOrg, c.OriginRepo)
 
+	c.OriginDefaultBranch, err = GetDefaultBranch(gh, c.OriginOrg, c.OriginRepo)
+	if err != nil {
+		return err
+	}
+	log.Logger().Debugf("determined origin default branch as %s", c.OriginDefaultBranch)
+
 	if upstream != "" {
 		c.UpstreamOrg, c.UpstreamRepo, err = ExtractOrgAndRepoURL(upstream)
 		if err != nil {
 			return err
 		}
 		log.Logger().Debugf("determined upstream repo as %s/%s", c.UpstreamOrg, c.UpstreamRepo)
-	}
-
-	c.DefaultBranch, err = GetDefaultBranch(gh, c.OriginOrg, c.OriginRepo)
-	log.Logger().Debugf("determined default branch as %s", c.DefaultBranch)
-	if err != nil {
-		return err
+		c.UpstreamDefaultBranch, err = GetDefaultBranch(gh, c.UpstreamOrg, c.UpstreamRepo)
+		if err != nil {
+			return err
+		}
+		log.Logger().Debugf("determined upstream default branch as %s", c.UpstreamDefaultBranch)
 	}
 
 	return nil
@@ -91,8 +97,8 @@ func (c *Rebase) Run() error {
 	if err != nil {
 		return err
 	}
-	if c.DefaultBranch != currentBranch {
-		log.Logger().Errorf("You appear to not be on the default branch, please switch to %s", c.DefaultBranch)
+	if c.OriginDefaultBranch != currentBranch {
+		log.Logger().Errorf("You appear to not be on the default branch, please switch to %s", c.OriginDefaultBranch)
 		return nil
 	}
 
@@ -100,7 +106,7 @@ func (c *Rebase) Run() error {
 		// git fetch --tags upstream master
 		cmd := util.Command{
 			Name: "git",
-			Args: []string{"pull", "--tags", "origin", c.DefaultBranch},
+			Args: []string{"pull", "--tags", "origin", c.OriginDefaultBranch},
 		}
 		output, err := Runner.RunWithoutRetry(&cmd)
 		if err != nil {
@@ -111,7 +117,7 @@ func (c *Rebase) Run() error {
 		// git fetch --tags upstream master
 		cmd := util.Command{
 			Name: "git",
-			Args: []string{"fetch", "--tags", "upstream", c.DefaultBranch},
+			Args: []string{"fetch", "--tags", "upstream", c.UpstreamDefaultBranch},
 		}
 		output, err := Runner.RunWithoutRetry(&cmd)
 		if err != nil {
@@ -122,7 +128,7 @@ func (c *Rebase) Run() error {
 		// git rebase upstream/master
 		cmd = util.Command{
 			Name: "git",
-			Args: []string{"rebase", fmt.Sprintf("upstream/%s", c.DefaultBranch)},
+			Args: []string{"rebase", fmt.Sprintf("upstream/%s", c.UpstreamDefaultBranch)},
 		}
 		output, err = Runner.RunWithoutRetry(&cmd)
 		if err != nil {
@@ -133,7 +139,7 @@ func (c *Rebase) Run() error {
 		// git push origin master
 		cmd = util.Command{
 			Name: "git",
-			Args: []string{"push", "origin", c.DefaultBranch},
+			Args: []string{"push", "origin", c.OriginDefaultBranch},
 		}
 		output, err = Runner.RunWithoutRetry(&cmd)
 		if err != nil {
