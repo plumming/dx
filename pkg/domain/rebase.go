@@ -12,8 +12,10 @@ import (
 
 type Rebase struct {
 	cmd.CommonOptions
-	Org           string
-	Repo          string
+	OriginOrg     string
+	OriginRepo    string
+	UpstreamOrg   string
+	UpstreamRepo  string
 	DefaultBranch string
 	Config        *api.Config
 }
@@ -40,17 +42,29 @@ func (c *Rebase) Validate() error {
 		return err
 	}
 
+	if upstream == "" {
+		log.Logger().Warnf("No remote named 'upstream' found")
+	}
+
 	if origin == upstream {
 		return errors.New("origin & upstream appear to be the same: " + origin)
 	}
 
-	c.Org, c.Repo, err = GetOrgAndRepoFromCurrentDir()
+	c.OriginOrg, c.OriginRepo, err = ExtractOrgAndRepoURL(origin)
 	if err != nil {
 		return err
 	}
-	log.Logger().Debugf("determined repo as %s/%s", c.Org, c.Repo)
+	log.Logger().Debugf("determined origin repo as %s/%s", c.OriginOrg, c.OriginRepo)
 
-	c.DefaultBranch, err = GetDefaultBranch(gh, c.Org, c.Repo)
+	if upstream != "" {
+		c.UpstreamOrg, c.UpstreamRepo, err = ExtractOrgAndRepoURL(upstream)
+		if err != nil {
+			return err
+		}
+		log.Logger().Debugf("determined upstream repo as %s/%s", c.UpstreamOrg, c.UpstreamRepo)
+	}
+
+	c.DefaultBranch, err = GetDefaultBranch(gh, c.OriginOrg, c.OriginRepo)
 	log.Logger().Debugf("determined default branch as %s", c.DefaultBranch)
 	if err != nil {
 		return err
@@ -66,6 +80,7 @@ func (c *Rebase) Run() error {
 	if err != nil {
 		return err
 	}
+
 	if localChanges {
 		log.Logger().Error("There appear to be local changes, please stash and try again")
 		return nil
@@ -81,38 +96,51 @@ func (c *Rebase) Run() error {
 		return nil
 	}
 
-	// git fetch --tags upstream master
-	cmd := util.Command{
-		Name: "git",
-		Args: []string{"fetch", "--tags", "upstream", c.DefaultBranch},
-	}
-	output, err := cmd.RunWithoutRetry()
-	if err != nil {
-		return err
-	}
-	log.Logger().Info(output)
+	if c.UpstreamRepo == "" && c.UpstreamOrg == "" {
+		// git fetch --tags upstream master
+		cmd := util.Command{
+			Name: "git",
+			Args: []string{"pull", "--tags", "origin", c.DefaultBranch},
+		}
+		output, err := Runner.RunWithoutRetry(&cmd)
+		if err != nil {
+			return err
+		}
+		log.Logger().Info(output)
+	} else {
+		// git fetch --tags upstream master
+		cmd := util.Command{
+			Name: "git",
+			Args: []string{"fetch", "--tags", "upstream", c.DefaultBranch},
+		}
+		output, err := Runner.RunWithoutRetry(&cmd)
+		if err != nil {
+			return err
+		}
+		log.Logger().Info(output)
 
-	// git rebase upstream/master
-	cmd = util.Command{
-		Name: "git",
-		Args: []string{"rebase", fmt.Sprintf("upstream/%s", c.DefaultBranch)},
-	}
-	output, err = cmd.RunWithoutRetry()
-	if err != nil {
-		return err
-	}
-	log.Logger().Info(output)
+		// git rebase upstream/master
+		cmd = util.Command{
+			Name: "git",
+			Args: []string{"rebase", fmt.Sprintf("upstream/%s", c.DefaultBranch)},
+		}
+		output, err = Runner.RunWithoutRetry(&cmd)
+		if err != nil {
+			return err
+		}
+		log.Logger().Info(output)
 
-	// git push origin master
-	cmd = util.Command{
-		Name: "git",
-		Args: []string{"push", "origin", c.DefaultBranch},
+		// git push origin master
+		cmd = util.Command{
+			Name: "git",
+			Args: []string{"push", "origin", c.DefaultBranch},
+		}
+		output, err = Runner.RunWithoutRetry(&cmd)
+		if err != nil {
+			return err
+		}
+		log.Logger().Info(output)
 	}
-	output, err = cmd.RunWithoutRetry()
-	if err != nil {
-		return err
-	}
-	log.Logger().Info(output)
 
 	return nil
 }

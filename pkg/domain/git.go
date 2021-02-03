@@ -11,17 +11,12 @@ import (
 	"github.com/plumming/dx/pkg/util"
 )
 
-func GetOrgAndRepoFromCurrentDir() (string, string, error) {
-	c := util.Command{
-		Name: "git",
-		Args: []string{"remote", "-v"},
-	}
-	output, err := c.RunWithoutRetry()
-	if err != nil {
-		return "", "", err
-	}
+var (
+	Runner util.CommandRunner
+)
 
-	return ExtractOrgAndRepoFromGitRemotes(strings.NewReader(output))
+func init() {
+	Runner = util.DefaultCommandRunner{}
 }
 
 func GetRemote(name string) (string, error) {
@@ -29,7 +24,7 @@ func GetRemote(name string) (string, error) {
 		Name: "git",
 		Args: []string{"remote", "-v"},
 	}
-	output, err := c.RunWithoutRetry()
+	output, err := Runner.RunWithoutRetry(&c)
 	if err != nil {
 		return "", err
 	}
@@ -43,20 +38,7 @@ func CurrentBranchName(dir string) (string, error) {
 		Args: []string{"branch", "--show-current"},
 		Dir:  dir,
 	}
-	output, err := c.RunWithoutRetry()
-	if err != nil {
-		return "", err
-	}
-	return output, nil
-}
-
-func SwitchBranch(dir string, name string) (string, error) {
-	c := util.Command{
-		Name: "git",
-		Args: []string{"checkout", name},
-		Dir:  dir,
-	}
-	output, err := c.RunWithoutRetry()
+	output, err := Runner.RunWithoutRetry(&c)
 	if err != nil {
 		return "", err
 	}
@@ -69,10 +51,12 @@ func Stash(dir string) (string, error) {
 		Args: []string{"stash"},
 		Dir:  dir,
 	}
-	output, err := c.RunWithoutRetry()
+
+	output, err := Runner.RunWithoutRetry(&c)
 	if err != nil {
 		return "", err
 	}
+
 	return output, nil
 }
 
@@ -82,7 +66,7 @@ func StashPop(dir string) (string, error) {
 		Args: []string{"stash", "pop"},
 		Dir:  dir,
 	}
-	output, err := c.RunWithoutRetry()
+	output, err := Runner.RunWithoutRetry(&c)
 	if err != nil {
 		return "", err
 	}
@@ -95,7 +79,7 @@ func Add(dir string, name string) (string, error) {
 		Args: []string{"add", name},
 		Dir:  dir,
 	}
-	output, err := c.RunWithoutRetry()
+	output, err := Runner.RunWithoutRetry(&c)
 	if err != nil {
 		return "", err
 	}
@@ -108,7 +92,7 @@ func Commit(dir string, message string) (string, error) {
 		Args: []string{"commit", "-m", message},
 		Dir:  dir,
 	}
-	output, err := c.RunWithoutRetry()
+	output, err := Runner.RunWithoutRetry(&c)
 	if err != nil {
 		return "", err
 	}
@@ -121,7 +105,7 @@ func Status(dir string) (string, error) {
 		Args: []string{"status"},
 		Dir:  dir,
 	}
-	output, err := c.RunWithoutRetry()
+	output, err := Runner.RunWithoutRetry(&c)
 	if err != nil {
 		return "", err
 	}
@@ -134,11 +118,22 @@ func LocalChanges(dir string) (bool, error) {
 		Args: []string{"status", "--porcelain"},
 		Dir:  dir,
 	}
-	output, err := c.RunWithoutRetry()
+	output, err := Runner.RunWithoutRetry(&c)
 	if err != nil {
 		return false, err
 	}
-	return output != "", nil
+
+	split := strings.Split(strings.TrimSpace(output), "\n")
+	changed := []string{}
+	for _, s := range split {
+		if s != "" && !strings.HasPrefix(s, "??") {
+			changed = append(changed, s)
+		}
+	}
+
+	log.Logger().Debugf("changed files %s, len=%d", changed, len(changed))
+
+	return len(changed) > 0, nil
 }
 
 func ConfigCommitterInformation(dir string, email string, name string) error {
@@ -147,7 +142,7 @@ func ConfigCommitterInformation(dir string, email string, name string) error {
 		Args: []string{"config", "user.email", email},
 		Dir:  dir,
 	}
-	_, err := c.RunWithoutRetry()
+	_, err := Runner.RunWithoutRetry(&c)
 	if err != nil {
 		return err
 	}
@@ -157,7 +152,7 @@ func ConfigCommitterInformation(dir string, email string, name string) error {
 		Args: []string{"config", "user.name", name},
 		Dir:  dir,
 	}
-	_, err = c.RunWithoutRetry()
+	_, err = Runner.RunWithoutRetry(&c)
 	if err != nil {
 		return err
 	}
@@ -187,15 +182,10 @@ func ExtractURLFromRemote(reader io.Reader, name string) (string, error) {
 		}
 	}
 
-	return "", errors.New("unable to find remote named '" + name + "'")
+	return "", nil
 }
 
-func ExtractOrgAndRepoFromGitRemotes(reader io.Reader) (string, string, error) {
-	urlString, err := ExtractURLFromRemote(reader, "origin")
-	if err != nil {
-		return "", "", errors.New("unable to find remote named 'origin'")
-	}
-
+func ExtractOrgAndRepoURL(urlString string) (string, string, error) {
 	url, err := url2.Parse(urlString)
 	if err != nil {
 		return "", "", err
