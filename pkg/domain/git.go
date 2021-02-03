@@ -186,6 +186,9 @@ func ExtractURLFromRemote(reader io.Reader, name string) (string, error) {
 }
 
 func ExtractOrgAndRepoURL(urlString string) (string, string, error) {
+	if strings.HasSuffix(urlString, ".git") {
+		urlString = strings.TrimSuffix(urlString, ".git")
+	}
 	url, err := url2.Parse(urlString)
 	if err != nil {
 		return "", "", err

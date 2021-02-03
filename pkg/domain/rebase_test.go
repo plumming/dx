@@ -106,6 +106,22 @@ upstream https://github.com/upstream/repo (push)`,
 				"https://api.github.com/repos/upstream/repo",
 			},
 		},
+		{
+			name: "simple rebase on main with .git extension",
+			remotes: `origin https://github.com/origin/clone.git (fetch)
+origin https://github.com/origin/clone.git (push)`,
+			originDefaultBranch: "main",
+			expectedCommands: []string{
+				"git remote -v",
+				"git remote -v",
+				"git status --porcelain",
+				"git branch --show-current",
+				"git pull --tags origin main",
+			},
+			expectedRequests: []string{
+				"https://api.github.com/repos/origin/clone",
+			},
+		},
 	}
 
 	for _, tc := range tests {
