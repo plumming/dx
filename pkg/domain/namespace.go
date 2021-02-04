@@ -52,7 +52,7 @@ func (n *Namespace) Validate() error {
 
 // Run the cmd.
 func (n *Namespace) Run() error {
-	fmt.Printf("you selected namespace %s", n.Namespace)
+	fmt.Printf("you selected namespace %s\n", n.Namespace)
 	kuber := n.Kuber()
 	var err error
 	n.APIConfig, err = kuber.SetKubeNamespace(n.Namespace, n.APIConfig)
