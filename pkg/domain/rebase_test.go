@@ -141,7 +141,7 @@ origin https://github.com/origin/clone.git (push)`,
 
 			r := mocks.MockCommandRunner{}
 			domain.Runner = &r
-			mocks.GetRunWithoutRetryFunc = func(c *util.Command) (string, error) {
+			r.RunWithoutRetryFunc = func(c *util.Command) (string, error) {
 				if c.String() == "git branch --show-current" {
 					return tc.originDefaultBranch, nil
 				}

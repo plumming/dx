@@ -159,7 +159,7 @@ func TestLocalChanges(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			r := mocks.MockCommandRunner{}
 			domain.Runner = &r
-			mocks.GetRunWithoutRetryFunc = func(c *util.Command) (string, error) {
+			r.RunWithoutRetryFunc = func(c *util.Command) (string, error) {
 				return tc.raw, nil
 			}
 
