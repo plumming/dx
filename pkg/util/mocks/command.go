@@ -10,13 +10,8 @@ type MockCommandRunner struct {
 	Commands            []string
 }
 
-var (
-	// GetRunWithoutRetryFunc fetches the mock command's `RunWithoutRetry` func.
-	GetRunWithoutRetryFunc func(c *util.Command) (string, error)
-)
-
 // RunWithoutRetry is the mock command's `RunWithoutRetry` func.
 func (m *MockCommandRunner) RunWithoutRetry(c *util.Command) (string, error) {
 	m.Commands = append(m.Commands, c.String())
-	return GetRunWithoutRetryFunc(c)
+	return m.RunWithoutRetryFunc(c)
 }
