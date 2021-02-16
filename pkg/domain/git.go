@@ -12,12 +12,8 @@ import (
 )
 
 var (
-	Runner util.CommandRunner
+	Runner util.CommandRunner = util.DefaultCommandRunner{}
 )
-
-func init() {
-	Runner = util.DefaultCommandRunner{}
-}
 
 func GetRemote(name string) (string, error) {
 	c := util.Command{
