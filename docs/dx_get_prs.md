@@ -9,6 +9,7 @@ dx get prs [flags]
 ### Options
 
 ```
+  -m, --me                Show all PRs that are created by the author
   -q, --query string      JMESPath query filter
       --quiet             Hide the column headings
       --retrigger         Retrigger failed PRs
