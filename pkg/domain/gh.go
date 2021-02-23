@@ -16,6 +16,20 @@ func GetDefaultBranch(client *api.Client, org string, repo string) (string, erro
 	return repository.DefaultBranch, nil
 }
 
+func GetCurrentUser(client *api.Client) (string, error) {
+	currentUser := currentUser{}
+	err := client.REST("GET", "user", nil, &currentUser)
+	if err != nil {
+		return "", err
+	}
+
+	return currentUser.Login, nil
+}
+
+type currentUser struct {
+	Login string `json:"login"`
+}
+
 type repository struct {
 	DefaultBranch string `json:"default_branch"`
 }

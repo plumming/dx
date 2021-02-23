@@ -45,7 +45,7 @@ func (p *PullRequest) Display(showDependabot bool, showOnHold bool, hiddenLabels
 		}
 	}
 
-	if p.Author.Login == "dependabot-preview" {
+	if p.Author.Login == "dependabot-preview" || p.Author.Login == "dependabot" {
 		display = showDependabot
 	}
 
