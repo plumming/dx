@@ -28,7 +28,7 @@ func NewNamespaceCmd() *cobra.Command {
 				log.Logger().Fatalf("unable to run command: %s", err)
 			}
 		},
-		Args: cobra.NoArgs,
+		Args: cobra.MaximumNArgs(1),
 	}
 	return cmd
 }
@@ -36,11 +36,16 @@ func NewNamespaceCmd() *cobra.Command {
 func (c *NamespaceCmd) Run() error {
 	d := domain.NewNamespace()
 
-	err := d.Validate()
-	if err != nil {
-		return errors.Wrap(err, "validate failed")
+	if len(c.Args) == 1 {
+		d.Namespace = c.Args[0]
+	} else {
+		err := d.Validate()
+		if err != nil {
+			return errors.Wrap(err, "validate failed")
+		}
 	}
-	err = d.Run()
+
+	err := d.Run()
 	if err != nil {
 		return errors.Wrap(err, "run failed")
 	}
