@@ -17,6 +17,7 @@ type GetPrs struct {
 	cmd.CommonOptions
 	ShowDependabot bool
 	ShowOnHold     bool
+	Me             bool
 	PullRequests   []pr.PullRequest
 }
 
@@ -105,7 +106,22 @@ func (g *GetPrs) Run() error {
 		return err
 	}
 
-	queryString := strings.Join(cfg.ReposToQuery(), " ")
+	var queryString string
+	if g.Me {
+		client, err := g.GithubClient()
+		if err != nil {
+			return err
+		}
+		currentUser, err := GetCurrentUser(client)
+		if err != nil {
+			return err
+		}
+
+		queryString = fmt.Sprintf("author:%s", currentUser)
+	} else {
+		queryString = strings.Join(cfg.ReposToQuery(), " ")
+	}
+
 	if cfg.MaxAge != -1 {
 		dateString := time.Now().AddDate(0, 0, -1*cfg.MaxAge).Format("2006-01-02")
 		queryString = queryString + " created:>" + dateString

@@ -22,6 +22,7 @@ type GetPrsCmd struct {
 	Retrigger      bool
 	Review         bool
 	Quiet          bool
+	Me             bool
 	Cmd            *cobra.Command
 	Args           []string
 }
@@ -57,6 +58,8 @@ func NewGetPrsCmd() *cobra.Command {
 		"Show PRs that are ready for review")
 	cmd.Flags().BoolVarP(&c.Quiet, "quiet", "", false,
 		"Hide the column headings")
+	cmd.Flags().BoolVarP(&c.Me, "me", "m", false,
+		"Show all PRs that are created by the author")
 
 	return cmd
 }
@@ -65,6 +68,7 @@ func (c *GetPrsCmd) Run() error {
 	d := domain.NewGetPrs()
 	d.ShowOnHold = c.ShowOnHold
 	d.ShowDependabot = c.ShowDependabot
+	d.Me = c.Me
 
 	err := d.Validate()
 	if err != nil {

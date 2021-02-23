@@ -33,6 +33,18 @@ func TestGetDefaultBranch_Master(t *testing.T) {
 	assert.Equal(t, defaultBranch, "master")
 }
 
+func TestGetCurrentUser(t *testing.T) {
+	http := &api.FakeHTTP{}
+	client := api.NewClient(api.ReplaceTripper(http))
+
+	http.StubResponse(200, bytes.NewBufferString("{ \"login\":\"octocat\"}"))
+
+	currentUser, err := domain.GetCurrentUser(client)
+	assert.NoError(t, err)
+
+	assert.Equal(t, currentUser, "octocat")
+}
+
 func TestGetOrgAndRepo(t *testing.T) {
 	org, repo, err := domain.ExtractOrgAndRepoURL("https://github.com/clone/chilly")
 	assert.NoError(t, err)
