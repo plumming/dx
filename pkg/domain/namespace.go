@@ -52,9 +52,18 @@ func (n *Namespace) Validate() error {
 
 // Run the cmd.
 func (n *Namespace) Run() error {
+	var err error
+
 	fmt.Printf("you selected namespace %s\n", n.Namespace)
 	kuber := n.Kuber()
-	var err error
+
+	if n.APIConfig == nil {
+		n.APIConfig, err = kuber.LoadAPIConfig()
+		if err != nil {
+			return errors.Wrap(err, "failed to create load api config")
+		}
+	}
+
 	n.APIConfig, err = kuber.SetKubeNamespace(n.Namespace, n.APIConfig)
 	if err != nil {
 		return err
