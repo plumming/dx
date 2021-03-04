@@ -15,11 +15,13 @@ import (
 // GetPrs defines get pull request response.
 type GetPrs struct {
 	cmd.CommonOptions
-	ShowDependabot bool
-	ShowOnHold     bool
-	Me             bool
-	Review         bool
-	PullRequests   []pr.PullRequest
+	ShowBots            bool
+	ShowHidden          bool
+	Me                  bool
+  Review              bool
+	PullRequests        []pr.PullRequest
+	FilteredLabels      int
+	FilteredBotAccounts int
 }
 
 // Data.
@@ -143,16 +145,46 @@ func (g *GetPrs) Run() error {
 
 	pullsToReturn := []pr.PullRequest{}
 
+	filteredOnLabels := 0
+	filteredOnAccounts := 0
+
 	for _, pr := range pulls {
-		pullRequest := pr
-		if pr.Display(g.ShowDependabot, g.ShowOnHold, cfg.HiddenLabels...) {
-			pullsToReturn = append(pullsToReturn, pullRequest)
+		if pr.Display() {
+			if g.filterOnLabels(pr, cfg.HiddenLabels) {
+				filteredOnLabels++
+			} else if g.filterOnAccounts(pr, cfg.BotAccounts) {
+				filteredOnAccounts++
+			} else {
+				pullsToReturn = append(pullsToReturn, pr)
+			}
 		}
 	}
 
+	log.Logger().Debugf("Filtered %d/%d PR(s)", filteredOnLabels, filteredOnAccounts)
+
 	g.PullRequests = pullsToReturn
+	g.FilteredLabels = filteredOnLabels
+	g.FilteredBotAccounts = filteredOnAccounts
 
 	return nil
+}
+
+func (g *GetPrs) filterOnAccounts(pr pr.PullRequest, botAccounts []string) bool {
+	for _, botAccount := range botAccounts {
+		if pr.Author.Login == botAccount {
+			return !g.ShowBots
+		}
+	}
+	return false
+}
+
+func (g *GetPrs) filterOnLabels(pr pr.PullRequest, hiddenLabels []string) bool {
+	for _, label := range hiddenLabels {
+		if pr.HasLabel(label) {
+			return !g.ShowHidden
+		}
+	}
+	return false
 }
 
 // Retrigger failed prs.
