@@ -29,6 +29,8 @@ var expectedResponse = `{"data":
 	}
 }`
 
+var userResponse = `{}`
+
 func TestGetPrs_Validate(t *testing.T) {
 	d := NewGetPrs()
 
@@ -44,15 +46,21 @@ func TestGetPrs_Run(t *testing.T) {
 	d.SetGithubClient(client)
 	d.SetConfig(&config.Config{MaxAge: -1})
 
+	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(userResponse)))
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(expectedResponse)))
 
 	err := d.Run()
 	assert.NoError(t, err)
 
-	assert.Equal(t, len(http.Requests), 1)
-	assert.Equal(t, http.Requests[0].URL.Path, "/graphql")
+	assert.Equal(t, len(http.Requests), 2)
+
+	assert.Equal(t, http.Requests[0].URL.Path, "/user")
 	assert.Equal(t, http.Requests[0].URL.Host, "api.github.com")
 	assert.Equal(t, http.Requests[0].URL.RawQuery, "")
+
+	assert.Equal(t, http.Requests[1].URL.Path, "/graphql")
+	assert.Equal(t, http.Requests[1].URL.Host, "api.github.com")
+	assert.Equal(t, http.Requests[1].URL.RawQuery, "")
 
 	assert.Equal(t, 5, len(d.PullRequests))
 }
@@ -66,15 +74,21 @@ func TestGetPrs_Run_ShowOnHold(t *testing.T) {
 	d.SetGithubClient(client)
 	d.SetConfig(&config.Config{MaxAge: -1})
 
+	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(userResponse)))
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(expectedResponse)))
 
 	err := d.Run()
 	assert.NoError(t, err)
 
-	assert.Equal(t, len(http.Requests), 1)
-	assert.Equal(t, http.Requests[0].URL.Path, "/graphql")
+	assert.Equal(t, len(http.Requests), 2)
+
+	assert.Equal(t, http.Requests[0].URL.Path, "/user")
 	assert.Equal(t, http.Requests[0].URL.Host, "api.github.com")
 	assert.Equal(t, http.Requests[0].URL.RawQuery, "")
+
+	assert.Equal(t, http.Requests[1].URL.Path, "/graphql")
+	assert.Equal(t, http.Requests[1].URL.Host, "api.github.com")
+	assert.Equal(t, http.Requests[1].URL.RawQuery, "")
 
 	assert.Equal(t, 6, len(d.PullRequests))
 }
@@ -88,15 +102,21 @@ func TestGetPrs_Run_ShowDependabot(t *testing.T) {
 	d.SetGithubClient(client)
 	d.SetConfig(&config.Config{MaxAge: -1})
 
+	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(userResponse)))
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(expectedResponse)))
 
 	err := d.Run()
 	assert.NoError(t, err)
 
-	assert.Equal(t, len(http.Requests), 1)
-	assert.Equal(t, http.Requests[0].URL.Path, "/graphql")
+	assert.Equal(t, len(http.Requests), 2)
+
+	assert.Equal(t, http.Requests[0].URL.Path, "/user")
 	assert.Equal(t, http.Requests[0].URL.Host, "api.github.com")
 	assert.Equal(t, http.Requests[0].URL.RawQuery, "")
+
+	assert.Equal(t, http.Requests[1].URL.Path, "/graphql")
+	assert.Equal(t, http.Requests[1].URL.Host, "api.github.com")
+	assert.Equal(t, http.Requests[1].URL.RawQuery, "")
 
 	assert.Equal(t, 6, len(d.PullRequests))
 }

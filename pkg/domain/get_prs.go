@@ -18,6 +18,7 @@ type GetPrs struct {
 	ShowDependabot bool
 	ShowOnHold     bool
 	Me             bool
+	Review         bool
 	PullRequests   []pr.PullRequest
 }
 
@@ -106,18 +107,20 @@ func (g *GetPrs) Run() error {
 		return err
 	}
 
+	client, err = g.GithubClient()
+	if err != nil {
+		return err
+	}
+	currentUser, err := GetCurrentUser(client)
+	if err != nil {
+		return err
+	}
+
 	var queryString string
 	if g.Me {
-		client, err := g.GithubClient()
-		if err != nil {
-			return err
-		}
-		currentUser, err := GetCurrentUser(client)
-		if err != nil {
-			return err
-		}
-
 		queryString = fmt.Sprintf("author:%s", currentUser)
+	} else if g.Review {
+		queryString = fmt.Sprintf("review-requested:%s", currentUser)
 	} else {
 		queryString = strings.Join(cfg.ReposToQuery(), " ")
 	}

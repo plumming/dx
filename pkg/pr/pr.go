@@ -172,20 +172,6 @@ func (p *PullRequest) HasContext(name string) bool {
 	return false
 }
 
-func (p *PullRequest) RequiresReview() bool {
-	if p.MergeableString() == "" &&
-		!p.HasLabel("updatebot") &&
-		!p.HasLabel("needs-ok-to-test") &&
-		!p.OnHold() &&
-		!p.HasLabel("approved") &&
-		!p.HasLabel("do-not-merge/work-in-progress") &&
-		p.ContextsString() == success {
-		return true
-	}
-
-	return false
-}
-
 type Repository struct {
 	NameWithOwner string `json:"nameWithOwner"`
 }
