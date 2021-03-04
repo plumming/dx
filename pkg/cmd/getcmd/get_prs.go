@@ -134,14 +134,5 @@ func (c *GetPrsCmd) Run() error {
 		fmt.Printf("\nFiltered %d PRs, use %s to view them\n", (d.FilteredBotAccounts + d.FilteredLabels), strings.Join(flags, ", "))
 	}
 
-	if !c.Retrigger {
-		return nil
-	}
-
-	err = d.Retrigger()
-	if err != nil {
-		return errors.Wrap(err, "retrigger failed")
-	}
-
 	return nil
 }
