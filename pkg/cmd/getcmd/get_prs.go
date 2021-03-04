@@ -17,14 +17,14 @@ import (
 
 type GetPrsCmd struct {
 	cmd.CommonCmd
-	ShowDependabot bool
-	ShowOnHold     bool
-	Retrigger      bool
-	Review         bool
-	Quiet          bool
-	Me             bool
-	Cmd            *cobra.Command
-	Args           []string
+	ShowBots   bool
+	ShowHidden bool
+	Retrigger  bool
+	Review     bool
+	Quiet      bool
+	Me         bool
+	Cmd        *cobra.Command
+	Args       []string
 }
 
 func NewGetPrsCmd() *cobra.Command {
@@ -48,10 +48,11 @@ func NewGetPrsCmd() *cobra.Command {
 
 	c.AddOptions(cmd)
 
-	cmd.Flags().BoolVarP(&c.ShowDependabot, "show-dependabot", "", false,
-		"Show dependabot PRs (default: false)")
-	cmd.Flags().BoolVarP(&c.ShowOnHold, "show-on-hold", "", false,
-		"Show On Hold PRs (default: false)")
+	cmd.Flags().BoolVarP(&c.ShowBots, "show-bots", "", false,
+		"Show bot account PRs (default: false)")
+	cmd.Flags().BoolVarP(&c.ShowHidden, "show-hidden", "", false,
+		"Show PRs that are filtered by hidden labels (default: false)")
+
 	cmd.Flags().BoolVarP(&c.Retrigger, "retrigger", "", false,
 		"Retrigger failed PRs")
 	cmd.Flags().BoolVarP(&c.Review, "review", "", false,
@@ -66,8 +67,8 @@ func NewGetPrsCmd() *cobra.Command {
 
 func (c *GetPrsCmd) Run() error {
 	d := domain.NewGetPrs()
-	d.ShowOnHold = c.ShowOnHold
-	d.ShowDependabot = c.ShowDependabot
+	d.ShowHidden = c.ShowHidden
+	d.ShowBots = c.ShowBots
 	d.Me = c.Me
 
 	err := d.Validate()
@@ -124,6 +125,11 @@ func (c *GetPrsCmd) Run() error {
 	}
 
 	table.Render()
+
+	if (d.FilteredBotAccounts + d.FilteredLabels) > 0 {
+		fmt.Printf("\nFiltered %d PRs, use --show-bots to view them\n", d.FilteredBotAccounts)
+		fmt.Printf("\nFiltered %d PRs, use --show-hidden to view them\n", d.FilteredLabels)
+	}
 
 	if !c.Retrigger {
 		return nil
