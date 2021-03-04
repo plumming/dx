@@ -67,6 +67,7 @@ func (c *GetPrsCmd) Run() error {
 	d.ShowHidden = c.ShowHidden
 	d.ShowBots = c.ShowBots
 	d.Me = c.Me
+	d.Review = c.Review
 
 	err := d.Validate()
 	if err != nil {
@@ -85,40 +86,33 @@ func (c *GetPrsCmd) Run() error {
 
 	table := table.NewTable(c.Cmd.OutOrStdout())
 
-	if c.Review {
-		for _, pr := range d.PullRequests {
-			if pr.RequiresReview() {
-				table.AddRow(pr.Author.Login, pr.URL)
-			}
+	pullURL := ""
+	if !c.Quiet {
+		table.AddRow(
+			"PR#",
+			"Author",
+			"Title",
+			"Age",
+			"Review",
+			"Labels",
+			"Mergeable",
+		)
+	}
+
+	for _, pr := range d.PullRequests {
+		if pullURL != pr.PullsString() {
+			table.AddRow(fmt.Sprintf("# %s", util.ColorAnswer(pr.PullsString())))
+			pullURL = pr.PullsString()
 		}
-	} else {
-		pullURL := ""
-		if !c.Quiet {
-			table.AddRow(
-				"PR#",
-				"Author",
-				"Title",
-				"Age",
-				"Review",
-				"Labels",
-				"Mergeable",
-			)
-		}
-		for _, pr := range d.PullRequests {
-			if pullURL != pr.PullsString() {
-				table.AddRow(fmt.Sprintf("# %s", util.ColorAnswer(pr.PullsString())))
-				pullURL = pr.PullsString()
-			}
-			table.AddRow(
-				util.ColorInfo(fmt.Sprintf("#%d", pr.Number)),
-				pr.Author.Login,
-				pr.ColoredTitle(),
-				util.SafeTime(&pr.CreatedAt),
-				pr.ColoredReviewDecision(),
-				pr.LabelsString(),
-				pr.MergeableString(),
-			)
-		}
+		table.AddRow(
+			util.ColorInfo(fmt.Sprintf("#%d", pr.Number)),
+			pr.Author.Login,
+			pr.ColoredTitle(),
+			util.SafeTime(&pr.CreatedAt),
+			pr.ColoredReviewDecision(),
+			pr.LabelsString(),
+			pr.MergeableString(),
+		)
 	}
 
 	table.Render()
