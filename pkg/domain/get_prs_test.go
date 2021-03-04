@@ -40,7 +40,11 @@ func TestGetPrs_Run(t *testing.T) {
 	http := &api.FakeHTTP{}
 	client := api.NewClient(api.ReplaceTripper(http))
 	d.SetGithubClient(client)
-	d.SetConfig(&config.Config{MaxAge: -1})
+	d.SetConfig(&config.Config{
+		MaxAge:       -1,
+		BotAccounts:  []string{"dependabot-preview"},
+		HiddenLabels: []string{"do-not-merge/hold"},
+	})
 
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(expectedResponse)))
 
@@ -57,12 +61,16 @@ func TestGetPrs_Run(t *testing.T) {
 
 func TestGetPrs_Run_ShowOnHold(t *testing.T) {
 	d := NewGetPrs()
-	d.ShowOnHold = true
+	d.ShowHidden = true
 
 	http := &api.FakeHTTP{}
 	client := api.NewClient(api.ReplaceTripper(http))
 	d.SetGithubClient(client)
-	d.SetConfig(&config.Config{MaxAge: -1})
+	d.SetConfig(&config.Config{
+		MaxAge:       -1,
+		BotAccounts:  []string{"dependabot-preview"},
+		HiddenLabels: []string{"do-not-merge/hold"},
+	})
 
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(expectedResponse)))
 
@@ -77,14 +85,18 @@ func TestGetPrs_Run_ShowOnHold(t *testing.T) {
 	assert.Equal(t, 6, len(d.PullRequests))
 }
 
-func TestGetPrs_Run_ShowDependabot(t *testing.T) {
+func TestGetPrs_Run_ShowBots(t *testing.T) {
 	d := NewGetPrs()
-	d.ShowDependabot = true
+	d.ShowBots = true
 
 	http := &api.FakeHTTP{}
 	client := api.NewClient(api.ReplaceTripper(http))
 	d.SetGithubClient(client)
-	d.SetConfig(&config.Config{MaxAge: -1})
+	d.SetConfig(&config.Config{
+		MaxAge:       -1,
+		BotAccounts:  []string{"dependabot-preview"},
+		HiddenLabels: []string{"do-not-merge/hold"},
+	})
 
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(expectedResponse)))
 

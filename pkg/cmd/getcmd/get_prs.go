@@ -2,6 +2,7 @@ package getcmd
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/plumming/dx/pkg/cmd"
 	"github.com/plumming/dx/pkg/domain"
@@ -17,13 +18,13 @@ import (
 
 type GetPrsCmd struct {
 	cmd.CommonCmd
-	ShowDependabot bool
-	ShowOnHold     bool
-	Review         bool
-	Quiet          bool
-	Me             bool
-	Cmd            *cobra.Command
-	Args           []string
+	ShowBots   bool
+	ShowHidden bool
+	Review     bool
+	Quiet      bool
+	Me         bool
+	Cmd        *cobra.Command
+	Args       []string
 }
 
 func NewGetPrsCmd() *cobra.Command {
@@ -47,10 +48,10 @@ func NewGetPrsCmd() *cobra.Command {
 
 	c.AddOptions(cmd)
 
-	cmd.Flags().BoolVarP(&c.ShowDependabot, "show-dependabot", "", false,
-		"Show dependabot PRs (default: false)")
-	cmd.Flags().BoolVarP(&c.ShowOnHold, "show-on-hold", "", false,
-		"Show On Hold PRs (default: false)")
+	cmd.Flags().BoolVarP(&c.ShowBots, "show-bots", "", false,
+		"Show bot account PRs (default: false)")
+	cmd.Flags().BoolVarP(&c.ShowHidden, "show-hidden", "", false,
+		"Show PRs that are filtered by hidden labels (default: false)")
 	cmd.Flags().BoolVarP(&c.Review, "review", "", false,
 		"Show PRs that are ready for review")
 	cmd.Flags().BoolVarP(&c.Quiet, "quiet", "", false,
@@ -63,8 +64,8 @@ func NewGetPrsCmd() *cobra.Command {
 
 func (c *GetPrsCmd) Run() error {
 	d := domain.NewGetPrs()
-	d.ShowOnHold = c.ShowOnHold
-	d.ShowDependabot = c.ShowDependabot
+	d.ShowHidden = c.ShowHidden
+	d.ShowBots = c.ShowBots
 	d.Me = c.Me
 
 	err := d.Validate()
@@ -121,6 +122,26 @@ func (c *GetPrsCmd) Run() error {
 	}
 
 	table.Render()
+
+	if (d.FilteredBotAccounts + d.FilteredLabels) > 0 {
+		flags := []string{}
+		if d.FilteredBotAccounts > 0 {
+			flags = append(flags, "--show-bots")
+		}
+		if d.FilteredLabels > 0 {
+			flags = append(flags, "--show-hidden")
+		}
+		fmt.Printf("\nFiltered %d PRs, use %s to view them\n", (d.FilteredBotAccounts + d.FilteredLabels), strings.Join(flags, ", "))
+	}
+
+	if !c.Retrigger {
+		return nil
+	}
+
+	err = d.Retrigger()
+	if err != nil {
+		return errors.Wrap(err, "retrigger failed")
+	}
 
 	return nil
 }

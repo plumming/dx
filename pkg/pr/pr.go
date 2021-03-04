@@ -32,25 +32,11 @@ const (
 	unknown     = "UNKNOWN"
 )
 
-func (p *PullRequest) Display(showDependabot bool, showOnHold bool, hiddenLabels ...string) bool {
+func (p *PullRequest) Display() bool {
 	display := true
 	// exit early
 	if p.Closed {
 		return false
-	}
-
-	for _, label := range hiddenLabels {
-		if p.HasLabel(label) {
-			return false
-		}
-	}
-
-	if p.Author.Login == "dependabot-preview" || p.Author.Login == "dependabot" {
-		display = showDependabot
-	}
-
-	if p.OnHold() {
-		display = showOnHold
 	}
 
 	return display
@@ -142,10 +128,6 @@ func (p *PullRequest) MergeableString() string {
 	return ""
 }
 
-func (p *PullRequest) OnHold() bool {
-	return p.HasLabel("do-not-merge/hold")
-}
-
 func (p *PullRequest) PullsString() string {
 	r, _ := regexp.Compile("pull/[0-9]+")
 	return r.ReplaceAllString(p.URL, "pulls")
@@ -176,7 +158,6 @@ func (p *PullRequest) RequiresReview() bool {
 	if p.MergeableString() == "" &&
 		!p.HasLabel("updatebot") &&
 		!p.HasLabel("needs-ok-to-test") &&
-		!p.OnHold() &&
 		!p.HasLabel("approved") &&
 		!p.HasLabel("do-not-merge/work-in-progress") &&
 		p.ContextsString() == success {
