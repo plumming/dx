@@ -19,7 +19,6 @@ type GetPrsCmd struct {
 	cmd.CommonCmd
 	ShowDependabot bool
 	ShowOnHold     bool
-	Retrigger      bool
 	Review         bool
 	Quiet          bool
 	Me             bool
@@ -52,8 +51,6 @@ func NewGetPrsCmd() *cobra.Command {
 		"Show dependabot PRs (default: false)")
 	cmd.Flags().BoolVarP(&c.ShowOnHold, "show-on-hold", "", false,
 		"Show On Hold PRs (default: false)")
-	cmd.Flags().BoolVarP(&c.Retrigger, "retrigger", "", false,
-		"Retrigger failed PRs")
 	cmd.Flags().BoolVarP(&c.Review, "review", "", false,
 		"Show PRs that are ready for review")
 	cmd.Flags().BoolVarP(&c.Quiet, "quiet", "", false,
@@ -124,15 +121,6 @@ func (c *GetPrsCmd) Run() error {
 	}
 
 	table.Render()
-
-	if !c.Retrigger {
-		return nil
-	}
-
-	err = d.Retrigger()
-	if err != nil {
-		return errors.Wrap(err, "retrigger failed")
-	}
 
 	return nil
 }

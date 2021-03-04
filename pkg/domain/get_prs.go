@@ -151,36 +151,3 @@ func (g *GetPrs) Run() error {
 
 	return nil
 }
-
-// Retrigger failed prs.
-func (g *GetPrs) Retrigger() error {
-	client, err := g.GithubClient()
-	if err != nil {
-		return err
-	}
-
-	log.Logger().Infof("Retriggering Failed & Non Conflicting PRs...")
-
-	for _, pr := range g.PullRequests {
-		if pr.ContextsString() == "FAILURE" && pr.Mergeable == "MERGEABLE" && pr.HasLabel("updatebot") {
-			failedContexts := pr.FailedContexts()
-			for _, f := range failedContexts {
-				testCommand := fmt.Sprintf("/test %s", f.Context)
-				if f.Context == "pr-build" {
-					testCommand = "/test this"
-				}
-				log.Logger().Infof("%s with '%s'", pr.URL, testCommand)
-
-				url := fmt.Sprintf("repos/%s/issues/%d/comments", pr.Repository.NameWithOwner, pr.Number)
-				body := fmt.Sprintf("{ \"body\": \"%s\" }", testCommand)
-
-				err := client.REST("POST", url, strings.NewReader(body), nil)
-				if err != nil {
-					return err
-				}
-			}
-		}
-	}
-
-	return nil
-}
