@@ -2,6 +2,7 @@ package getcmd
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/plumming/dx/pkg/cmd"
 	"github.com/plumming/dx/pkg/domain"
@@ -127,8 +128,14 @@ func (c *GetPrsCmd) Run() error {
 	table.Render()
 
 	if (d.FilteredBotAccounts + d.FilteredLabels) > 0 {
-		fmt.Printf("\nFiltered %d PRs, use --show-bots to view them\n", d.FilteredBotAccounts)
-		fmt.Printf("\nFiltered %d PRs, use --show-hidden to view them\n", d.FilteredLabels)
+		flags := []string{}
+		if d.FilteredBotAccounts > 0 {
+			flags = append(flags, "--show-bots")
+		}
+		if d.FilteredLabels > 0 {
+			flags = append(flags, "--show-hidden")
+		}
+		fmt.Printf("\nFiltered %d PRs, use %s to view them\n", (d.FilteredBotAccounts + d.FilteredLabels), strings.Join(flags, ", "))
 	}
 
 	if !c.Retrigger {
