@@ -14,6 +14,7 @@ var (
 	defaultHiddenLabels   = []string{"hide-this"}
 	defaultMaxNumberOfPRs = 100
 	defaultMaxAge         = -1
+	defaultBotAccounts    = []string{"dependabot", "dependabot-preview"}
 )
 
 // Config defines repos to watch.
@@ -22,6 +23,7 @@ type Config struct {
 	HiddenLabels   []string `json:"hiddenLabels"`
 	MaxNumberOfPRs int      `json:"maxNumberOfPRs"`
 	MaxAge         int      `json:"maxAgeOfPRs"`
+	BotAccounts    []string `json:"botAccounts"`
 }
 
 func (c *Config) ReposToQuery() []string {
@@ -72,6 +74,10 @@ func (c *Config) SetDefaults() {
 
 	if c.MaxAge == 0 {
 		c.MaxAge = defaultMaxAge
+	}
+
+	if c.BotAccounts == nil || len(c.BotAccounts) == 0 {
+		c.BotAccounts = defaultBotAccounts
 	}
 }
 
