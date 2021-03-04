@@ -20,7 +20,6 @@ type GetPrsCmd struct {
 	cmd.CommonCmd
 	ShowBots   bool
 	ShowHidden bool
-	Retrigger  bool
 	Review     bool
 	Quiet      bool
 	Me         bool
@@ -53,9 +52,6 @@ func NewGetPrsCmd() *cobra.Command {
 		"Show bot account PRs (default: false)")
 	cmd.Flags().BoolVarP(&c.ShowHidden, "show-hidden", "", false,
 		"Show PRs that are filtered by hidden labels (default: false)")
-
-	cmd.Flags().BoolVarP(&c.Retrigger, "retrigger", "", false,
-		"Retrigger failed PRs")
 	cmd.Flags().BoolVarP(&c.Review, "review", "", false,
 		"Show PRs that are ready for review")
 	cmd.Flags().BoolVarP(&c.Quiet, "quiet", "", false,
@@ -136,15 +132,6 @@ func (c *GetPrsCmd) Run() error {
 			flags = append(flags, "--show-hidden")
 		}
 		fmt.Printf("\nFiltered %d PRs, use %s to view them\n", (d.FilteredBotAccounts + d.FilteredLabels), strings.Join(flags, ", "))
-	}
-
-	if !c.Retrigger {
-		return nil
-	}
-
-	err = d.Retrigger()
-	if err != nil {
-		return errors.Wrap(err, "retrigger failed")
 	}
 
 	return nil
