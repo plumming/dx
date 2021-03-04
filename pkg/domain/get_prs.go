@@ -18,7 +18,7 @@ type GetPrs struct {
 	ShowBots            bool
 	ShowHidden          bool
 	Me                  bool
-  Review              bool
+	Review              bool
 	PullRequests        []pr.PullRequest
 	FilteredLabels      int
 	FilteredBotAccounts int
