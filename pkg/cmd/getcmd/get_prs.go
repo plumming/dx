@@ -31,24 +31,25 @@ type GetPrsCmd struct {
 func NewGetPrsCmd() *cobra.Command {
 	c := &GetPrsCmd{}
 	cmd := &cobra.Command{
-		Use:     "prs",
-		Short:   "Gets your open prs",
-		Long:    "",
-		Example: `#### Get a list of open PRs:
+		Use:   "prs",
+		Short: "Gets your open prs",
+		Long:  "",
+		Example: `Get a list of open PRs:
 
-    dx get prs
+  dx get prs
 
-#### Get a list of your PRs:
+Get a list of your PRs:
 
-    dx get prs --me
+  dx get prs --me
 
-#### Get a list of PRs requiring review:
+Get a list of PRs requiring review:
 
-    dx get prs --review
+  dx get prs --review
 
-#### Get a list of PRs with a custom query:
+Get a list of PRs with a custom query:
 
-    dx get prs --raw is:private
+  dx get prs --raw is:private
+
 `,
 		Aliases: []string{"pr", "pulls", "pull-requests"},
 		Run: func(cmd *cobra.Command, args []string) {
