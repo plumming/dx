@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"regexp"
 
 	"strings"
 
@@ -17,6 +18,8 @@ import (
 	"github.com/jenkins-x/jx-logging/pkg/log"
 	"github.com/plumming/dx/pkg/version"
 )
+
+const masked = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 // ClientOption represents an argument to NewClient.
 type ClientOption = func(http.RoundTripper) http.RoundTripper
@@ -42,11 +45,11 @@ func AddHeader(name, value string) ClientOption {
 			log.Logger().Debugf("sending request to host '%s'", host)
 			if name == "Authorization" {
 				if host == "api.github.com" {
-					log.Logger().Debugf("Adding Authorization Header %s=%s", name, value)
+					log.Logger().Debugf("Adding Authorization Header %s=%s", name, Mask(value))
 					req.Header.Add(name, value)
 				}
 			} else {
-				log.Logger().Debugf("Adding Header %s=%s", name, value)
+				log.Logger().Debugf("Adding Header %s=%s", name, Mask(value))
 				req.Header.Add(name, value)
 			}
 
@@ -263,9 +266,37 @@ func BasicClient() (*Client, error) {
 
 	if c, err := ParseDefaultConfig(ConfigFile(), HostsFile()); err == nil {
 		if token := c.GetToken(defaultHostname); token != "" {
-			log.Logger().Debugf("Using Auth %s", token)
+			log.Logger().Debugf("Using Auth %s", Mask(token))
 			opts = append(opts, AddHeader("Authorization", fmt.Sprintf("token %s", token)))
 		}
 	}
 	return NewClient(opts...), nil
+}
+
+func Mask(in string) string {
+	re := regexp.MustCompile(`([0-9a-f]{4})([0-9a-f]{32})([0-9a-f]{4})`)
+	if re.MatchString(in) {
+		results := ReplaceAllGroupFunc(re, in, func(groups []string) string {
+			return groups[1] + masked + groups[3]
+		})
+		return results
+	}
+	return in
+}
+
+func ReplaceAllGroupFunc(re *regexp.Regexp, str string, repl func([]string) string) string {
+	result := ""
+	lastIndex := 0
+
+	for _, v := range re.FindAllSubmatchIndex([]byte(str), -1) {
+		groups := []string{}
+		for i := 0; i < len(v); i += 2 {
+			groups = append(groups, str[v[i]:v[i+1]])
+		}
+
+		result += str[lastIndex:v[0]] + repl(groups)
+		lastIndex = v[1]
+	}
+
+	return result + str[lastIndex:]
 }
