@@ -23,6 +23,7 @@ type GetPrsCmd struct {
 	Review     bool
 	Quiet      bool
 	Me         bool
+	Raw        string
 	Cmd        *cobra.Command
 	Args       []string
 }
@@ -59,6 +60,9 @@ func NewGetPrsCmd() *cobra.Command {
 	cmd.Flags().BoolVarP(&c.Me, "me", "m", false,
 		"Show all PRs that are created by the author")
 
+	cmd.Flags().StringVarP(&c.Raw, "raw", "", "",
+		"Additional raw search parameters to use when querying")
+
 	return cmd
 }
 
@@ -68,6 +72,7 @@ func (c *GetPrsCmd) Run() error {
 	d.ShowBots = c.ShowBots
 	d.Me = c.Me
 	d.Review = c.Review
+	d.Raw = c.Raw
 
 	err := d.Validate()
 	if err != nil {
