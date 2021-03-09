@@ -136,7 +136,7 @@ func (g *GetPrs) Run() error {
 	}
 
 	queryToRun := fmt.Sprintf(query, queryString, cfg.MaxNumberOfPRs)
-	log.Logger().Debugf("running query %s", queryToRun)
+	log.Logger().Debugf("running query\n%s", queryToRun)
 
 	err = client.GraphQL(queryToRun, nil, &data)
 	if err != nil {
