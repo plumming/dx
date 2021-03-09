@@ -19,6 +19,7 @@ type GetPrs struct {
 	ShowHidden          bool
 	Me                  bool
 	Review              bool
+	Raw                 string
 	PullRequests        []pr.PullRequest
 	FilteredLabels      int
 	FilteredBotAccounts int
@@ -119,7 +120,9 @@ func (g *GetPrs) Run() error {
 	}
 
 	var queryString string
-	if g.Me {
+	if g.Raw != "" {
+		queryString = g.Raw
+	} else if g.Me {
 		queryString = fmt.Sprintf("author:%s", currentUser)
 	} else if g.Review {
 		queryString = fmt.Sprintf("review-requested:%s", currentUser)
@@ -133,7 +136,7 @@ func (g *GetPrs) Run() error {
 	}
 
 	queryToRun := fmt.Sprintf(query, queryString, cfg.MaxNumberOfPRs)
-	log.Logger().Debugf("running query %s", queryToRun)
+	log.Logger().Debugf("running query\n%s", queryToRun)
 
 	err = client.GraphQL(queryToRun, nil, &data)
 	if err != nil {

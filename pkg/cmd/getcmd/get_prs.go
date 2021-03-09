@@ -23,6 +23,7 @@ type GetPrsCmd struct {
 	Review     bool
 	Quiet      bool
 	Me         bool
+	Raw        string
 	Cmd        *cobra.Command
 	Args       []string
 }
@@ -30,10 +31,26 @@ type GetPrsCmd struct {
 func NewGetPrsCmd() *cobra.Command {
 	c := &GetPrsCmd{}
 	cmd := &cobra.Command{
-		Use:     "prs",
-		Short:   "Gets your open prs",
-		Long:    "",
-		Example: "",
+		Use:   "prs",
+		Short: "Gets your open prs",
+		Long:  "",
+		Example: `Get a list of open PRs:
+
+  dx get prs
+
+Get a list of your PRs:
+
+  dx get prs --me
+
+Get a list of PRs requiring review:
+
+  dx get prs --review
+
+Get a list of PRs with a custom query:
+
+  dx get prs --raw is:private
+
+`,
 		Aliases: []string{"pr", "pulls", "pull-requests"},
 		Run: func(cmd *cobra.Command, args []string) {
 			c.Cmd = cmd
@@ -59,6 +76,9 @@ func NewGetPrsCmd() *cobra.Command {
 	cmd.Flags().BoolVarP(&c.Me, "me", "m", false,
 		"Show all PRs that are created by the author")
 
+	cmd.Flags().StringVarP(&c.Raw, "raw", "", "",
+		"Additional raw search parameters to use when querying")
+
 	return cmd
 }
 
@@ -68,6 +88,7 @@ func (c *GetPrsCmd) Run() error {
 	d.ShowBots = c.ShowBots
 	d.Me = c.Me
 	d.Review = c.Review
+	d.Raw = c.Raw
 
 	err := d.Validate()
 	if err != nil {
