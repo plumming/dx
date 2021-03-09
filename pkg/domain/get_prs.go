@@ -123,7 +123,16 @@ func (g *GetPrs) Run() error {
 	if g.Raw != "" {
 		queryString = g.Raw
 	} else if g.Me {
-		queryString = fmt.Sprintf("author:%s", currentUser)
+		orgs, err := GetOrgsForUser(client)
+		if err != nil {
+			return err
+		}
+		log.Logger().Debugf("User is a member of %s organisations", orgs)
+
+		userQuery := "user:" + strings.Join(orgs, " user:")
+		log.Logger().Debugf("User '%s'", userQuery)
+
+		queryString = fmt.Sprintf("author:%s %s", currentUser, userQuery)
 	} else if g.Review {
 		queryString = fmt.Sprintf("review-requested:%s", currentUser)
 	} else {
