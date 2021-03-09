@@ -4,8 +4,11 @@ import (
 	"bytes"
 	"io"
 	"io/ioutil"
+	"math/rand"
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/plumming/dx/pkg/httpmock"
 )
@@ -66,4 +69,49 @@ func TestRESTGetDelete(t *testing.T) {
 	r := bytes.NewReader([]byte(`{}`))
 	err := client.REST("DELETE", "applications/CLIENTID/grant", r, nil)
 	eq(t, err, nil)
+}
+
+const letterBytes = "0123456789abcdef"
+
+func TestFilterToken(t *testing.T) {
+	token := generateRandomString()
+	masked := Mask(token)
+
+	t.Logf(masked)
+	assert.Equal(t, len(token), len(masked))
+	assert.NotEqual(t, token, masked)
+}
+
+func TestFilterToken_WithPrefix(t *testing.T) {
+	token := "token " + generateRandomString()
+	masked := Mask(token)
+
+	t.Logf(masked)
+	assert.Equal(t, len(token), len(masked))
+	assert.NotEqual(t, token, masked)
+}
+
+func TestFilterToken_WithSuffix(t *testing.T) {
+	token := generateRandomString() + " something at the end"
+	masked := Mask(token)
+
+	t.Logf(masked)
+	assert.Equal(t, len(token), len(masked))
+	assert.NotEqual(t, token, masked)
+}
+
+func TestFilterToken_NotToken(t *testing.T) {
+	token := "not a token"
+	masked := Mask(token)
+
+	assert.Equal(t, len(token), len(masked))
+	assert.Equal(t, token, masked)
+}
+
+func generateRandomString() string {
+	b := make([]byte, 40)
+	for i := range b {
+		b[i] = letterBytes[rand.Intn(len(letterBytes))]
+	}
+	return string(b)
 }
