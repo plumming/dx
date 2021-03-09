@@ -26,6 +26,26 @@ func GetCurrentUser(client *api.Client) (string, error) {
 	return currentUser.Login, nil
 }
 
+func GetOrgsForUser(client *api.Client) ([]string, error) {
+	organisations := []organisation{}
+
+	err := client.REST("GET", "user/orgs", nil, &organisations)
+	if err != nil {
+		return nil, err
+	}
+
+	orgs := []string{}
+	for _, o := range organisations {
+		orgs = append(orgs, o.Login)
+	}
+
+	return orgs, nil
+}
+
+type organisation struct {
+	Login string `json:"login"`
+}
+
 type currentUser struct {
 	Login string `json:"login"`
 }
