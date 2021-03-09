@@ -12,6 +12,7 @@ dx get prs [flags]
   -m, --me             Show all PRs that are created by the author
   -q, --query string   JMESPath query filter
       --quiet          Hide the column headings
+      --raw string     Additional raw search parameters to use when querying
       --review         Show PRs that are ready for review
       --show-bots      Show bot account PRs (default: false)
       --show-hidden    Show PRs that are filtered by hidden labels (default: false)
