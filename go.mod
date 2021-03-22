@@ -16,6 +16,6 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/xeonx/timeago v1.0.0-rc4
 	gopkg.in/AlecAivazis/survey.v1 v1.8.8
-	k8s.io/apimachinery v0.20.4
+	k8s.io/apimachinery v0.20.5
 	k8s.io/client-go v0.20.4
 )
