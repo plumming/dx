@@ -3,6 +3,7 @@ module github.com/plumming/dx
 go 1.15
 
 require (
+	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/ghodss/yaml v1.0.0
 	github.com/hashicorp/go-version v1.2.1
 	github.com/jenkins-x/jx-logging v0.0.11
@@ -16,6 +17,6 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/xeonx/timeago v1.0.0-rc4
 	gopkg.in/AlecAivazis/survey.v1 v1.8.8
-	k8s.io/apimachinery v0.20.5
-	k8s.io/client-go v0.20.5
+	k8s.io/apimachinery v0.21.0
+	k8s.io/client-go v0.21.0
 )
