@@ -1,6 +1,5 @@
 # DX
 
-[![codecov](https://codecov.io/gh/plumming/dx/branch/master/graph/badge.svg)](https://codecov.io/gh/plumming/dx)
 [![Go Report Card](https://goreportcard.com/badge/github.com/plumming/dx)](https://goreportcard.com/report/github.com/plumming/dx)
 ![golangci-lint](https://github.com/plumming/dx/workflows/golangci-lint/badge.svg)
 ![Check PR can be merged](https://github.com/plumming/dx/workflows/Check%20PR%20can%20be%20merged/badge.svg)
