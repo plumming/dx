@@ -111,7 +111,7 @@ func TestFilterToken_NotToken(t *testing.T) {
 func generateRandomString() string {
 	b := make([]byte, 40)
 	for i := range b {
-		b[i] = letterBytes[rand.Intn(len(letterBytes))]
+		b[i] = letterBytes[rand.Intn(len(letterBytes))] // #nosec:G404
 	}
 	return string(b)
 }
