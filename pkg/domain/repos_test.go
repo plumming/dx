@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/plumming/dx/pkg/prompter/prompterfakes"
+	"github.com/plumming/dx/pkg/config/configfakes"
 
-	"github.com/plumming/dx/pkg/config"
+	"github.com/plumming/dx/pkg/prompter/prompterfakes"
 
 	"github.com/plumming/dx/pkg/api"
 
@@ -475,7 +475,10 @@ func TestRepos_ListRepositoriesForUser(t *testing.T) {
 	http := &api.FakeHTTP{}
 	client := api.NewClient(api.ReplaceTripper(http))
 	d.SetGithubClient(client)
-	d.SetConfig(&config.Config{MaxAge: -1})
+
+	fakeConfig := &configfakes.FakeConfig{}
+	fakeConfig.GetMaxAgeOfPRsReturns(-1)
+	d.SetConfig(fakeConfig)
 
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(userRepos)))
 
@@ -496,7 +499,10 @@ func TestRepos_ListRepositoriesForOrg(t *testing.T) {
 	http := &api.FakeHTTP{}
 	client := api.NewClient(api.ReplaceTripper(http))
 	d.SetGithubClient(client)
-	d.SetConfig(&config.Config{MaxAge: -1})
+
+	fakeConfig := &configfakes.FakeConfig{}
+	fakeConfig.GetMaxAgeOfPRsReturns(-1)
+	d.SetConfig(fakeConfig)
 
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(orgRepos)))
 
@@ -517,7 +523,10 @@ func TestRepos_DeleteRepositoriesForOrg(t *testing.T) {
 	http := &api.FakeHTTP{}
 	client := api.NewClient(api.ReplaceTripper(http))
 	d.SetGithubClient(client)
-	d.SetConfig(&config.Config{MaxAge: -1})
+
+	fakeConfig := &configfakes.FakeConfig{}
+	fakeConfig.GetMaxAgeOfPRsReturns(-1)
+	d.SetConfig(fakeConfig)
 
 	var prompter = &prompterfakes.FakePrompter{}
 	d.SetPrompter(prompter)
@@ -547,7 +556,10 @@ func TestRepos_DeleteRepositoriesForUser(t *testing.T) {
 	http := &api.FakeHTTP{}
 	client := api.NewClient(api.ReplaceTripper(http))
 	d.SetGithubClient(client)
-	d.SetConfig(&config.Config{MaxAge: -1})
+
+	fakeConfig := &configfakes.FakeConfig{}
+	fakeConfig.GetMaxAgeOfPRsReturns(-1)
+	d.SetConfig(fakeConfig)
 
 	var prompter = &prompterfakes.FakePrompter{}
 	d.SetPrompter(prompter)

@@ -16,7 +16,7 @@ type CommonOptions struct {
 	nonGithubClient *api.Client
 	githubClient    *api.Client
 	kuber           kube.Kuber
-	config          *config.Config
+	config          config.Config
 	kubeClient      kubernetes.Interface
 }
 
@@ -68,17 +68,17 @@ func (c *CommonOptions) Kuber() kube.Kuber {
 	return c.kuber
 }
 
-func (c *CommonOptions) SetConfig(config *config.Config) {
+func (c *CommonOptions) SetConfig(config config.Config) {
 	c.config = config
 }
 
-func (c *CommonOptions) Config() (*config.Config, error) {
+func (c *CommonOptions) Config() (config.Config, error) {
 	if c.config == nil {
 		con, err := config.LoadFromDefaultLocation()
 		if err != nil {
 			return nil, err
 		}
-		c.config = &con
+		c.config = con
 	}
 	return c.config, nil
 }

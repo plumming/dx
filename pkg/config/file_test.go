@@ -31,11 +31,12 @@ repos:
 - plumming/repo2`,
 
 			expectations: func(t *testing.T, c config.Config) {
-				assert.Equal(t, []string{"bot1", "bot2"}, c.BotAccounts)
-				assert.Equal(t, []string{"hide-this"}, c.HiddenLabels)
-				assert.Equal(t, 100, c.MaxAge)
-				assert.Equal(t, 10, c.MaxNumberOfPRs)
-				assert.Equal(t, []string{"plumming/repo1", "plumming/repo2"}, c.Repos)
+				assert.Equal(t, []string{"bot1", "bot2"}, c.GetBotAccounts())
+				assert.Equal(t, []string{"hide-this"}, c.GetHiddenLabels())
+				assert.Equal(t, 100, c.GetMaxAgeOfPRs())
+				assert.Equal(t, 10, c.GetMaxNumberOfPRs())
+				assert.Equal(t, []string{"github.com"}, c.GetConfiguredServers())
+				assert.Equal(t, []string{"repo:plumming/repo1", "repo:plumming/repo2"}, c.GetReposToQuery("github.com"))
 			},
 		},
 		{
@@ -44,11 +45,12 @@ repos:
 `,
 
 			expectations: func(t *testing.T, c config.Config) {
-				assert.Equal(t, []string{"dependabot", "dependabot-preview"}, c.BotAccounts)
-				assert.Equal(t, []string{"hide-this"}, c.HiddenLabels)
-				assert.Equal(t, -1, c.MaxAge)
-				assert.Equal(t, 100, c.MaxNumberOfPRs)
-				assert.Equal(t, []string{"plumming/dx"}, c.Repos)
+				assert.Equal(t, []string{"dependabot", "dependabot-preview"}, c.GetBotAccounts())
+				assert.Equal(t, []string{"hide-this"}, c.GetHiddenLabels())
+				assert.Equal(t, -1, c.GetMaxAgeOfPRs())
+				assert.Equal(t, 100, c.GetMaxNumberOfPRs())
+				assert.Equal(t, []string{"github.com"}, c.GetConfiguredServers())
+				assert.Equal(t, []string{"repo:plumming/dx"}, c.GetReposToQuery("github.com"))
 			},
 		},
 		{
@@ -61,11 +63,64 @@ maxAgeOfPRs: 100
 maxNumberOfPRs: 10`,
 
 			expectations: func(t *testing.T, c config.Config) {
-				assert.Equal(t, []string{"bot1", "bot2"}, c.BotAccounts)
-				assert.Equal(t, []string{"hide-this"}, c.HiddenLabels)
-				assert.Equal(t, 100, c.MaxAge)
-				assert.Equal(t, 10, c.MaxNumberOfPRs)
-				assert.Equal(t, []string{"plumming/dx"}, c.Repos)
+				assert.Equal(t, []string{"bot1", "bot2"}, c.GetBotAccounts())
+				assert.Equal(t, []string{"hide-this"}, c.GetHiddenLabels())
+				assert.Equal(t, 100, c.GetMaxAgeOfPRs())
+				assert.Equal(t, 10, c.GetMaxNumberOfPRs())
+				assert.Equal(t, []string{"github.com"}, c.GetConfiguredServers())
+				assert.Equal(t, []string{"repo:plumming/dx"}, c.GetReposToQuery("github.com"))
+			},
+		},
+		{
+			name: "migrated config",
+			config: `---
+botAccounts:
+- bot1
+- bot2
+hiddenLabels:
+- hide-this
+maxAgeOfPRs: 100
+maxNumberOfPRs: 10
+repositories:
+  github.com:
+  - plumming/repo1
+  - plumming/repo2`,
+
+			expectations: func(t *testing.T, c config.Config) {
+				assert.Equal(t, []string{"bot1", "bot2"}, c.GetBotAccounts())
+				assert.Equal(t, []string{"hide-this"}, c.GetHiddenLabels())
+				assert.Equal(t, 100, c.GetMaxAgeOfPRs())
+				assert.Equal(t, 10, c.GetMaxNumberOfPRs())
+				assert.Equal(t, []string{"github.com"}, c.GetConfiguredServers())
+				assert.Equal(t, []string{"repo:plumming/repo1", "repo:plumming/repo2"}, c.GetReposToQuery("github.com"))
+			},
+		},
+		{
+			name: "multiple git server config",
+			config: `---
+botAccounts:
+- bot1
+- bot2
+hiddenLabels:
+- hide-this
+maxAgeOfPRs: 100
+maxNumberOfPRs: 10
+repositories:
+  github.com:
+  - plumming/repo1
+  - plumming/repo2
+  other.com:
+  - other/repo1
+  - other/repo2`,
+
+			expectations: func(t *testing.T, c config.Config) {
+				assert.Equal(t, []string{"bot1", "bot2"}, c.GetBotAccounts())
+				assert.Equal(t, []string{"hide-this"}, c.GetHiddenLabels())
+				assert.Equal(t, 100, c.GetMaxAgeOfPRs())
+				assert.Equal(t, 10, c.GetMaxNumberOfPRs())
+				assert.Equal(t, []string{"github.com", "other.com"}, c.GetConfiguredServers())
+				assert.Equal(t, []string{"repo:plumming/repo1", "repo:plumming/repo2"}, c.GetReposToQuery("github.com"))
+				assert.Equal(t, []string{"repo:other/repo1", "repo:other/repo2"}, c.GetReposToQuery("other.com"))
 			},
 		},
 	}

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/plumming/dx/pkg/config"
+	"github.com/plumming/dx/pkg/config/configfakes"
 
 	"github.com/plumming/dx/pkg/api"
 
@@ -42,11 +42,12 @@ func TestGetPrs_Run(t *testing.T) {
 	http := &api.FakeHTTP{}
 	client := api.NewClient(api.ReplaceTripper(http))
 	d.SetGithubClient(client)
-	d.SetConfig(&config.Config{
-		MaxAge:       -1,
-		BotAccounts:  []string{"dependabot-preview"},
-		HiddenLabels: []string{"do-not-merge/hold"},
-	})
+
+	fakeConfig := &configfakes.FakeConfig{}
+	fakeConfig.GetMaxAgeOfPRsReturns(-1)
+	fakeConfig.GetBotAccountsReturns([]string{"dependabot-preview"})
+	fakeConfig.GetHiddenLabelsReturns([]string{"do-not-merge/hold"})
+	d.SetConfig(fakeConfig)
 
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(userResponse)))
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(expectedResponse)))
@@ -74,11 +75,12 @@ func TestGetPrs_Run_ShowOnHold(t *testing.T) {
 	http := &api.FakeHTTP{}
 	client := api.NewClient(api.ReplaceTripper(http))
 	d.SetGithubClient(client)
-	d.SetConfig(&config.Config{
-		MaxAge:       -1,
-		BotAccounts:  []string{"dependabot-preview"},
-		HiddenLabels: []string{"do-not-merge/hold"},
-	})
+
+	fakeConfig := &configfakes.FakeConfig{}
+	fakeConfig.GetMaxAgeOfPRsReturns(-1)
+	fakeConfig.GetBotAccountsReturns([]string{"dependabot-preview"})
+	fakeConfig.GetHiddenLabelsReturns([]string{"do-not-merge/hold"})
+	d.SetConfig(fakeConfig)
 
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(userResponse)))
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(expectedResponse)))
@@ -106,11 +108,12 @@ func TestGetPrs_Run_ShowBots(t *testing.T) {
 	http := &api.FakeHTTP{}
 	client := api.NewClient(api.ReplaceTripper(http))
 	d.SetGithubClient(client)
-	d.SetConfig(&config.Config{
-		MaxAge:       -1,
-		BotAccounts:  []string{"dependabot-preview"},
-		HiddenLabels: []string{"do-not-merge/hold"},
-	})
+
+	fakeConfig := &configfakes.FakeConfig{}
+	fakeConfig.GetMaxAgeOfPRsReturns(-1)
+	fakeConfig.GetBotAccountsReturns([]string{"dependabot-preview"})
+	fakeConfig.GetHiddenLabelsReturns([]string{"do-not-merge/hold"})
+	d.SetConfig(fakeConfig)
 
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(userResponse)))
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(expectedResponse)))

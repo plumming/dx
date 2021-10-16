@@ -136,15 +136,15 @@ func (g *GetPrs) Run() error {
 	} else if g.Review {
 		queryString = fmt.Sprintf("review-requested:%s", currentUser)
 	} else {
-		queryString = strings.Join(cfg.ReposToQuery(), " ")
+		queryString = strings.Join(cfg.GetReposToQuery("github.com"), " ")
 	}
 
-	if cfg.MaxAge != -1 {
-		dateString := time.Now().AddDate(0, 0, -1*cfg.MaxAge).Format("2006-01-02")
+	if cfg.GetMaxAgeOfPRs() != -1 {
+		dateString := time.Now().AddDate(0, 0, -1*cfg.GetMaxAgeOfPRs()).Format("2006-01-02")
 		queryString = queryString + " created:>" + dateString
 	}
 
-	queryToRun := fmt.Sprintf(query, queryString, cfg.MaxNumberOfPRs)
+	queryToRun := fmt.Sprintf(query, queryString, cfg.GetMaxNumberOfPRs())
 	log.Logger().Debugf("running query\n%s", queryToRun)
 
 	err = client.GraphQL(queryToRun, nil, &data)
@@ -162,9 +162,9 @@ func (g *GetPrs) Run() error {
 
 	for _, pr := range pulls {
 		if pr.Display() {
-			if g.filterOnLabels(pr, cfg.HiddenLabels) {
+			if g.filterOnLabels(pr, cfg.GetHiddenLabels()) {
 				filteredOnLabels++
-			} else if g.filterOnAccounts(pr, cfg.BotAccounts) {
+			} else if g.filterOnAccounts(pr, cfg.GetBotAccounts()) {
 				filteredOnAccounts++
 			} else {
 				pullsToReturn = append(pullsToReturn, pr)
