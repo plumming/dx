@@ -3,9 +3,10 @@ package update
 import (
 	"fmt"
 
+	"gopkg.in/yaml.v2"
+
 	"github.com/jenkins-x/jx-logging/pkg/log"
 
-	"github.com/ghodss/yaml"
 	"github.com/hashicorp/go-version"
 	"github.com/plumming/dx/pkg/api"
 

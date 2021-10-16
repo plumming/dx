@@ -10,7 +10,7 @@ type Config interface {
 }
 
 type fileConfig struct {
-	Hosts map[string]*HostConfig `json:"hosts"`
+	Hosts map[string]*HostConfig `yaml:"hosts"`
 }
 
 // NotFoundError.
@@ -20,8 +20,8 @@ type NotFoundError struct {
 
 // HostConfig.
 type HostConfig struct {
-	User  string `json:"user"`
-	Token string `json:"oauth_token"`
+	User  string `yaml:"user"`
+	Token string `yaml:"oauth_token"`
 }
 
 func (c *fileConfig) GetToken(hostname string) string {

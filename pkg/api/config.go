@@ -5,7 +5,8 @@ import (
 	"os"
 	"path"
 
-	"github.com/ghodss/yaml"
+	"gopkg.in/yaml.v2"
+
 	"github.com/plumming/dx/pkg/util"
 )
 

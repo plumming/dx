@@ -1,16 +1,18 @@
 package config
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"io/ioutil"
 
-	"github.com/ghodss/yaml"
-	"github.com/jenkins-x/jx-logging/pkg/log"
+	"gopkg.in/yaml.v2"
+
 	"github.com/plumming/dx/pkg/util"
 )
 
 var (
-	defaultRepos          = []string{"plumming/dx"}
+	defaultGitHubRepos    = []string{"plumming/dx"}
 	defaultHiddenLabels   = []string{"hide-this"}
 	defaultMaxNumberOfPRs = 100
 	defaultMaxAge         = -1
@@ -19,11 +21,13 @@ var (
 
 // Config defines repos to watch.
 type Config struct {
-	Repos          []string `json:"repos"`
-	HiddenLabels   []string `json:"hiddenLabels"`
-	MaxNumberOfPRs int      `json:"maxNumberOfPRs"`
-	MaxAge         int      `json:"maxAgeOfPRs"`
-	BotAccounts    []string `json:"botAccounts"`
+	// Deprecated
+	Repos []string `yaml:"repos"`
+	//Repositories   map[string][]string `json:"repositories"`
+	HiddenLabels   []string `yaml:"hiddenLabels"`
+	MaxNumberOfPRs int      `yaml:"maxNumberOfPRs"`
+	MaxAge         int      `yaml:"maxAgeOfPRs"`
+	BotAccounts    []string `yaml:"botAccounts"`
 }
 
 func (c *Config) ReposToQuery() []string {
@@ -41,16 +45,7 @@ func LoadFromFile(path string) (Config, error) {
 			return Config{}, err
 		}
 
-		config := Config{}
-		err = yaml.Unmarshal(content, &config)
-		if err != nil {
-			log.Logger().Infof("no repos configured in %s", path)
-			return Config{}, err
-		}
-
-		config.SetDefaults()
-
-		return config, nil
+		return Load(bytes.NewReader(content))
 	}
 
 	config := Config{}
@@ -61,7 +56,7 @@ func LoadFromFile(path string) (Config, error) {
 
 func (c *Config) SetDefaults() {
 	if c.Repos == nil || len(c.Repos) == 0 {
-		c.Repos = defaultRepos
+		c.Repos = defaultGitHubRepos
 	}
 
 	if c.HiddenLabels == nil || len(c.HiddenLabels) == 0 {
@@ -79,6 +74,17 @@ func (c *Config) SetDefaults() {
 	if c.BotAccounts == nil || len(c.BotAccounts) == 0 {
 		c.BotAccounts = defaultBotAccounts
 	}
+}
+
+func Load(reader io.Reader) (Config, error) {
+	config := Config{}
+	err := yaml.NewDecoder(reader).Decode(&config)
+	if err != nil {
+		return Config{}, err
+	}
+
+	config.SetDefaults()
+	return config, nil
 }
 
 func LoadFromDefaultLocation() (Config, error) {

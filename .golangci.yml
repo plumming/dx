@@ -81,13 +81,11 @@ linters:
     - godot
     - gofmt
     - goimports
-    - golint
+  #  - revive
     - goprintffuncname
     - gosec
     - gosimple
-    - ineffassign
-    - interfacer
-    - maligned
+    - ineffassign  
     - misspell
     - nakedret
     - nolintlint
