@@ -7,20 +7,20 @@ import (
 	"github.com/plumming/dx/pkg/cmd"
 )
 
-type repoGetter func(string) ([]RepoInfo, error)
+type repoGetter func(string, string) ([]RepoInfo, error)
 
 type Repo struct {
 	cmd.CommonOptions
 }
 
-func (r *Repo) ListRepositoriesForOrg(org string) ([]RepoInfo, error) {
+func (r *Repo) ListRepositoriesForOrg(host string, org string) ([]RepoInfo, error) {
 	client, err := r.GithubClient()
 	if err != nil {
 		return nil, err
 	}
 
-	var repos = []RepoInfo{}
-	err = client.REST("GET", fmt.Sprintf("orgs/%s/repos", org), nil, &repos)
+	var repos []RepoInfo
+	err = client.REST(host, "GET", fmt.Sprintf("orgs/%s/repos", org), nil, &repos)
 	if err != nil {
 		return nil, err
 	}
@@ -28,14 +28,14 @@ func (r *Repo) ListRepositoriesForOrg(org string) ([]RepoInfo, error) {
 	return repos, nil
 }
 
-func (r *Repo) ListRepositoriesForUser(user string) ([]RepoInfo, error) {
+func (r *Repo) ListRepositoriesForUser(host string, user string) ([]RepoInfo, error) {
 	client, err := r.GithubClient()
 	if err != nil {
 		return nil, err
 	}
 
-	var repos = []RepoInfo{}
-	err = client.REST("GET", fmt.Sprintf("users/%s/repos", user), nil, &repos)
+	var repos []RepoInfo
+	err = client.REST(host, "GET", fmt.Sprintf("users/%s/repos", user), nil, &repos)
 	if err != nil {
 		return nil, err
 	}
@@ -43,8 +43,8 @@ func (r *Repo) ListRepositoriesForUser(user string) ([]RepoInfo, error) {
 	return repos, nil
 }
 
-func (r *Repo) SelectRepositories(filter string, in repoGetter) ([]string, error) {
-	repos, err := in(filter)
+func (r *Repo) SelectRepositories(host string, filter string, in repoGetter) ([]string, error) {
+	repos, err := in(host, filter)
 	if err != nil {
 		return nil, err
 	}
@@ -59,20 +59,20 @@ func (r *Repo) SelectRepositories(filter string, in repoGetter) ([]string, error
 	return selected, nil
 }
 
-func (r *Repo) DeleteRepositoriesFromOrg(org string) error {
+func (r *Repo) DeleteRepositoriesFromOrg(host string, org string) error {
 	client, err := r.GithubClient()
 	if err != nil {
 		return err
 	}
 
-	selected, err := r.SelectRepositories(org, r.ListRepositoriesForOrg)
+	selected, err := r.SelectRepositories(host, org, r.ListRepositoriesForOrg)
 	if err != nil {
 		return err
 	}
 
 	for _, s := range selected {
 		log.Logger().Infof("deleting %s/%s", org, s)
-		err = client.REST("DELETE", fmt.Sprintf("repos/%s/%s", org, s), nil, nil)
+		err = client.REST(host, "DELETE", fmt.Sprintf("repos/%s/%s", org, s), nil, nil)
 		if err != nil {
 			return err
 		}
@@ -81,20 +81,20 @@ func (r *Repo) DeleteRepositoriesFromOrg(org string) error {
 	return nil
 }
 
-func (r *Repo) DeleteRepositoriesFromUser(user string) error {
+func (r *Repo) DeleteRepositoriesFromUser(host string, user string) error {
 	client, err := r.GithubClient()
 	if err != nil {
 		return err
 	}
 
-	selected, err := r.SelectRepositories(user, r.ListRepositoriesForUser)
+	selected, err := r.SelectRepositories(host, user, r.ListRepositoriesForUser)
 	if err != nil {
 		return err
 	}
 
 	for _, s := range selected {
 		log.Logger().Infof("deleting %s/%s", user, s)
-		err = client.REST("DELETE", fmt.Sprintf("repos/%s/%s", user, s), nil, nil)
+		err = client.REST(host, "DELETE", fmt.Sprintf("repos/%s/%s", user, s), nil, nil)
 		if err != nil {
 			return err
 		}

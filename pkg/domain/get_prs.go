@@ -6,54 +6,16 @@ import (
 	"strings"
 	"time"
 
+	"github.com/plumming/dx/pkg/config"
+
 	"github.com/plumming/dx/pkg/pr"
 
 	"github.com/jenkins-x/jx-logging/pkg/log"
 	"github.com/plumming/dx/pkg/cmd"
 )
 
-// GetPrs defines get pull request response.
-type GetPrs struct {
-	cmd.CommonOptions
-	ShowBots            bool
-	ShowHidden          bool
-	Me                  bool
-	Review              bool
-	Raw                 string
-	PullRequests        []pr.PullRequest
-	FilteredLabels      int
-	FilteredBotAccounts int
-}
-
-// Data.
-type Data struct {
-	Search Search `json:"search"`
-}
-
-// Search.
-type Search struct {
-	PullRequests []pr.PullRequest `json:"nodes"`
-}
-
-// NewGetPrs.
-func NewGetPrs() *GetPrs {
-	g := &GetPrs{}
-	return g
-}
-
-// Validate input.
-func (g *GetPrs) Validate() error {
-	return nil
-}
-
-// Run the cmd.
-func (g *GetPrs) Run() error {
-	client, err := g.GithubClient()
-	if err != nil {
-		return err
-	}
-
-	query := `{
+var (
+	query = `{
 	search(query: "is:pr is:open %s", type: ISSUE, first: %d) {
       nodes {
       ... on PullRequest {
@@ -103,71 +65,74 @@ func (g *GetPrs) Run() error {
     }
   }
 }`
+)
 
-	data := Data{}
-	cfg, err := g.Config()
+// GetPrs defines get pull request response.
+type GetPrs struct {
+	cmd.CommonOptions
+	ShowBots            bool
+	ShowHidden          bool
+	Me                  bool
+	Review              bool
+	Raw                 string
+	PullRequests        []pr.PullRequest
+	FilteredLabels      int
+	FilteredBotAccounts int
+}
+
+// Data.
+type Data struct {
+	Search Search `json:"search"`
+}
+
+// Search.
+type Search struct {
+	PullRequests []pr.PullRequest `json:"nodes"`
+}
+
+// NewGetPrs.
+func NewGetPrs() *GetPrs {
+	g := &GetPrs{}
+	return g
+}
+
+// Validate input.
+func (g *GetPrs) Validate() error {
+	return nil
+}
+
+// Run the cmd.
+func (g *GetPrs) Run() error {
+	cfg, err := g.DxConfig()
 	if err != nil {
 		return err
 	}
 
-	client, err = g.GithubClient()
-	if err != nil {
-		return err
-	}
-	currentUser, err := GetCurrentUser(client)
-	if err != nil {
-		return err
-	}
+	var pulls []pr.PullRequest
 
-	var queryString string
-	if g.Raw != "" {
-		queryString = g.Raw
-	} else if g.Me {
-		orgs, err := GetOrgsForUser(client)
+	for _, host := range cfg.GetConfiguredServers() {
+		p, err := g.getPrsForHost(host, cfg, query)
 		if err != nil {
 			return err
 		}
-		log.Logger().Debugf("User is a member of %s organisations", orgs)
-
-		userQuery := "user:" + strings.Join(orgs, " user:")
-		log.Logger().Debugf("User '%s'", userQuery)
-
-		queryString = fmt.Sprintf("author:%s %s", currentUser, userQuery)
-	} else if g.Review {
-		queryString = fmt.Sprintf("review-requested:%s", currentUser)
-	} else {
-		queryString = strings.Join(cfg.GetReposToQuery("github.com"), " ")
+		pulls = append(pulls, p...)
 	}
 
-	if cfg.GetMaxAgeOfPRs() != -1 {
-		dateString := time.Now().AddDate(0, 0, -1*cfg.GetMaxAgeOfPRs()).Format("2006-01-02")
-		queryString = queryString + " created:>" + dateString
-	}
-
-	queryToRun := fmt.Sprintf(query, queryString, cfg.GetMaxNumberOfPRs())
-	log.Logger().Debugf("running query\n%s", queryToRun)
-
-	err = client.GraphQL(queryToRun, nil, &data)
-	if err != nil {
-		return err
-	}
-
-	pulls := data.Search.PullRequests
 	sort.Sort(pr.ByPullsString(pulls))
 
-	pullsToReturn := []pr.PullRequest{}
+	var pullsToReturn []pr.PullRequest
 
 	filteredOnLabels := 0
 	filteredOnAccounts := 0
 
-	for _, pr := range pulls {
-		if pr.Display() {
-			if g.filterOnLabels(pr, cfg.GetHiddenLabels()) {
+	for _, pullRequest := range pulls {
+		if pullRequest.Display() {
+			if g.filterOnLabels(pullRequest, cfg.GetHiddenLabels()) {
 				filteredOnLabels++
-			} else if g.filterOnAccounts(pr, cfg.GetBotAccounts()) {
+			} else if g.filterOnAccounts(pullRequest, cfg.GetBotAccounts()) {
 				filteredOnAccounts++
 			} else {
-				pullsToReturn = append(pullsToReturn, pr)
+				pullsToReturn = append(pullsToReturn, pullRequest)
 			}
 		}
 	}
@@ -179,6 +144,53 @@ func (g *GetPrs) Run() error {
 	g.FilteredBotAccounts = filteredOnAccounts
 
 	return nil
+}
+
+func (g *GetPrs) getPrsForHost(host string, cfg config.Config, query string) ([]pr.PullRequest, error) {
+	client, err := g.GithubClient()
+	if err != nil {
+		return nil, err
+	}
+	currentUser, err := GetCurrentUser(client, host)
+	if err != nil {
+		return nil, err
+	}
+
+	var queryString string
+	if g.Raw != "" {
+		queryString = g.Raw
+	} else if g.Me {
+		orgs, err := GetOrgsForUser(client, host)
+		if err != nil {
+			return nil, err
+		}
+		log.Logger().Debugf("User is a member of %s organisations", orgs)
+
+		userQuery := "user:" + strings.Join(orgs, " user:")
+		log.Logger().Debugf("User '%s'", userQuery)
+
+		queryString = fmt.Sprintf("author:%s %s", currentUser, userQuery)
+	} else if g.Review {
+		queryString = fmt.Sprintf("review-requested:%s", currentUser)
+	} else {
+		queryString = strings.Join(cfg.GetReposToQuery(host), " ")
+	}
+
+	if cfg.GetMaxAgeOfPRs() != -1 {
+		dateString := time.Now().AddDate(0, 0, -1*cfg.GetMaxAgeOfPRs()).Format("2006-01-02")
+		queryString = queryString + " created:>" + dateString
+	}
+
+	queryToRun := fmt.Sprintf(query, queryString, cfg.GetMaxNumberOfPRs())
+	log.Logger().Debugf("running query\n%s", queryToRun)
+
+	data := Data{}
+	err = client.GraphQL(host, queryToRun, nil, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	return data.Search.PullRequests, nil
 }
 
 func (g *GetPrs) filterOnAccounts(pr pr.PullRequest, botAccounts []string) bool {
@@ -221,7 +233,7 @@ func (g *GetPrs) Retrigger() error {
 				url := fmt.Sprintf("repos/%s/issues/%d/comments", pr.Repository.NameWithOwner, pr.Number)
 				body := fmt.Sprintf("{ \"body\": \"%s\" }", testCommand)
 
-				err := client.REST("POST", url, strings.NewReader(body), nil)
+				err := client.REST("github.com", "POST", url, strings.NewReader(body), nil)
 				if err != nil {
 					return err
 				}

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/plumming/dx/pkg/auth"
+
 	"github.com/plumming/dx/pkg/api"
 
 	"github.com/plumming/dx/pkg/domain"
@@ -126,8 +128,15 @@ origin https://github.com/origin/clone.git (push)`,
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
+			var authConfig auth.Config = &auth.FakeConfig{
+				Hosts: map[string]*auth.HostConfig{
+					"github.com": {User: "user", Token: "token"},
+					"other.com":  {User: "otheruser", Token: "token2"},
+				},
+			}
+
 			http := &api.FakeHTTP{}
-			client := api.NewClient(api.ReplaceTripper(http))
+			client := api.NewClient(authConfig, api.ReplaceTripper(http))
 
 			http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf("{ \"default_branch\":\"%s\"}", tc.originDefaultBranch)))
 			if tc.upstreamDefaultBranch != "" {

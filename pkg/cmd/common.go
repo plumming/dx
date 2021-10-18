@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/plumming/dx/pkg/api"
+	"github.com/plumming/dx/pkg/auth"
 	"github.com/plumming/dx/pkg/config"
 	"github.com/plumming/dx/pkg/kube"
 	"k8s.io/client-go/kubernetes"
@@ -12,12 +13,12 @@ import (
 )
 
 type CommonOptions struct {
-	prompter        prompter.Prompter
-	nonGithubClient *api.Client
-	githubClient    *api.Client
-	kuber           kube.Kuber
-	config          config.Config
-	kubeClient      kubernetes.Interface
+	prompter     prompter.Prompter
+	githubClient *api.Client
+	authConfig   auth.Config
+	kuber        kube.Kuber
+	dxConfig     config.Config
+	kubeClient   kubernetes.Interface
 }
 
 func (c *CommonOptions) SetPrompter(p prompter.Prompter) {
@@ -31,25 +32,17 @@ func (c *CommonOptions) Prompter() prompter.Prompter {
 	return c.prompter
 }
 
-func (c *CommonOptions) SetNonGithubClient(h *api.Client) {
-	c.nonGithubClient = h
-}
-
-func (c *CommonOptions) NonGithubClient() *api.Client {
-	if c.nonGithubClient == nil {
-		c.nonGithubClient = api.NewClient()
-	}
-	return c.nonGithubClient
-}
-
 func (c *CommonOptions) SetGithubClient(h *api.Client) {
 	c.githubClient = h
 }
 
 func (c *CommonOptions) GithubClient() (*api.Client, error) {
 	if c.githubClient == nil {
-		var err error
-		c.githubClient, err = api.BasicClient()
+		authConfig, err := c.AuthConfig()
+		if err != nil {
+			return nil, err
+		}
+		c.githubClient, err = api.BasicClient(authConfig)
 		if err != nil {
 			return nil, err
 		}
@@ -68,19 +61,19 @@ func (c *CommonOptions) Kuber() kube.Kuber {
 	return c.kuber
 }
 
-func (c *CommonOptions) SetConfig(config config.Config) {
-	c.config = config
+func (c *CommonOptions) SetDxConfig(dxConfig config.Config) {
+	c.dxConfig = dxConfig
 }
 
-func (c *CommonOptions) Config() (config.Config, error) {
-	if c.config == nil {
+func (c *CommonOptions) DxConfig() (config.Config, error) {
+	if c.dxConfig == nil {
 		con, err := config.LoadFromDefaultLocation()
 		if err != nil {
 			return nil, err
 		}
-		c.config = con
+		c.dxConfig = con
 	}
-	return c.config, nil
+	return c.dxConfig, nil
 }
 
 func (c *CommonOptions) FakeKubeClient() kubernetes.Interface {
@@ -99,4 +92,15 @@ func (c *CommonOptions) KubeClient(config *rest.Config) (kubernetes.Interface, e
 		}
 	}
 	return c.kubeClient, nil
+}
+
+func (c *CommonOptions) AuthConfig() (auth.Config, error) {
+	if c.authConfig == nil {
+		apiConfig, err := auth.NewDefaultConfig()
+		if err != nil {
+			return nil, err
+		}
+		c.authConfig = apiConfig
+	}
+	return c.authConfig, nil
 }

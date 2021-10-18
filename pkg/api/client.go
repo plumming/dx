@@ -11,6 +11,8 @@ import (
 	"os"
 	"regexp"
 
+	"github.com/plumming/dx/pkg/auth"
+
 	"strings"
 
 	"github.com/plumming/dx/pkg/util"
@@ -19,20 +21,30 @@ import (
 	"github.com/plumming/dx/pkg/version"
 )
 
-const masked = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+const (
+	APIGithubCom = "https://api.github.com/"
+	GithubCom    = "github.com"
+	masked       = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+)
 
 // ClientOption represents an argument to NewClient.
 type ClientOption = func(http.RoundTripper) http.RoundTripper
 
 // NewClient initializes a Client.
-func NewClient(opts ...ClientOption) *Client {
+func NewClient(authConfig auth.Config, opts ...ClientOption) *Client {
 	tr := http.DefaultTransport
 	for _, opt := range opts {
 		tr = opt(tr)
 	}
 
-	h := &http.Client{Transport: tr}
-	client := &Client{http: h}
+	h := &http.Client{
+		Transport: tr,
+	}
+
+	client := &Client{
+		http:       h,
+		authConfig: authConfig,
+	}
 
 	return client
 }
@@ -41,16 +53,32 @@ func NewClient(opts ...ClientOption) *Client {
 func AddHeader(name, value string) ClientOption {
 	return func(tr http.RoundTripper) http.RoundTripper {
 		return &funcTripper{roundTrip: func(req *http.Request) (*http.Response, error) {
+			log.Logger().Debugf("Adding Header %s=%s", name, Mask(value))
+			req.Header.Add(name, value)
+
+			return tr.RoundTrip(req)
+		}}
+	}
+}
+
+// AddAuthorizationHeader turns a RoundTripper into one that adds an authorization header.
+func AddAuthorizationHeader(config auth.Config) ClientOption {
+	return func(tr http.RoundTripper) http.RoundTripper {
+		return &funcTripper{roundTrip: func(req *http.Request) (*http.Response, error) {
 			host := req.Host
+
 			log.Logger().Debugf("sending request to host '%s'", host)
-			if name == "Authorization" {
-				if host == "api.github.com" {
-					log.Logger().Debugf("Adding Authorization Header %s=%s", name, Mask(value))
-					req.Header.Add(name, value)
-				}
+
+			if host == "api.github.com" {
+				token := config.GetToken("github.com")
+				log.Logger().Debugf("Adding Authorization Header %s=%s", "Authorization", Mask(token))
+				req.Header.Add("Authorization", fmt.Sprintf("token %s", token))
 			} else {
-				log.Logger().Debugf("Adding Header %s=%s", name, Mask(value))
-				req.Header.Add(name, value)
+				token := config.GetToken(host)
+				if token != "" {
+					log.Logger().Debugf("Adding Authorization Header %s=%s", "Authorization", Mask(token))
+					req.Header.Add("Authorization", fmt.Sprintf("token %s", token))
+				}
 			}
 
 			return tr.RoundTrip(req)
@@ -81,7 +109,8 @@ func (tr funcTripper) RoundTrip(req *http.Request) (*http.Response, error) {
 
 // Client facilitates making HTTP requests to the GitHub API.
 type Client struct {
-	http *http.Client
+	http       *http.Client
+	authConfig auth.Config
 }
 
 type graphQLResponse struct {
@@ -110,8 +139,9 @@ func (gr GraphQLErrorResponse) Error() string {
 }
 
 // GraphQL performs a GraphQL request and parses the response.
-func (c Client) GraphQL(query string, variables map[string]interface{}, data interface{}) error {
-	url := "https://api.github.com/graphql"
+func (c *Client) GraphQL(host string, query string, variables map[string]interface{}, data interface{}) error {
+	url := GetGraphQLAPIForHost(host)
+	log.Logger().Debugf("client.GraphQL: %s", url)
 	reqBody, err := json.Marshal(map[string]interface{}{"query": query, "variables": variables})
 	if err != nil {
 		return err
@@ -129,7 +159,7 @@ func (c Client) GraphQL(query string, variables map[string]interface{}, data int
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return handleResponse(resp, data)
 }
@@ -160,9 +190,9 @@ func handleResponse(resp *http.Response, data interface{}) error {
 }
 
 // REST performs a REST request and parses the response.
-func (c Client) REST(method string, p string, body io.Reader, data interface{}) error {
-	url := "https://api.github.com/" + p
-	log.Logger().Debugf("checking url: %s", url)
+func (c *Client) REST(host string, method string, path string, body io.Reader, data interface{}) error {
+	url := fmt.Sprintf("%s%s", GetV3APIForHost(host), path)
+	log.Logger().Debugf("%s client.REST: %s", method, url)
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
 		return err
@@ -174,7 +204,7 @@ func (c Client) REST(method string, p string, body io.Reader, data interface{}) 
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	success := resp.StatusCode >= 200 && resp.StatusCode < 300
 	if !success {
@@ -200,8 +230,8 @@ func (c Client) REST(method string, p string, body io.Reader, data interface{}) 
 }
 
 // Download performs a REST request and parses the response.
-func (c Client) Download(url string) (*http.Response, error) {
-	log.Logger().Debugf("getting url: %s", url)
+func (c *Client) Download(url string) (*http.Response, error) {
+	log.Logger().Debugf("client.Download: %s", url)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -214,7 +244,7 @@ func (c Client) Download(url string) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	//defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	success := resp.StatusCode >= 200 && resp.StatusCode < 300
 	if !success {
@@ -229,7 +259,7 @@ func (c Client) Download(url string) (*http.Response, error) {
 	return resp, nil
 }
 
-func (c Client) Do(req *http.Request) (*http.Response, error) {
+func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	return c.http.Do(req)
 }
 
@@ -242,6 +272,7 @@ func handleHTTPError(resp *http.Response) error {
 	if err != nil {
 		return err
 	}
+
 	err = json.Unmarshal(body, &parsedBody)
 	if err != nil {
 		message = string(body)
@@ -252,7 +283,7 @@ func handleHTTPError(resp *http.Response) error {
 	return fmt.Errorf("http error, '%s' failed (%d): '%s'", resp.Request.URL, resp.StatusCode, message)
 }
 
-func BasicClient() (*Client, error) {
+func BasicClient(config auth.Config) (*Client, error) {
 	var opts []ClientOption
 
 	// for testing purposes one can enable tracing of GH REST API calls.
@@ -263,14 +294,9 @@ func BasicClient() (*Client, error) {
 	}
 
 	opts = append(opts, AddHeader("User-Agent", fmt.Sprintf("dx CLI %s", version.Version)))
+	opts = append(opts, AddAuthorizationHeader(config))
 
-	if c, err := ParseDefaultConfig(ConfigFile(), HostsFile()); err == nil {
-		if token := c.GetToken(defaultHostname); token != "" {
-			log.Logger().Debugf("Using Auth %s", Mask(token))
-			opts = append(opts, AddHeader("Authorization", fmt.Sprintf("token %s", token)))
-		}
-	}
-	return NewClient(opts...), nil
+	return NewClient(config, opts...), nil
 }
 
 func Mask(in string) string {
@@ -289,7 +315,7 @@ func ReplaceAllGroupFunc(re *regexp.Regexp, str string, repl func([]string) stri
 	lastIndex := 0
 
 	for _, v := range re.FindAllSubmatchIndex([]byte(str), -1) {
-		groups := []string{}
+		var groups []string
 		for i := 0; i < len(v); i += 2 {
 			groups = append(groups, str[v[i]:v[i+1]])
 		}
@@ -299,4 +325,20 @@ func ReplaceAllGroupFunc(re *regexp.Regexp, str string, repl func([]string) stri
 	}
 
 	return result + str[lastIndex:]
+}
+
+func GetV3APIForHost(host string) string {
+	log.Logger().Debugf("Getting api endpoint for host %s", host)
+	if host == "github.com" {
+		return "https://api.github.com/"
+	}
+	return fmt.Sprintf("https://%s/api/v3/", host)
+}
+
+func GetGraphQLAPIForHost(host string) string {
+	log.Logger().Debugf("Getting graphql endpoint for host %s", host)
+	if host == "github.com" {
+		return "https://api.github.com/graphql"
+	}
+	return fmt.Sprintf("https://%s/api/graphql", host)
 }

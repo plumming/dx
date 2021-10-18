@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"sort"
 
 	"gopkg.in/yaml.v2"
 
@@ -57,6 +58,7 @@ func (c *fileBasedConfig) GetConfiguredServers() []string {
 	for k := range c.Repositories {
 		servers = append(servers, k)
 	}
+	sort.Strings(servers)
 	return servers
 }
 

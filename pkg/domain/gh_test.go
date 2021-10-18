@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"testing"
 
+	"github.com/plumming/dx/pkg/auth"
+
 	"github.com/plumming/dx/pkg/api"
 	"github.com/plumming/dx/pkg/domain"
 	"github.com/stretchr/testify/assert"
@@ -11,11 +13,19 @@ import (
 
 func TestGetDefaultBranch_Main(t *testing.T) {
 	http := &api.FakeHTTP{}
-	client := api.NewClient(api.ReplaceTripper(http))
+
+	var authConfig auth.Config = &auth.FakeConfig{
+		Hosts: map[string]*auth.HostConfig{
+			"github.com": {User: "user", Token: "token"},
+			"other.com":  {User: "otheruser", Token: "token2"},
+		},
+	}
+
+	client := api.NewClient(authConfig, api.ReplaceTripper(http))
 
 	http.StubResponse(200, bytes.NewBufferString("{ \"default_branch\":\"main\" }"))
 
-	defaultBranch, err := domain.GetDefaultBranch(client, "orgname", "reponame")
+	defaultBranch, err := domain.GetDefaultBranch(client, "github.com", "orgname", "reponame")
 	assert.NoError(t, err)
 
 	assert.Equal(t, defaultBranch, "main")
@@ -23,11 +33,19 @@ func TestGetDefaultBranch_Main(t *testing.T) {
 
 func TestGetDefaultBranch_Master(t *testing.T) {
 	http := &api.FakeHTTP{}
-	client := api.NewClient(api.ReplaceTripper(http))
+
+	var authConfig auth.Config = &auth.FakeConfig{
+		Hosts: map[string]*auth.HostConfig{
+			"github.com": {User: "user", Token: "token"},
+			"other.com":  {User: "otheruser", Token: "token2"},
+		},
+	}
+
+	client := api.NewClient(authConfig, api.ReplaceTripper(http))
 
 	http.StubResponse(200, bytes.NewBufferString("{ \"default_branch\":\"master\"}"))
 
-	defaultBranch, err := domain.GetDefaultBranch(client, "orgname", "reponame")
+	defaultBranch, err := domain.GetDefaultBranch(client, "github.com", "orgname", "reponame")
 	assert.NoError(t, err)
 
 	assert.Equal(t, defaultBranch, "master")
@@ -35,11 +53,19 @@ func TestGetDefaultBranch_Master(t *testing.T) {
 
 func TestGetCurrentUser(t *testing.T) {
 	http := &api.FakeHTTP{}
-	client := api.NewClient(api.ReplaceTripper(http))
+
+	var authConfig auth.Config = &auth.FakeConfig{
+		Hosts: map[string]*auth.HostConfig{
+			"github.com": {User: "user", Token: "token"},
+			"other.com":  {User: "otheruser", Token: "token2"},
+		},
+	}
+
+	client := api.NewClient(authConfig, api.ReplaceTripper(http))
 
 	http.StubResponse(200, bytes.NewBufferString("{ \"login\":\"octocat\"}"))
 
-	currentUser, err := domain.GetCurrentUser(client)
+	currentUser, err := domain.GetCurrentUser(client, "github.com")
 	assert.NoError(t, err)
 
 	assert.Equal(t, currentUser, "octocat")

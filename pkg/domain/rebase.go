@@ -57,7 +57,7 @@ func (c *Rebase) Validate() error {
 	}
 	log.Logger().Debugf("determined origin repo as %s/%s", c.OriginOrg, c.OriginRepo)
 
-	c.OriginDefaultBranch, err = GetDefaultBranch(gh, c.OriginOrg, c.OriginRepo)
+	c.OriginDefaultBranch, err = GetDefaultBranch(gh, "github.com", c.OriginOrg, c.OriginRepo)
 	if err != nil {
 		return err
 	}
@@ -69,7 +69,7 @@ func (c *Rebase) Validate() error {
 			return err
 		}
 		log.Logger().Debugf("determined upstream repo as %s/%s", c.UpstreamOrg, c.UpstreamRepo)
-		c.UpstreamDefaultBranch, err = GetDefaultBranch(gh, c.UpstreamOrg, c.UpstreamRepo)
+		c.UpstreamDefaultBranch, err = GetDefaultBranch(gh, "github.com", c.UpstreamOrg, c.UpstreamRepo)
 		if err != nil {
 			return err
 		}

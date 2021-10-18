@@ -50,7 +50,7 @@ func GetLatestReleaseInfo(client *api.Client, stateFilePath, repo string, force 
 	}
 
 	var latestRelease ReleaseInfo
-	err := client.REST("GET", fmt.Sprintf("repos/%s/releases/latest", repo), nil, &latestRelease)
+	err := client.REST("github.com", "GET", fmt.Sprintf("repos/%s/releases/latest", repo), nil, &latestRelease)
 	if err != nil {
 		return nil, err
 	}

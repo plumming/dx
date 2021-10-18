@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/plumming/dx/pkg/auth"
+
 	"github.com/plumming/dx/pkg/config/configfakes"
 
 	"github.com/plumming/dx/pkg/prompter/prompterfakes"
@@ -472,17 +474,23 @@ var (
 func TestRepos_ListRepositoriesForUser(t *testing.T) {
 	d := Repo{}
 
+	var authConfig auth.Config = &auth.FakeConfig{
+		Hosts: map[string]*auth.HostConfig{
+			"github.com": {User: "user", Token: "token"},
+			"other.com":  {User: "otheruser", Token: "token2"},
+		},
+	}
 	http := &api.FakeHTTP{}
-	client := api.NewClient(api.ReplaceTripper(http))
+	client := api.NewClient(authConfig, api.ReplaceTripper(http))
 	d.SetGithubClient(client)
 
 	fakeConfig := &configfakes.FakeConfig{}
 	fakeConfig.GetMaxAgeOfPRsReturns(-1)
-	d.SetConfig(fakeConfig)
+	d.SetDxConfig(fakeConfig)
 
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(userRepos)))
 
-	repos, err := d.ListRepositoriesForUser("u")
+	repos, err := d.ListRepositoriesForUser("github.com", "u")
 	assert.NoError(t, err)
 
 	assert.Equal(t, len(http.Requests), 1)
@@ -496,17 +504,24 @@ func TestRepos_ListRepositoriesForUser(t *testing.T) {
 func TestRepos_ListRepositoriesForOrg(t *testing.T) {
 	d := Repo{}
 
+	var authConfig auth.Config = &auth.FakeConfig{
+		Hosts: map[string]*auth.HostConfig{
+			"github.com": {User: "user", Token: "token"},
+			"other.com":  {User: "otheruser", Token: "token2"},
+		},
+	}
+
 	http := &api.FakeHTTP{}
-	client := api.NewClient(api.ReplaceTripper(http))
+	client := api.NewClient(authConfig, api.ReplaceTripper(http))
 	d.SetGithubClient(client)
 
 	fakeConfig := &configfakes.FakeConfig{}
 	fakeConfig.GetMaxAgeOfPRsReturns(-1)
-	d.SetConfig(fakeConfig)
+	d.SetDxConfig(fakeConfig)
 
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(orgRepos)))
 
-	repos, err := d.ListRepositoriesForOrg("o")
+	repos, err := d.ListRepositoriesForOrg("github.com", "o")
 	assert.NoError(t, err)
 
 	assert.Equal(t, len(http.Requests), 1)
@@ -520,13 +535,20 @@ func TestRepos_ListRepositoriesForOrg(t *testing.T) {
 func TestRepos_DeleteRepositoriesForOrg(t *testing.T) {
 	d := Repo{}
 
+	var authConfig auth.Config = &auth.FakeConfig{
+		Hosts: map[string]*auth.HostConfig{
+			"github.com": {User: "user", Token: "token"},
+			"other.com":  {User: "otheruser", Token: "token2"},
+		},
+	}
+
 	http := &api.FakeHTTP{}
-	client := api.NewClient(api.ReplaceTripper(http))
+	client := api.NewClient(authConfig, api.ReplaceTripper(http))
 	d.SetGithubClient(client)
 
 	fakeConfig := &configfakes.FakeConfig{}
 	fakeConfig.GetMaxAgeOfPRsReturns(-1)
-	d.SetConfig(fakeConfig)
+	d.SetDxConfig(fakeConfig)
 
 	var prompter = &prompterfakes.FakePrompter{}
 	d.SetPrompter(prompter)
@@ -535,7 +557,7 @@ func TestRepos_DeleteRepositoriesForOrg(t *testing.T) {
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(orgRepos)))
 	http.StubResponse(204, bytes.NewBufferString(""))
 
-	err := d.DeleteRepositoriesFromOrg("o")
+	err := d.DeleteRepositoriesFromOrg("github.com", "o")
 	assert.NoError(t, err)
 
 	assert.Equal(t, len(http.Requests), 2)
@@ -552,14 +574,20 @@ func TestRepos_DeleteRepositoriesForOrg(t *testing.T) {
 
 func TestRepos_DeleteRepositoriesForUser(t *testing.T) {
 	d := Repo{}
+	var authConfig auth.Config = &auth.FakeConfig{
+		Hosts: map[string]*auth.HostConfig{
+			"github.com": {User: "user", Token: "token"},
+			"other.com":  {User: "otheruser", Token: "token2"},
+		},
+	}
 
 	http := &api.FakeHTTP{}
-	client := api.NewClient(api.ReplaceTripper(http))
+	client := api.NewClient(authConfig, api.ReplaceTripper(http))
 	d.SetGithubClient(client)
 
 	fakeConfig := &configfakes.FakeConfig{}
 	fakeConfig.GetMaxAgeOfPRsReturns(-1)
-	d.SetConfig(fakeConfig)
+	d.SetDxConfig(fakeConfig)
 
 	var prompter = &prompterfakes.FakePrompter{}
 	d.SetPrompter(prompter)
@@ -568,7 +596,7 @@ func TestRepos_DeleteRepositoriesForUser(t *testing.T) {
 	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(orgRepos)))
 	http.StubResponse(204, bytes.NewBufferString(""))
 
-	err := d.DeleteRepositoriesFromUser("u")
+	err := d.DeleteRepositoriesFromUser("github.com", "u")
 	assert.NoError(t, err)
 
 	assert.Equal(t, len(http.Requests), 2)

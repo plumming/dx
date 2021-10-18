@@ -8,6 +8,8 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/plumming/dx/pkg/auth"
+
 	"github.com/stretchr/testify/assert"
 
 	"github.com/plumming/dx/pkg/httpmock"
@@ -22,7 +24,16 @@ func eq(t *testing.T, got interface{}, expected interface{}) {
 
 func TestGraphQL(t *testing.T) {
 	http := &httpmock.Registry{}
+
+	var authConfig auth.Config = &auth.FakeConfig{
+		Hosts: map[string]*auth.HostConfig{
+			"github.com": {User: "user", Token: "token"},
+			"other.com":  {User: "otheruser", Token: "token2"},
+		},
+	}
+
 	client := NewClient(
+		authConfig,
 		ReplaceTripper(http),
 		AddHeader("Authorization", "token OTOKEN"),
 	)
@@ -35,7 +46,7 @@ func TestGraphQL(t *testing.T) {
 	}{}
 
 	http.StubResponse(200, bytes.NewBufferString(`{"data":{"viewer":{"login":"hubot"}}}`))
-	err := client.GraphQL("QUERY", vars, &response)
+	err := client.GraphQL("github.com", "QUERY", vars, &response)
 	eq(t, err, nil)
 	eq(t, response.Viewer.Login, "hubot")
 
@@ -47,11 +58,19 @@ func TestGraphQL(t *testing.T) {
 
 func TestGraphQLError(t *testing.T) {
 	http := &httpmock.Registry{}
-	client := NewClient(ReplaceTripper(http))
+
+	var authConfig auth.Config = &auth.FakeConfig{
+		Hosts: map[string]*auth.HostConfig{
+			"github.com": {User: "user", Token: "token"},
+			"other.com":  {User: "otheruser", Token: "token2"},
+		},
+	}
+
+	client := NewClient(authConfig, ReplaceTripper(http))
 
 	response := struct{}{}
 	http.StubResponse(200, bytes.NewBufferString(`{"errors":[{"message":"OH NO"}]}`))
-	err := client.GraphQL("", nil, &response)
+	err := client.GraphQL("github.com", "", nil, &response)
 	if err == nil || err.Error() != "graphql error: 'OH NO'" {
 		t.Fatalf("got %q", err.Error())
 	}
@@ -60,14 +79,18 @@ func TestGraphQLError(t *testing.T) {
 func TestRESTGetDelete(t *testing.T) {
 	http := &httpmock.Registry{}
 
-	client := NewClient(
-		ReplaceTripper(http),
-	)
+	var authConfig auth.Config = &auth.FakeConfig{
+		Hosts: map[string]*auth.HostConfig{
+			"github.com": {User: "user", Token: "token"},
+			"other.com":  {User: "otheruser", Token: "token2"},
+		},
+	}
 
+	client := NewClient(authConfig, ReplaceTripper(http))
 	http.StubResponse(204, bytes.NewBuffer([]byte{}))
 
 	r := bytes.NewReader([]byte(`{}`))
-	err := client.REST("DELETE", "applications/CLIENTID/grant", r, nil)
+	err := client.REST("github.com", "DELETE", "applications/CLIENTID/grant", r, nil)
 	eq(t, err, nil)
 }
 
@@ -106,6 +129,16 @@ func TestFilterToken_NotToken(t *testing.T) {
 
 	assert.Equal(t, len(token), len(masked))
 	assert.Equal(t, token, masked)
+}
+
+func TestGetV3APIForHost(t *testing.T) {
+	assert.Equal(t, "https://api.github.com/", GetV3APIForHost("github.com"))
+	assert.Equal(t, "https://other.com/api/v3/", GetV3APIForHost("other.com"))
+}
+
+func TestGetGraphQLAPIForHost(t *testing.T) {
+	assert.Equal(t, "https://api.github.com/graphql", GetGraphQLAPIForHost("github.com"))
+	assert.Equal(t, "https://other.com/api/graphql", GetGraphQLAPIForHost("other.com"))
 }
 
 func generateRandomString() string {

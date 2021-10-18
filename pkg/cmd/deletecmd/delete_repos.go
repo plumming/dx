@@ -54,12 +54,12 @@ func (c *DeleteReposCmd) Run() error {
 	d := domain.Repo{}
 
 	if c.Org != "" {
-		err := d.DeleteRepositoriesFromOrg(c.Org)
+		err := d.DeleteRepositoriesFromOrg("github.com", c.Org)
 		if err != nil {
 			return err
 		}
 	} else {
-		err := d.DeleteRepositoriesFromUser(c.User)
+		err := d.DeleteRepositoriesFromUser("github.com", c.User)
 		if err != nil {
 			return err
 		}
