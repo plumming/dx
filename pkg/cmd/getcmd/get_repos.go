@@ -61,12 +61,12 @@ func (c *GetReposCmd) Run() error {
 	var repos []domain.RepoInfo
 
 	if c.Org != "" {
-		repos, err = d.ListRepositoriesForOrg(c.Org)
+		repos, err = d.ListRepositoriesForOrg("github.com", c.Org)
 		if err != nil {
 			return err
 		}
 	} else {
-		repos, err = d.ListRepositoriesForUser(c.User)
+		repos, err = d.ListRepositoriesForUser("github.com", c.User)
 		if err != nil {
 			return err
 		}

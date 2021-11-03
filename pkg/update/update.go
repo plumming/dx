@@ -3,9 +3,10 @@ package update
 import (
 	"fmt"
 
+	"gopkg.in/yaml.v2"
+
 	"github.com/jenkins-x/jx-logging/pkg/log"
 
-	"github.com/ghodss/yaml"
 	"github.com/hashicorp/go-version"
 	"github.com/plumming/dx/pkg/api"
 
@@ -49,7 +50,7 @@ func GetLatestReleaseInfo(client *api.Client, stateFilePath, repo string, force 
 	}
 
 	var latestRelease ReleaseInfo
-	err := client.REST("GET", fmt.Sprintf("repos/%s/releases/latest", repo), nil, &latestRelease)
+	err := client.REST("github.com", "GET", fmt.Sprintf("repos/%s/releases/latest", repo), nil, &latestRelease)
 	if err != nil {
 		return nil, err
 	}

@@ -127,7 +127,7 @@ func testKubeConfigForNamespace() api.Config {
 
 	conf := api.Config{
 		APIVersion:     "v1",
-		Kind:           "Config",
+		Kind:           "DxConfig",
 		CurrentContext: "contextB",
 		Contexts: map[string]*api.Context{
 			"contextA": &contextA,

@@ -8,6 +8,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/plumming/dx/pkg/auth"
+
 	"github.com/plumming/dx/pkg/api"
 )
 
@@ -51,8 +53,15 @@ func TestCheckForUpdate(t *testing.T) {
 
 	for _, s := range scenarios {
 		t.Run(s.Name, func(t *testing.T) {
+			var authConfig auth.Config = &auth.FakeConfig{
+				Hosts: map[string]*auth.HostConfig{
+					"github.com": {User: "user", Token: "token"},
+					"other.com":  {User: "otheruser", Token: "token2"},
+				},
+			}
+
 			http := &api.FakeHTTP{}
-			client := api.NewClient(api.ReplaceTripper(http))
+			client := api.NewClient(authConfig, api.ReplaceTripper(http))
 			http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(`{
 				"tag_name": "%s",
 				"html_url": "%s"

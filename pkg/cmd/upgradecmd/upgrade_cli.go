@@ -11,6 +11,8 @@ import (
 	"path/filepath"
 	"runtime"
 
+	"github.com/plumming/dx/pkg/auth"
+
 	"github.com/pkg/errors"
 
 	"github.com/jenkins-x/jx-logging/pkg/log"
@@ -73,7 +75,12 @@ func NewUpgradeCliCmd() *cobra.Command {
 
 // Run the cmd.
 func (c *UpgradeCliCmd) Run() error {
-	client, err := api.BasicClient()
+	config, err := auth.NewDefaultConfig()
+	if err != nil {
+		return err
+	}
+
+	client, err := api.BasicClient(config)
 	if err != nil {
 		return err
 	}
@@ -110,7 +117,7 @@ func (c *UpgradeCliCmd) Run() error {
 	tmpArchiveFile := fullPath + ".tmp"
 
 	release := Release{}
-	err = client.REST("GET", fmt.Sprintf("repos/plumming/dx/releases/tags/%s", latestRelease.Version), nil, &release)
+	err = client.REST("github.com", "GET", fmt.Sprintf("repos/plumming/dx/releases/tags/%s", latestRelease.Version), nil, &release)
 	if err != nil {
 		return err
 	}

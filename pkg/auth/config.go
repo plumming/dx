@@ -1,11 +1,12 @@
-package api
+package auth
 
 import (
 	"io/ioutil"
 	"os"
 	"path"
 
-	"github.com/ghodss/yaml"
+	"gopkg.in/yaml.v2"
+
 	"github.com/plumming/dx/pkg/util"
 )
 
@@ -34,12 +35,16 @@ func ParseDefaultConfig(cf, hf string) (Config, error) {
 	return parseConfigFile(cf)
 }
 
+func NewDefaultConfig() (Config, error) {
+	return ParseDefaultConfig(ConfigFile(), HostsFile())
+}
+
 var readConfigFile = func(fn string) ([]byte, error) {
 	f, err := os.Open(fn)
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	data, err := ioutil.ReadAll(f)
 	if err != nil {

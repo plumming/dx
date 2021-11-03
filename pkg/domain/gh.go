@@ -6,9 +6,9 @@ import (
 	"github.com/plumming/dx/pkg/api"
 )
 
-func GetDefaultBranch(client *api.Client, org string, repo string) (string, error) {
-	repository := repository{}
-	err := client.REST("GET", fmt.Sprintf("repos/%s/%s", org, repo), nil, &repository)
+func GetDefaultBranch(client *api.Client, host string, org string, repo string) (string, error) {
+	var repository repository
+	err := client.REST(host, "GET", fmt.Sprintf("repos/%s/%s", org, repo), nil, &repository)
 	if err != nil {
 		return "", err
 	}
@@ -16,9 +16,9 @@ func GetDefaultBranch(client *api.Client, org string, repo string) (string, erro
 	return repository.DefaultBranch, nil
 }
 
-func GetCurrentUser(client *api.Client) (string, error) {
-	currentUser := currentUser{}
-	err := client.REST("GET", "user", nil, &currentUser)
+func GetCurrentUser(client *api.Client, host string) (string, error) {
+	var currentUser currentUser
+	err := client.REST(host, "GET", "user", nil, &currentUser)
 	if err != nil {
 		return "", err
 	}
@@ -26,15 +26,15 @@ func GetCurrentUser(client *api.Client) (string, error) {
 	return currentUser.Login, nil
 }
 
-func GetOrgsForUser(client *api.Client) ([]string, error) {
-	organisations := []organisation{}
+func GetOrgsForUser(client *api.Client, host string) ([]string, error) {
+	var organisations []organisation
 
-	err := client.REST("GET", "user/orgs", nil, &organisations)
+	err := client.REST(host, "GET", "user/orgs", nil, &organisations)
 	if err != nil {
 		return nil, err
 	}
 
-	orgs := []string{}
+	var orgs []string
 	for _, o := range organisations {
 		orgs = append(orgs, o.Login)
 	}

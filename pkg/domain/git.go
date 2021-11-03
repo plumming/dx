@@ -155,6 +155,19 @@ func ConfigCommitterInformation(dir string, email string, name string) error {
 	return nil
 }
 
+func ConfigProperty(dir string, property string, value string) error {
+	c := util.Command{
+		Name: "git",
+		Args: []string{"config", property, value},
+		Dir:  dir,
+	}
+	_, err := Runner.RunWithoutRetry(&c)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func ExtractURLFromRemote(reader io.Reader, name string) (string, error) {
 	buf := new(strings.Builder)
 	_, err := io.Copy(buf, reader)
@@ -182,9 +195,7 @@ func ExtractURLFromRemote(reader io.Reader, name string) (string, error) {
 }
 
 func ExtractOrgAndRepoURL(urlString string) (string, string, error) {
-	if strings.HasSuffix(urlString, ".git") {
-		urlString = strings.TrimSuffix(urlString, ".git")
-	}
+	urlString = strings.TrimSuffix(urlString, ".git")
 	url, err := url2.Parse(urlString)
 	if err != nil {
 		return "", "", err

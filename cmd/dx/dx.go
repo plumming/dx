@@ -9,6 +9,8 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"github.com/plumming/dx/pkg/auth"
+
 	"github.com/plumming/dx/pkg/cmd/contextcmd"
 	"github.com/plumming/dx/pkg/cmd/deletecmd"
 	"github.com/plumming/dx/pkg/cmd/editcmd"
@@ -273,7 +275,12 @@ func checkForUpdate(currentVersion string) (*update.ReleaseInfo, error) {
 		return nil, nil
 	}
 
-	client, err := api.BasicClient()
+	config, err := auth.NewDefaultConfig()
+	if err != nil {
+		return nil, err
+	}
+
+	client, err := api.BasicClient(config)
 	if err != nil {
 		return nil, err
 	}
