@@ -130,6 +130,7 @@ issues:
         - gocritic
       text: "unnecessaryDefer:"
 run:
+  timeout: 5m
   skip-dirs:
     - test/testdata_etc
     - internal/cache
