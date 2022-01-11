@@ -147,7 +147,7 @@ func (c *Rebase) Run() error {
 			Name: "git",
 			Args: args,
 		}
-		
+
 		output, err = Runner.RunWithoutRetry(&cmd)
 		if err != nil {
 			return err
