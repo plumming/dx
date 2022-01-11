@@ -35,6 +35,7 @@ export PATH := $(PATH):$(GOPATH1)/bin
 
 CLIENTSET_NAME_VERSIONED := v0.15.11
 
+.PHONY: build
 build: $(GO_DEPENDENCIES)
 	CGO_ENABLED=$(CGO_ENABLED) $(GO) build $(BUILDTAGS) $(BUILDFLAGS) -o build/$(BINARY_NAME) cmd/$(NAME)/$(NAME).go
 
