@@ -8,8 +8,9 @@ import (
 )
 
 type RebaseCmd struct {
-	Cmd  *cobra.Command
-	Args []string
+	Cmd            *cobra.Command
+	Args           []string
+	ForceWithLease bool
 }
 
 func NewRebaseCmd() *cobra.Command {
@@ -31,11 +32,15 @@ func NewRebaseCmd() *cobra.Command {
 		},
 		Args: cobra.NoArgs,
 	}
+
+	cmd.Flags().BoolVarP(&c.ForceWithLease, "force-with-lease", "f", false,
+		"Use `--force-with-lease` when pushing back up to the forked repo")
+
 	return cmd
 }
 
 func (c *RebaseCmd) Run() error {
-	d := domain.NewRebase()
+	d := domain.NewRebase(c.ForceWithLease)
 
 	err := d.Validate()
 	if err != nil {

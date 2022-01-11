@@ -23,6 +23,7 @@ func TestCanRebase(t *testing.T) {
 		upstreamDefaultBranch string
 		expectedCommands      []string
 		expectedRequests      []string
+		forceWithLease        bool
 	}
 
 	tests := []test{
@@ -71,6 +72,29 @@ upstream https://github.com/upstream/repo (push)`,
 			},
 		},
 		{
+			name: "simple rebase on main with force-with-lease",
+			remotes: `origin https://github.com/origin/clone (fetch)
+origin https://github.com/origin/clone (push)
+upstream https://github.com/upstream/repo (fetch)
+upstream https://github.com/upstream/repo (push)`,
+			originDefaultBranch:   "main",
+			upstreamDefaultBranch: "main",
+			forceWithLease:        true,
+			expectedCommands: []string{
+				"git remote -v",
+				"git remote -v",
+				"git status --porcelain",
+				"git branch --show-current",
+				"git fetch --tags upstream main",
+				"git rebase upstream/main",
+				"git push origin main --force-with-lease",
+			},
+			expectedRequests: []string{
+				"https://api.github.com/repos/origin/clone",
+				"https://api.github.com/repos/upstream/repo",
+			},
+		},
+		{
 			name: "simple rebase on main with no upstream",
 			remotes: `origin https://github.com/origin/clone (fetch)
 origin https://github.com/origin/clone (push)`,
@@ -102,6 +126,29 @@ upstream https://github.com/upstream/repo (push)`,
 				"git fetch --tags upstream main",
 				"git rebase upstream/main",
 				"git push origin master",
+			},
+			expectedRequests: []string{
+				"https://api.github.com/repos/origin/clone",
+				"https://api.github.com/repos/upstream/repo",
+			},
+		},
+		{
+			name: "complex rebase on differing branches with force-with-lease",
+			remotes: `origin https://github.com/origin/clone (fetch)
+origin https://github.com/origin/clone (push)
+upstream https://github.com/upstream/repo (fetch)
+upstream https://github.com/upstream/repo (push)`,
+			originDefaultBranch:   "master",
+			upstreamDefaultBranch: "main",
+			forceWithLease:        true,
+			expectedCommands: []string{
+				"git remote -v",
+				"git remote -v",
+				"git status --porcelain",
+				"git branch --show-current",
+				"git fetch --tags upstream main",
+				"git rebase upstream/main",
+				"git push origin master --force-with-lease",
 			},
 			expectedRequests: []string{
 				"https://api.github.com/repos/origin/clone",
@@ -143,7 +190,7 @@ origin https://github.com/origin/clone.git (push)`,
 				http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf("{ \"default_branch\":\"%s\"}", tc.upstreamDefaultBranch)))
 			}
 
-			rb := domain.NewRebase()
+			rb := domain.NewRebase(tc.forceWithLease)
 			rb.OriginDefaultBranch = tc.originDefaultBranch
 			rb.UpstreamDefaultBranch = tc.upstreamDefaultBranch
 			rb.SetGithubClient(client)
