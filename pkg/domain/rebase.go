@@ -18,12 +18,13 @@ type Rebase struct {
 	UpstreamRepo          string
 	OriginDefaultBranch   string
 	UpstreamDefaultBranch string
+	ForceWithLease        bool
 	Config                *api.Config
 }
 
 // NewRebase.
-func NewRebase() *Rebase {
-	c := &Rebase{}
+func NewRebase(forceWithLease bool) *Rebase {
+	c := &Rebase{ForceWithLease: forceWithLease}
 	return c
 }
 
@@ -136,11 +137,17 @@ func (c *Rebase) Run() error {
 		}
 		log.Logger().Info(output)
 
+		args := []string{"push", "origin", c.OriginDefaultBranch}
+		if c.ForceWithLease {
+			args = append(args, "--force-with-lease")
+		}
+
 		// git push origin master
 		cmd = util.Command{
 			Name: "git",
-			Args: []string{"push", "origin", c.OriginDefaultBranch},
+			Args: args,
 		}
+		
 		output, err = Runner.RunWithoutRetry(&cmd)
 		if err != nil {
 			return err
