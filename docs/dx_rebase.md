@@ -10,6 +10,12 @@ Performs a 'git fetch upstream master && git rebase upstream/master && git push 
 dx rebase [flags]
 ```
 
+### Options
+
+```
+  -f, --force-with-lease --force-with-lease   Use --force-with-lease when pushing back up to the forked repo
+```
+
 ### Options inherited from parent commands
 
 ```
