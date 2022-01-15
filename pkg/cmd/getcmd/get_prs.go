@@ -138,6 +138,10 @@ func (c *GetPrsCmd) Run() error {
 
 	table.Render()
 
+	if len(d.PullRequests) > 0 {
+		fmt.Printf("\nDisplaying %d PRs\n", len(d.PullRequests))
+	}
+
 	if (d.FilteredBotAccounts + d.FilteredLabels) > 0 {
 		flags := []string{}
 		if d.FilteredBotAccounts > 0 {
