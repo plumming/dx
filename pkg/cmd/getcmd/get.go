@@ -31,6 +31,7 @@ func NewGetCmd() *cobra.Command {
 
 	cmd.AddCommand(NewGetPrsCmd())
 	cmd.AddCommand(NewGetReposCmd())
+	cmd.AddCommand(NewGetIssuesCmd())
 
 	return cmd
 }

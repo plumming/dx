@@ -16,7 +16,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type GetPrsCmd struct {
+type GetIssuesCmd struct {
 	cmd.CommonCmd
 	ShowBots   bool
 	ShowHidden bool
@@ -28,30 +28,30 @@ type GetPrsCmd struct {
 	Args       []string
 }
 
-func NewGetPrsCmd() *cobra.Command {
-	c := &GetPrsCmd{}
+func NewGetIssuesCmd() *cobra.Command {
+	c := &GetIssuesCmd{}
 	cmd := &cobra.Command{
-		Use:   "prs",
-		Short: "Gets your open prs",
+		Use:   "issues",
+		Short: "Gets your open issues",
 		Long:  "",
-		Example: `Get a list of open PRs:
+		Example: `Get a list of open issues:
 
-  dx get prs
+  dx get issues
 
-Get a list of your PRs:
+Get a list of your issues:
 
-  dx get prs --me
+  dx get issues --me
 
-Get a list of PRs requiring review:
+Get a list of issues requiring review:
 
-  dx get prs --review
+  dx get issues --review
 
-Get a list of PRs with a custom query:
+Get a list of issues with a custom query:
 
-  dx get prs --raw is:private
+  dx get issues --raw is:private
 
 `,
-		Aliases: []string{"pr", "pulls", "pull-requests"},
+		Aliases: []string{"issues", "is"},
 		Run: func(cmd *cobra.Command, args []string) {
 			c.Cmd = cmd
 			c.Args = args
@@ -82,8 +82,8 @@ Get a list of PRs with a custom query:
 	return cmd
 }
 
-func (c *GetPrsCmd) Run() error {
-	d := domain.NewGetPrs()
+func (c *GetIssuesCmd) Run() error {
+	d := domain.NewGetIssues()
 	d.ShowHidden = c.ShowHidden
 	d.ShowBots = c.ShowBots
 	d.Me = c.Me
@@ -101,7 +101,7 @@ func (c *GetPrsCmd) Run() error {
 	}
 
 	if c.Query != "" {
-		fmt.Println(c.Filter(d.PullRequests))
+		fmt.Println(c.Filter(d.Issues))
 		return nil
 	}
 
@@ -110,36 +110,32 @@ func (c *GetPrsCmd) Run() error {
 	pullURL := ""
 	if !c.Quiet {
 		table.AddRow(
-			"PR#",
+			"Issue#",
 			"Author",
 			"Title",
 			"Age",
-			"Review",
 			"Labels",
-			"Mergeable",
 		)
 	}
 
-	for _, pr := range d.PullRequests {
-		if pullURL != pr.PullsString() {
-			table.AddRow(fmt.Sprintf("# %s", util.ColorAnswer(pr.PullsString())))
-			pullURL = pr.PullsString()
+	for _, pr := range d.Issues {
+		if pullURL != pr.IssueString() {
+			table.AddRow(fmt.Sprintf("# %s", util.ColorAnswer(pr.IssueString())))
+			pullURL = pr.IssueString()
 		}
 		table.AddRow(
 			util.ColorInfo(fmt.Sprintf("#%d", pr.Number)),
 			pr.Author.Login,
 			pr.ColoredTitle(),
 			util.SafeTime(&pr.CreatedAt),
-			pr.ColoredReviewDecision(),
 			pr.LabelsString(),
-			pr.MergeableString(),
 		)
 	}
 
 	table.Render()
 
-	if len(d.PullRequests) > 0 {
-		fmt.Printf("\nDisplaying %d PRs\n", len(d.PullRequests))
+	if len(d.Issues) > 0 {
+		fmt.Printf("\nDisplaying %d Issue(s)\n", len(d.Issues))
 	}
 
 	if (d.FilteredBotAccounts + d.FilteredLabels) > 0 {
@@ -150,7 +146,7 @@ func (c *GetPrsCmd) Run() error {
 		if d.FilteredLabels > 0 {
 			flags = append(flags, "--show-hidden")
 		}
-		fmt.Printf("\nFiltered %d PRs, use %s to view them\n", (d.FilteredBotAccounts + d.FilteredLabels), strings.Join(flags, ", "))
+		fmt.Printf("\nFiltered %d Issues, use %s to view them\n", (d.FilteredBotAccounts + d.FilteredLabels), strings.Join(flags, ", "))
 	}
 
 	return nil
