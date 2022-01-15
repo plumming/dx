@@ -194,18 +194,18 @@ func ExtractURLFromRemote(reader io.Reader, name string) (string, error) {
 	return "", nil
 }
 
-func ExtractOrgAndRepoURL(urlString string) (string, string, error) {
+func ExtractHostOrgAndRepoURL(urlString string) (string, string, string, error) {
 	urlString = strings.TrimSuffix(urlString, ".git")
 	url, err := url2.Parse(urlString)
 	if err != nil {
-		return "", "", err
+		return "", "", "", err
 	}
 
 	fragments := strings.Split(url.Path, "/")
 	if len(fragments) != 3 {
-		return "", "", errors.New("invalid url path '" + url.Path + "'")
+		return "", "", "", errors.New("invalid url path '" + url.Path + "'")
 	}
-	return fragments[1], fragments[2], nil
+	return url.Host, fragments[1], fragments[2], nil
 }
 
 func filter(in []string, test func(in string) bool) (out []string) {

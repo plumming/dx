@@ -12,8 +12,10 @@ import (
 
 type Rebase struct {
 	cmd.CommonOptions
+	OriginHost            string
 	OriginOrg             string
 	OriginRepo            string
+	UpstreamHost          string
 	UpstreamOrg           string
 	UpstreamRepo          string
 	OriginDefaultBranch   string
@@ -52,25 +54,25 @@ func (c *Rebase) Validate() error {
 		return errors.New("origin & upstream appear to be the same: " + origin)
 	}
 
-	c.OriginOrg, c.OriginRepo, err = ExtractOrgAndRepoURL(origin)
+	c.OriginHost, c.OriginOrg, c.OriginRepo, err = ExtractHostOrgAndRepoURL(origin)
 	if err != nil {
 		return err
 	}
 	log.Logger().Debugf("determined origin repo as %s/%s", c.OriginOrg, c.OriginRepo)
 
-	c.OriginDefaultBranch, err = GetDefaultBranch(gh, "github.com", c.OriginOrg, c.OriginRepo)
+	c.OriginDefaultBranch, err = GetDefaultBranch(gh, c.OriginHost, c.OriginOrg, c.OriginRepo)
 	if err != nil {
 		return err
 	}
 	log.Logger().Debugf("determined origin default branch as %s", c.OriginDefaultBranch)
 
 	if upstream != "" {
-		c.UpstreamOrg, c.UpstreamRepo, err = ExtractOrgAndRepoURL(upstream)
+		c.UpstreamHost, c.UpstreamOrg, c.UpstreamRepo, err = ExtractHostOrgAndRepoURL(upstream)
 		if err != nil {
 			return err
 		}
 		log.Logger().Debugf("determined upstream repo as %s/%s", c.UpstreamOrg, c.UpstreamRepo)
-		c.UpstreamDefaultBranch, err = GetDefaultBranch(gh, "github.com", c.UpstreamOrg, c.UpstreamRepo)
+		c.UpstreamDefaultBranch, err = GetDefaultBranch(gh, c.UpstreamHost, c.UpstreamOrg, c.UpstreamRepo)
 		if err != nil {
 			return err
 		}

@@ -71,14 +71,22 @@ func TestGetCurrentUser(t *testing.T) {
 	assert.Equal(t, currentUser, "octocat")
 }
 
-func TestGetOrgAndRepo(t *testing.T) {
-	org, repo, err := domain.ExtractOrgAndRepoURL("https://github.com/clone/chilly")
+func TestGetHostOrgAndRepo(t *testing.T) {
+	host, org, repo, err := domain.ExtractHostOrgAndRepoURL("https://github.com/clone/chilly")
 	assert.NoError(t, err)
+	assert.Equal(t, host, "github.com")
 	assert.Equal(t, org, "clone")
 	assert.Equal(t, repo, "chilly")
 
-	org, repo, err = domain.ExtractOrgAndRepoURL("https://github.com/plumming/dx")
+	host, org, repo, err = domain.ExtractHostOrgAndRepoURL("https://github.com/plumming/dx")
 	assert.NoError(t, err)
+	assert.Equal(t, host, "github.com")
+	assert.Equal(t, org, "plumming")
+	assert.Equal(t, repo, "dx")
+
+	host, org, repo, err = domain.ExtractHostOrgAndRepoURL("https://other.github.instance/plumming/dx")
+	assert.NoError(t, err)
+	assert.Equal(t, host, "other.github.instance")
 	assert.Equal(t, org, "plumming")
 	assert.Equal(t, repo, "dx")
 }
