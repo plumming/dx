@@ -142,6 +142,12 @@ func (gr GraphQLErrorResponse) Error() string {
 func (c *Client) GraphQL(host string, query string, variables map[string]interface{}, data interface{}) error {
 	url := GetGraphQLAPIForHost(host)
 	log.Logger().Debugf("client.GraphQL: %s", url)
+
+	// prettify query before it is logged - makes it much easier to debug
+	query = strings.ReplaceAll(query, "\n", "")
+	query = strings.ReplaceAll(query, "\t", " ")
+	query = strings.ReplaceAll(query, "    ", " ")
+
 	reqBody, err := json.Marshal(map[string]interface{}{"query": query, "variables": variables})
 	if err != nil {
 		return err
