@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	query = `{
+	getPrsQuery = `{
 	search(query: "is:pr is:open %s", type: ISSUE, first: %d) {
       nodes {
       ... on PullRequest {
@@ -80,13 +80,13 @@ type GetPrs struct {
 	FilteredBotAccounts int
 }
 
-// Data.
-type Data struct {
-	Search Search `json:"search"`
+// PrData.
+type PrData struct {
+	Search PrSearch `json:"search"`
 }
 
-// Search.
-type Search struct {
+// PrSearch.
+type PrSearch struct {
 	PullRequests []pr.PullRequest `json:"nodes"`
 }
 
@@ -111,7 +111,7 @@ func (g *GetPrs) Run() error {
 	var pulls []pr.PullRequest
 
 	for _, host := range cfg.GetConfiguredServers() {
-		p, err := g.getPrsForHost(host, cfg, query)
+		p, err := g.getPrsForHost(host, cfg, getPrsQuery)
 		if err != nil {
 			return err
 		}
@@ -184,7 +184,7 @@ func (g *GetPrs) getPrsForHost(host string, cfg config.Config, query string) ([]
 	queryToRun := fmt.Sprintf(query, queryString, cfg.GetMaxNumberOfPRs())
 	log.Logger().Debugf("running query\n%s", queryToRun)
 
-	data := Data{}
+	data := PrData{}
 	err = client.GraphQL(host, queryToRun, nil, &data)
 	if err != nil {
 		return nil, err
