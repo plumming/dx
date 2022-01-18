@@ -22,9 +22,7 @@ import (
 )
 
 const (
-	APIGithubCom = "https://api.github.com/"
-	GithubCom    = "github.com"
-	masked       = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+	masked = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 )
 
 // ClientOption represents an argument to NewClient.
@@ -78,6 +76,8 @@ func AddAuthorizationHeader(config auth.Config) ClientOption {
 				if token != "" {
 					log.Logger().Debugf("Adding Authorization Header %s=%s", "Authorization", Mask(token))
 					req.Header.Add("Authorization", fmt.Sprintf("token %s", token))
+				} else {
+					log.Logger().Debugf("Token not available, attempting annonymous request")
 				}
 			}
 
@@ -250,7 +250,8 @@ func (c *Client) Download(url string) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer func() { _ = resp.Body.Close() }()
+
+	// NOTE: we are not closing the body here as we need to write it to disk
 
 	success := resp.StatusCode >= 200 && resp.StatusCode < 300
 	if !success {

@@ -31,15 +31,15 @@ const (
 )
 
 type Release struct {
-	//Id      string         `json:"id"`
 	Name    string         `json:"name"`
 	TagName string         `json:"tag_name"`
 	Assets  []ReleaseAsset `json:"assets"`
 }
 
 type ReleaseAsset struct {
-	URL  string `json:"url"`
-	Name string `json:"name"`
+	URL                string `json:"url"`
+	Name               string `json:"name"`
+	BrowserDownloadURL string `json:"browser_download_url"`
 }
 
 type UpgradeCliCmd struct {
@@ -128,7 +128,7 @@ func (c *UpgradeCliCmd) Run() error {
 		if asset.Name == assetName {
 			log.Logger().Debugf("downloading %s to %s", asset.URL, tmpArchiveFile)
 
-			err = downloadNewBinary(client, tmpArchiveFile, asset.URL, binDir)
+			err = downloadNewBinary(client, tmpArchiveFile, asset.BrowserDownloadURL, binDir)
 			if err != nil {
 				return err
 			}
@@ -161,12 +161,6 @@ func downloadNewBinary(client *api.Client, archivePath string, url string, binDi
 
 	// Writer the body to file
 	_, err = io.Copy(out, resp.Body)
-	if err != nil {
-		return err
-	}
-
-	// make it executable
-	err = os.Chmod(archivePath, 0755)
 	if err != nil {
 		return err
 	}
