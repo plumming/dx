@@ -9,6 +9,8 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"github.com/plumming/dx/pkg/brew"
+
 	"github.com/plumming/dx/pkg/auth"
 
 	"github.com/plumming/dx/pkg/cmd/contextcmd"
@@ -252,13 +254,26 @@ func main() {
 			util.ColorWarning(currentVersion),
 			util.ColorWarning(newRelease.Version),
 			util.ColorInfo(newRelease.URL),
-			util.ColorInfo("dx upgrade cli"))
+			util.ColorInfo(upgradeCommand()))
 
 		stderr := os.Stderr
 		fmt.Fprintf(stderr, "\n\n%s\n\n", msg)
 	}
 
 	os.Exit(0)
+}
+
+func upgradeCommand() string {
+	b, err := brew.IsInstalledViaBrew()
+	if err != nil {
+		return "dx upgrade cli"
+	}
+	if b {
+		return "brew upgrade dx"
+	}
+
+	// default
+	return "dx upgrade cli"
 }
 
 func shouldCheckForUpdate() bool {
