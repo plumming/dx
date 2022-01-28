@@ -19,3 +19,10 @@ func SafeTime(in *time.Time) string {
 func TrimTemplate(instanceTemplate string, instanceType string) string {
 	return strings.ReplaceAll(instanceTemplate, fmt.Sprintf("%s-instance-template-", instanceType), "")
 }
+
+func SafeIfAboveZero(number int) string {
+	if number > 0 {
+		return fmt.Sprintf("%d", number)
+	}
+	return ""
+}

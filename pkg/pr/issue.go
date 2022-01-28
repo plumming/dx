@@ -18,6 +18,7 @@ type Issue struct {
 	Labels     Labels     `json:"labels"`
 	Closed     bool       `json:"closed"`
 	Repository Repository `json:"repository"`
+	Comments   Comments   `json:"comments"`
 }
 
 func (p *Issue) Display() bool {

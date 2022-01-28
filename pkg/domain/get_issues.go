@@ -30,6 +30,9 @@ var (
         repository {
           nameWithOwner
         }
+        comments {
+          totalCount
+        }
         labels(first: 10) {
           nodes {
             name

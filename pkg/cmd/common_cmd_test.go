@@ -24,6 +24,9 @@ func TestCommonCmd_Filter_AllData(t *testing.T) {
       "login": "author1"
     },
     "closed": false,
+    "comments": {
+      "totalCount": 0
+    },
     "commits": {
       "nodes": null
     },
@@ -45,6 +48,9 @@ func TestCommonCmd_Filter_AllData(t *testing.T) {
       "login": "author2"
     },
     "closed": false,
+    "comments": {
+      "totalCount": 0
+    },
     "commits": {
       "nodes": null
     },
@@ -66,6 +72,9 @@ func TestCommonCmd_Filter_AllData(t *testing.T) {
       "login": "author3"
     },
     "closed": false,
+    "comments": {
+      "totalCount": 0
+    },
     "commits": {
       "nodes": null
     },
@@ -102,6 +111,9 @@ func TestCommonCmd_Filter_FilterOnAuthor(t *testing.T) {
       "login": "author1"
     },
     "closed": false,
+    "comments": {
+      "totalCount": 0
+    },
     "commits": {
       "nodes": null
     },
