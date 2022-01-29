@@ -37,6 +37,9 @@ var (
           }
         }
         reviewDecision
+        comments {
+          totalCount
+        }
         commits(last: 1){
           nodes{
             commit{

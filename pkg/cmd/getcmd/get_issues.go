@@ -115,20 +115,22 @@ func (c *GetIssuesCmd) Run() error {
 			"Title",
 			"Age",
 			"Labels",
+			"Comments",
 		)
 	}
 
-	for _, pr := range d.Issues {
-		if pullURL != pr.IssueString() {
-			table.AddRow(fmt.Sprintf("# %s", util.ColorAnswer(pr.IssueString())))
-			pullURL = pr.IssueString()
+	for _, issue := range d.Issues {
+		if pullURL != issue.IssueString() {
+			table.AddRow(fmt.Sprintf("# %s", util.ColorAnswer(issue.IssueString())))
+			pullURL = issue.IssueString()
 		}
 		table.AddRow(
-			util.ColorInfo(fmt.Sprintf("#%d", pr.Number)),
-			pr.Author.Login,
-			pr.ColoredTitle(),
-			util.SafeTime(&pr.CreatedAt),
-			pr.LabelsString(),
+			util.ColorInfo(fmt.Sprintf("#%d", issue.Number)),
+			issue.Author.Login,
+			issue.ColoredTitle(),
+			util.SafeTime(&issue.CreatedAt),
+			issue.LabelsString(),
+			util.SafeIfAboveZero(issue.Comments.TotalCount),
 		)
 	}
 

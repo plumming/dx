@@ -117,6 +117,7 @@ func (c *GetPrsCmd) Run() error {
 			"Review",
 			"Labels",
 			"Mergeable",
+			"Comments",
 		)
 	}
 
@@ -133,6 +134,7 @@ func (c *GetPrsCmd) Run() error {
 			pr.ColoredReviewDecision(),
 			pr.LabelsString(),
 			pr.MergeableString(),
+			util.SafeIfAboveZero(pr.Comments.TotalCount),
 		)
 	}
 
