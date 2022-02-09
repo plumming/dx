@@ -87,6 +87,7 @@ dx rebase
 - [dx get](./docs/dx_get.md)
 - [dx get prs](./docs/dx_get_prs.md)
 - [dx get repos](./docs/dx_get_repos.md)
+- [dx get issues](./docs/dx_get_issues.md)
 - [dx namespace](./docs/dx_namespace.md)
 - [dx rebase](./docs/dx_rebase.md)
 - [dx upgrade](./docs/dx_upgrade.md)
