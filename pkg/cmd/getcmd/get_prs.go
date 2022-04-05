@@ -23,6 +23,7 @@ type GetPrsCmd struct {
 	Review     bool
 	Quiet      bool
 	Me         bool
+	Copy       bool
 	Raw        string
 	Cmd        *cobra.Command
 	Args       []string
@@ -76,6 +77,9 @@ Get a list of PRs with a custom query:
 	cmd.Flags().BoolVarP(&c.Me, "me", "m", false,
 		"Show all PRs that are created by the author")
 
+	cmd.Flags().BoolVarP(&c.Copy, "copy", "c", false,
+		"Output is copy and pasteable")
+
 	cmd.Flags().StringVarP(&c.Raw, "raw", "", "",
 		"Additional raw search parameters to use when querying")
 
@@ -106,36 +110,58 @@ func (c *GetPrsCmd) Run() error {
 	}
 
 	table := table.NewTable(c.Cmd.OutOrStdout())
-
 	pullURL := ""
-	if !c.Quiet {
-		table.AddRow(
-			"PR#",
-			"Author",
-			"Title",
-			"Age",
-			"Review",
-			"Labels",
-			"Mergeable",
-			"Comments",
-		)
-	}
 
-	for _, pr := range d.PullRequests {
-		if pullURL != pr.PullsString() {
-			table.AddRow(fmt.Sprintf("# %s", util.ColorAnswer(pr.PullsString())))
-			pullURL = pr.PullsString()
+	if c.Copy {
+		if !c.Quiet {
+			table.AddRow(
+				"PR#",
+				"Author",
+				"Title",
+			)
 		}
-		table.AddRow(
-			util.ColorInfo(fmt.Sprintf("#%d", pr.Number)),
-			pr.Author.Login,
-			pr.ColoredTitle(),
-			util.SafeTime(&pr.CreatedAt),
-			pr.ColoredReviewDecision(),
-			pr.LabelsString(),
-			pr.MergeableString(),
-			util.SafeIfAboveZero(pr.Comments.TotalCount),
-		)
+
+		for _, pr := range d.PullRequests {
+			if pullURL != pr.PullsString() {
+				table.AddRow(fmt.Sprintf("# %s", util.ColorAnswer(pr.PullsString())))
+				pullURL = pr.PullsString()
+			}
+			table.AddRow(
+				util.ColorInfo(pr.URL),
+				pr.Author.Login,
+				pr.ColoredTitle(),
+			)
+		}
+	} else {
+		if !c.Quiet {
+			table.AddRow(
+				"PR#",
+				"Author",
+				"Title",
+				"Age",
+				"Review",
+				"Labels",
+				"Mergeable",
+				"Comments",
+			)
+		}
+
+		for _, pr := range d.PullRequests {
+			if pullURL != pr.PullsString() {
+				table.AddRow(fmt.Sprintf("# %s", util.ColorAnswer(pr.PullsString())))
+				pullURL = pr.PullsString()
+			}
+			table.AddRow(
+				util.ColorInfo(fmt.Sprintf("#%d", pr.Number)),
+				pr.Author.Login,
+				pr.ColoredTitle(),
+				util.SafeTime(&pr.CreatedAt),
+				pr.ColoredReviewDecision(),
+				pr.LabelsString(),
+				pr.MergeableString(),
+				util.SafeIfAboveZero(pr.Comments.TotalCount),
+			)
+		}
 	}
 
 	table.Render()
