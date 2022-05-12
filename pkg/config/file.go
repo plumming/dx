@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"os"
 	"sort"
 
 	"gopkg.in/yaml.v2"
@@ -139,6 +140,10 @@ func (c *fileBasedConfig) GetMaxNumberOfPRs() int {
 }
 
 func (c *fileBasedConfig) SaveToDefaultLocation() error {
+	err := os.MkdirAll(util.ConfigDir(), 0700)
+	if err != nil {
+		return err
+	}
 	return c.SaveToFile(util.DxConfigFile())
 }
 
