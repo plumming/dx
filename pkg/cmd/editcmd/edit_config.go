@@ -3,7 +3,6 @@ package editcmd
 import (
 	"os"
 	"os/exec"
-	"path"
 
 	"github.com/jenkins-x/jx-logging/pkg/log"
 	"github.com/plumming/dx/pkg/config"
@@ -47,12 +46,11 @@ func (c *EditConfigCmd) Run() error {
 		editor = "vi"
 	}
 
-	fpath := path.Join(os.TempDir(), "thetemporaryfile.txt")
-	log.Logger().Infof("Tmp File %s", fpath)
-	f, err := os.Create(fpath)
+	f, err := os.CreateTemp("", "dx-*.yaml")
 	if err != nil {
 		log.Logger().Fatal(err)
 	}
+	log.Logger().Infof("Tmp File %s", f.Name())
 	err = f.Close()
 	if err != nil {
 		log.Logger().Fatal(err)
@@ -63,12 +61,12 @@ func (c *EditConfigCmd) Run() error {
 		log.Logger().Fatal(err)
 	}
 
-	err = configuration.SaveToFile(fpath)
+	err = configuration.SaveToFile(f.Name())
 	if err != nil {
 		log.Logger().Fatal(err)
 	}
 
-	cmd := exec.Command(editor, fpath)
+	cmd := exec.Command(editor, f.Name())
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -84,7 +82,7 @@ func (c *EditConfigCmd) Run() error {
 		log.Logger().Printf("Successfully edited.")
 	}
 
-	configuration, err = config.LoadFromFile(fpath)
+	configuration, err = config.LoadFromFile(f.Name())
 	if err != nil {
 		log.Logger().Fatal(err)
 	}
