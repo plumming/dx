@@ -3,7 +3,7 @@ module github.com/plumming/dx
 go 1.17
 
 require (
-	github.com/hashicorp/go-version v1.5.0
+	github.com/hashicorp/go-version v1.6.0
 	github.com/jenkins-x/jx-logging v0.0.11
 	github.com/jmespath/go-jmespath v0.4.0
 	github.com/maxbrunsfeld/counterfeiter/v6 v6.5.0
