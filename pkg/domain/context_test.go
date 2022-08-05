@@ -51,7 +51,7 @@ func TestConnectWorkspace_Run(t *testing.T) {
 	assert.Equal(t, x.CurrentContext, d.Context)
 }
 
-//TODO: unmarshal config from a file.
+// TODO: unmarshal config from a file.
 func testKubeConfig() api.Config {
 	clusterA := api.Cluster{
 		Server: "",
