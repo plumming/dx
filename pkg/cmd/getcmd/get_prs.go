@@ -146,7 +146,6 @@ func (c *GetPrsCmd) Run() error {
 			if pullURL != pr.PullsString() {
 				table.AddRow(fmt.Sprintf("# %s", util.ColorAnswer(pr.PullsString())))
 				pullURL = pr.PullsString()
-
 			}
 			table.AddRow(
 				util.ColorInfo(fmt.Sprintf("#%d", pr.Number)),
