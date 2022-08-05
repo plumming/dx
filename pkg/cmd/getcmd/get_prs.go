@@ -122,10 +122,6 @@ func (c *GetPrsCmd) Run() error {
 		}
 
 		for _, pr := range d.PullRequests {
-			if pullURL != pr.PullsString() {
-				table.AddRow(fmt.Sprintf("# %s", util.ColorAnswer(pr.PullsString())))
-				pullURL = pr.PullsString()
-			}
 			table.AddRow(
 				util.ColorInfo(pr.URL),
 				pr.Author.Login,
@@ -150,6 +146,7 @@ func (c *GetPrsCmd) Run() error {
 			if pullURL != pr.PullsString() {
 				table.AddRow(fmt.Sprintf("# %s", util.ColorAnswer(pr.PullsString())))
 				pullURL = pr.PullsString()
+
 			}
 			table.AddRow(
 				util.ColorInfo(fmt.Sprintf("#%d", pr.Number)),
