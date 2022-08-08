@@ -10,19 +10,22 @@ import (
 
 func TestPullRequest_ContextsString(t *testing.T) {
 	var tests = []struct {
-		name     string
-		contexts []Context
-		exp      string
+		name        string
+		contexts    []Context
+		rollupState string
+		exp         string
 	}{
 		{
-			name: "build_success",
+			name:        "build_success",
+			rollupState: "SUCCESS",
 			contexts: []Context{
 				{State: "SUCCESS", Context: "Build"},
 			},
 			exp: "SUCCESS",
 		},
 		{
-			name: "build_pending",
+			name:        "build_pending",
+			rollupState: "SUCCESS",
 			contexts: []Context{
 				{State: "SUCCESS", Context: "Build"},
 				{State: "PENDING", Context: "Other-Build"},
@@ -30,7 +33,8 @@ func TestPullRequest_ContextsString(t *testing.T) {
 			exp: "PENDING",
 		},
 		{
-			name: "build_failing",
+			name:        "build_failing",
+			rollupState: "SUCCESS",
 			contexts: []Context{
 				{State: "SUCCESS", Context: "Build"},
 				{State: "FAILURE", Context: "Other-Build"},
@@ -46,7 +50,8 @@ func TestPullRequest_ContextsString(t *testing.T) {
 			exp: "SUCCESS",
 		},
 		{
-			name: "build_pending",
+			name:        "build_pending",
+			rollupState: "SUCCESS",
 			contexts: []Context{
 				{State: "SUCCESS", Context: "Build"},
 				{State: "PENDING", Context: "Other-Build"},
@@ -55,7 +60,8 @@ func TestPullRequest_ContextsString(t *testing.T) {
 			exp: "PENDING",
 		},
 		{
-			name: "build_failing",
+			name:        "build_failing",
+			rollupState: "SUCCESS",
 			contexts: []Context{
 				{State: "SUCCESS", Context: "Build"},
 				{State: "FAILURE", Context: "Other-Build"},
@@ -64,11 +70,36 @@ func TestPullRequest_ContextsString(t *testing.T) {
 			exp: "FAILURE",
 		},
 		{
-			name: "build_error",
+			name:        "build_error",
+			rollupState: "SUCCESS",
 			contexts: []Context{
 				{State: "SUCCESS", Context: "Build"},
 				{State: "ERROR", Context: "Other-Build"},
 				{State: "PENDING", Context: "Merge Status"},
+			},
+			exp: "ERROR",
+		},
+		{
+			name:        "in_progress_pending",
+			rollupState: "PENDING",
+			contexts: []Context{
+				{Context: "Build"},
+			},
+			exp: "PENDING",
+		},
+		{
+			name:        "in_progress_success",
+			rollupState: "SUCCESS",
+			contexts: []Context{
+				{Context: "Build"},
+			},
+			exp: "SUCCESS",
+		},
+		{
+			name:        "in_progress_error",
+			rollupState: "ERROR",
+			contexts: []Context{
+				{Context: "Build"},
 			},
 			exp: "ERROR",
 		},
@@ -82,6 +113,7 @@ func TestPullRequest_ContextsString(t *testing.T) {
 						{
 							Commit: Commit{
 								StatusCheckRollup: StatusCheckRollup{
+									State: test.rollupState,
 									Contexts: StatusContext{
 										Nodes: test.contexts,
 									},
@@ -251,31 +283,61 @@ func TestPullRequest_LabelsString(t *testing.T) {
 }
 
 func TestPullRequest_ColoredTitle(t *testing.T) {
-	pr := PullRequest{
-		Title:   "this is a short PR title",
-		Commits: Commits{Nodes: []CommitEntry{{Commit: Commit{StatusCheckRollup: StatusCheckRollup{Contexts: StatusContext{Nodes: []Context{{State: "SUCCESS"}}}}}}}},
+	var tests = []struct {
+		title                  string
+		statusCheckRollup      StatusCheckRollup
+		expected               string
+		expectedContextsString string
+	}{
+		{
+			title:                  "this is a short PR title",
+			statusCheckRollup:      StatusCheckRollup{Contexts: StatusContext{Nodes: []Context{{Context: "Test", State: "SUCCESS"}}}},
+			expected:               util.ColorInfo("this is a short PR title"),
+			expectedContextsString: "SUCCESS",
+		},
+		{
+			title:                  "this is a short PR title",
+			statusCheckRollup:      StatusCheckRollup{Contexts: StatusContext{Nodes: []Context{{Context: "Test", State: "PENDING"}}}},
+			expected:               util.ColorWarning("this is a short PR title"),
+			expectedContextsString: "PENDING",
+		},
+		{
+			title:                  "this is a short PR title",
+			statusCheckRollup:      StatusCheckRollup{State: "PENDING", Contexts: StatusContext{Nodes: []Context{{Context: "Test", Name: "PR"}}}},
+			expected:               util.ColorWarning("this is a short PR title"),
+			expectedContextsString: "PENDING",
+		},
+		{
+			title:                  "this is a short PR title",
+			statusCheckRollup:      StatusCheckRollup{Contexts: StatusContext{Nodes: []Context{{Context: "Test", State: "FAILURE"}}}},
+			expected:               util.ColorError("this is a short PR title"),
+			expectedContextsString: "FAILURE",
+		},
+		{
+			title:                  "this is a really really really really really really really really really really really really really really long PR title",
+			statusCheckRollup:      StatusCheckRollup{Contexts: StatusContext{Nodes: []Context{{Context: "Test", State: "SUCCESS"}}}},
+			expected:               util.ColorInfo("this is a really really really really really really really really really re..."),
+			expectedContextsString: "SUCCESS",
+		},
 	}
 
-	assert.Equal(t, pr.ColoredTitle(), util.ColorInfo("this is a short PR title"))
-
-	pr = PullRequest{
-		Title:   "this is a short PR title",
-		Commits: Commits{Nodes: []CommitEntry{{Commit: Commit{StatusCheckRollup: StatusCheckRollup{Contexts: StatusContext{Nodes: []Context{{State: "PENDING"}}}}}}}},
+	for _, test := range tests {
+		t.Run(test.title, func(t *testing.T) {
+			pr := PullRequest{
+				Title: test.title,
+				Commits: Commits{
+					Nodes: []CommitEntry{
+						{
+							Commit: Commit{
+								StatusCheckRollup: test.statusCheckRollup,
+							},
+						},
+					},
+				},
+			}
+			//t.Logf("ContextsString: %s", pr.ContextsString())
+			assert.Equal(t, test.expectedContextsString, pr.ContextsString())
+			assert.Equal(t, test.expected, pr.ColoredTitle())
+		})
 	}
-
-	assert.Equal(t, pr.ColoredTitle(), util.ColorInfo("this is a short PR title"))
-
-	pr = PullRequest{
-		Title:   "this is a short PR title",
-		Commits: Commits{Nodes: []CommitEntry{{Commit: Commit{StatusCheckRollup: StatusCheckRollup{Contexts: StatusContext{Nodes: []Context{{State: "FAILING"}}}}}}}},
-	}
-
-	assert.Equal(t, pr.ColoredTitle(), util.ColorInfo("this is a short PR title"))
-
-	pr = PullRequest{
-		Title:   "this is a really really really really really really really really really really really really really really long PR title",
-		Commits: Commits{Nodes: []CommitEntry{{Commit: Commit{StatusCheckRollup: StatusCheckRollup{Contexts: StatusContext{Nodes: []Context{{State: "SUCCESS"}}}}}}}},
-	}
-
-	assert.Equal(t, pr.ColoredTitle(), util.ColorInfo("this is a really really really really really really really really really re..."))
 }
