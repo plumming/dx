@@ -31,6 +31,7 @@ Get a list of PRs with a custom query:
 ### Options
 
 ```
+  -c, --copy           Output is copy and pasteable
   -m, --me             Show all PRs that are created by the author
   -q, --query string   JMESPath query filter
       --quiet          Hide the column headings
