@@ -44,7 +44,7 @@ func (p *PullRequest) Display() bool {
 }
 
 func (p *PullRequest) LabelsString() string {
-	labels := []string{}
+	var labels []string
 	for _, label := range p.Labels.Nodes {
 		labels = append(labels, label.Name)
 	}
@@ -52,7 +52,7 @@ func (p *PullRequest) LabelsString() string {
 }
 
 func (p *PullRequest) contexts() []string {
-	contexts := []string{}
+	var contexts []string
 	for _, c := range p.Commits.Nodes[0].Commit.StatusCheckRollup.Contexts.Nodes {
 		if c.Context != "" && c.Context != "tide" && c.Context != "keeper" && c.Context != "Merge Status" {
 			contexts = append(contexts, c.State)
@@ -66,6 +66,16 @@ func (p *PullRequest) contexts() []string {
 
 func (p *PullRequest) ContextsString() string {
 	c := unique(p.contexts())
+
+	// if there are no contexts, default to the rollup check value
+	if len(c) == 0 {
+		if p.Commits.Nodes[0].Commit.StatusCheckRollup.State != "" {
+			return p.Commits.Nodes[0].Commit.StatusCheckRollup.State
+		} else {
+			// default to pending if nothing else is available
+			return pending
+		}
+	}
 	if stringInSlice(c, error) {
 		return "ERROR"
 	} else if stringInSlice(c, failure) {
@@ -159,9 +169,11 @@ func unique(stringSlice []string) []string {
 	keys := make(map[string]bool)
 	list := []string{}
 	for _, entry := range stringSlice {
-		if _, value := keys[entry]; !value {
-			keys[entry] = true
-			list = append(list, entry)
+		if entry != "" {
+			if _, value := keys[entry]; !value {
+				keys[entry] = true
+				list = append(list, entry)
+			}
 		}
 	}
 	return list
