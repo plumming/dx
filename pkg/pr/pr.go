@@ -22,6 +22,15 @@ type PullRequest struct {
 	Repository     Repository `json:"repository"`
 	Comments       Comments   `json:"comments"`
 	ReviewDecision string     `json:"reviewDecision"`
+	BaseRef        BaseRef    `json:"baseRef"`
+}
+
+type BaseRef struct {
+	BranchProtectionRule BranchProtectionRule `json:"branchProtectionRule"`
+}
+
+type BranchProtectionRule struct {
+	RequiredStatusCheckContexts []string `json:"requiredStatusCheckContexts"`
 }
 
 const (
@@ -167,7 +176,7 @@ func (p *PullRequest) HasContext(name string) bool {
 
 func unique(stringSlice []string) []string {
 	keys := make(map[string]bool)
-	list := []string{}
+	var list []string
 	for _, entry := range stringSlice {
 		if entry != "" {
 			if _, value := keys[entry]; !value {

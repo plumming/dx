@@ -23,6 +23,11 @@ func TestCommonCmd_Filter_AllData(t *testing.T) {
     "author": {
       "login": "author1"
     },
+    "baseRef": {
+      "branchProtectionRule": {
+        "requiredStatusCheckContexts": null
+      }
+    },
     "closed": false,
     "comments": {
       "totalCount": 0
@@ -47,6 +52,11 @@ func TestCommonCmd_Filter_AllData(t *testing.T) {
     "author": {
       "login": "author2"
     },
+    "baseRef": {
+      "branchProtectionRule": {
+        "requiredStatusCheckContexts": null
+      }
+    },
     "closed": false,
     "comments": {
       "totalCount": 0
@@ -70,6 +80,11 @@ func TestCommonCmd_Filter_AllData(t *testing.T) {
   {
     "author": {
       "login": "author3"
+    },
+    "baseRef": {
+      "branchProtectionRule": {
+        "requiredStatusCheckContexts": null
+      }
     },
     "closed": false,
     "comments": {
@@ -109,6 +124,11 @@ func TestCommonCmd_Filter_FilterOnAuthor(t *testing.T) {
   {
     "author": {
       "login": "author1"
+    },
+    "baseRef": {
+      "branchProtectionRule": {
+        "requiredStatusCheckContexts": null
+      }
     },
     "closed": false,
     "comments": {
