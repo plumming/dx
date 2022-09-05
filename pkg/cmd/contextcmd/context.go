@@ -16,10 +16,10 @@ func NewContextCmd() *cobra.Command {
 	c := &ContextCmd{}
 	cmd := &cobra.Command{
 		Use:     "context",
-		Short:   "View or change the current Kubernetes context",
+		Short:   "Change the current Kubernetes context",
 		Long:    "",
 		Example: "",
-		Aliases: []string{"ctx"},
+		Aliases: []string{"ctx", "c"},
 		Run: func(cmd *cobra.Command, args []string) {
 			c.Cmd = cmd
 			c.Args = args
@@ -28,7 +28,7 @@ func NewContextCmd() *cobra.Command {
 				log.Logger().Fatalf("unable to run command: %s", err)
 			}
 		},
-		Args: cobra.NoArgs,
+		Args: cobra.MaximumNArgs(1),
 	}
 	return cmd
 }
@@ -36,10 +36,15 @@ func NewContextCmd() *cobra.Command {
 func (c *ContextCmd) Run() error {
 	d := domain.NewContext()
 
+	if len(c.Args) == 1 {
+		d.Context = c.Args[0]
+	}
+
 	err := d.Validate()
 	if err != nil {
 		return errors.Wrap(err, "validate failed")
 	}
+
 	err = d.Run()
 	if err != nil {
 		return errors.Wrap(err, "run failed")

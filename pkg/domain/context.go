@@ -14,7 +14,7 @@ type Context struct {
 	Config  *api.Config
 }
 
-// NewContext.
+// NewContext creates a new Context.
 func NewContext() *Context {
 	c := &Context{}
 	return c
@@ -22,16 +22,20 @@ func NewContext() *Context {
 
 // Validate input.
 func (c *Context) Validate() error {
-	kuber := c.Kuber()
+	k := c.Kuber()
 	var err error
-	c.Config, err = kuber.LoadAPIConfig()
+	c.Config, err = k.LoadAPIConfig()
 	if err != nil {
 		return err
 	}
-	c.Context, err = c.selectContext()
-	if err != nil {
-		return errors.Wrap(err, "failed to select context")
+
+	if c.Context == "" {
+		c.Context, err = c.selectContext()
+		if err != nil {
+			return errors.Wrap(err, "failed to select context")
+		}
 	}
+
 	return nil
 }
 
