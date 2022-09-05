@@ -1,6 +1,6 @@
 ## dx context
 
-View or change the current Kubernetes context
+Change the current Kubernetes context
 
 ```
 dx context [flags]
