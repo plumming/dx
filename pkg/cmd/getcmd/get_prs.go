@@ -52,7 +52,7 @@ Get a list of PRs with a custom query:
   dx get prs --raw is:private
 
 `,
-		Aliases: []string{"pr", "pulls", "pull-requests"},
+		Aliases: []string{"pr", "pulls", "pull-request", "pull-requests"},
 		Run: func(cmd *cobra.Command, args []string) {
 			c.Cmd = cmd
 			c.Args = args
