@@ -1,5 +1,6 @@
 name: Build and test Go
-on: [push, pull_request]
+on:
+  pull_request:
 jobs:
   build:
     name: Build
@@ -18,6 +19,7 @@ jobs:
 
       - name: Install Homebrew
         run: |
+          apt-get install build-essential
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
       - name: Test
