@@ -16,5 +16,9 @@ jobs:
       - name: Build
         run: make build
 
+      - name: Install Homebrew
+        run: |
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
       - name: Test
         run: make test
