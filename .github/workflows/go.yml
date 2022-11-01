@@ -19,7 +19,7 @@ jobs:
 
       - name: Install Homebrew
         run: |
-          apt-get install build-essential
+          sudo apt-get install build-essential
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
 
