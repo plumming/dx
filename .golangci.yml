@@ -70,7 +70,7 @@ linters:
   disable-all: true
   enable:
     - asciicheck
-    - deadcode
+  # - deadcode
     - depguard
     - dogsled
     - errcheck
@@ -81,7 +81,7 @@ linters:
     - godot
     - gofmt
     - goimports
-  #  - revive
+  # - revive
     - goprintffuncname
     - gosec
     - gosimple
@@ -90,15 +90,15 @@ linters:
     - nakedret
     - nolintlint
     - rowserrcheck
-    - structcheck
+  # - structcheck
     - stylecheck
     - typecheck
     - unconvert
     - unparam
     - unused
-    - varcheck
+  # - varcheck
     - whitespace
-#    - testpackage
+  # - testpackage
   # don't enable:
   # - bodyclose https://github.com/timakin/bodyclose/issues/30
   # - gochecknoinits
