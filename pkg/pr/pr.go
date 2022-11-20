@@ -22,6 +22,15 @@ type PullRequest struct {
 	Repository     Repository `json:"repository"`
 	Comments       Comments   `json:"comments"`
 	ReviewDecision string     `json:"reviewDecision"`
+	BaseRef        BaseRef    `json:"baseRef"`
+}
+
+type BaseRef struct {
+	BranchProtectionRule BranchProtectionRule `json:"branchProtectionRule"`
+}
+
+type BranchProtectionRule struct {
+	RequiredStatusCheckContexts []string `json:"requiredStatusCheckContexts"`
 }
 
 const (
