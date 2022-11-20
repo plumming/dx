@@ -64,6 +64,11 @@ var (
             }
           }
         }
+        baseRef {
+          branchProtectionRule {
+            requiredStatusCheckContexts
+          }
+        }
       }
     }
   }
