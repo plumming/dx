@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/plumming/dx/pkg/cmd/importcmd"
 	"os"
 	"path"
 	"path/filepath"
@@ -78,6 +79,7 @@ func init() {
 	RootCmd.AddCommand(deletecmd.NewDeleteCmd())
 	RootCmd.AddCommand(editcmd.NewEditCmd())
 	RootCmd.AddCommand(getcmd.NewGetCmd())
+	RootCmd.AddCommand(importcmd.NewImportCmd())
 	RootCmd.AddCommand(upgradecmd.NewUpgradeCmd())
 	RootCmd.AddCommand(rebasecmd.NewRebaseCmd())
 	RootCmd.AddCommand(namespacecmd.NewNamespaceCmd())

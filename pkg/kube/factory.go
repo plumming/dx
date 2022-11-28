@@ -47,6 +47,15 @@ func (f *factory) SetKubeNamespace(namespace string, config *api.Config) (*api.C
 	return &newConfig, nil
 }
 
+func (f *factory) SetKubeConfig(config *api.Config) (*api.Config, error) {
+	newConfig := *config
+	err := clientcmd.ModifyConfig(clientcmd.NewDefaultPathOptions(), newConfig, false)
+	if err != nil {
+		return nil, err
+	}
+	return &newConfig, nil
+}
+
 func NewKuber() Kuber {
 	return &factory{}
 }
@@ -57,6 +66,15 @@ func (f *factory) LoadAPIConfig() (*api.Config, error) {
 		return nil, errors.New("unable to get kube config path options")
 	}
 	apiConfig, err := po.GetStartingConfig()
+	if err != nil {
+		return nil, err
+	}
+
+	return apiConfig, nil
+}
+
+func (f *factory) LoadAPIConfigFromPath(path string) (*api.Config, error) {
+	apiConfig, err := clientcmd.LoadFromFile(path)
 	if err != nil {
 		return nil, err
 	}
