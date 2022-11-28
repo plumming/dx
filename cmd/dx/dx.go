@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/plumming/dx/pkg/cmd/importcmd"
 	"os"
 	"path"
 	"path/filepath"
 	"regexp"
 	"runtime/debug"
 	"strings"
+
+	"github.com/plumming/dx/pkg/cmd/importcmd"
 
 	"github.com/plumming/dx/pkg/brew"
 

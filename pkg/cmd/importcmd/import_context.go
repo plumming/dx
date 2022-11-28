@@ -36,7 +36,10 @@ func NewImportContextCmd() *cobra.Command {
 
 	cmd.Flags().StringVarP(&c.Path, "path", "f", "",
 		"Path to the context file to import")
-	cmd.MarkFlagRequired("path")
+	err := cmd.MarkFlagRequired("path")
+	if err != nil {
+		panic(err)
+	}
 
 	return cmd
 }

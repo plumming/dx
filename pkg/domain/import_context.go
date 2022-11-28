@@ -1,6 +1,8 @@
 package domain
 
 import (
+	"fmt"
+
 	"github.com/jenkins-x/jx-logging/pkg/log"
 	"github.com/plumming/dx/pkg/cmd"
 	"k8s.io/client-go/tools/clientcmd/api"
@@ -24,6 +26,10 @@ func NewImportContext(path string) *ImportContext {
 
 // Validate input.
 func (c *ImportContext) Validate() error {
+	if c.Path == "" {
+		return fmt.Errorf("path must be set")
+	}
+
 	k := c.Kuber()
 	var err error
 
@@ -43,25 +49,32 @@ func (c *ImportContext) Validate() error {
 
 // Run the cmd.
 func (c *ImportContext) Run() error {
-	log.Logger().Infof("Importing from %s", c.Path)
+	log.Logger().Infof("Importing config from %s", c.Path)
 
 	kuber := c.Kuber()
 
 	newConfig := c.Config
 
+	// get the location of origin for the first context
+	locationOfOrigin := c.Config.Contexts[c.Config.CurrentContext].LocationOfOrigin
+	log.Logger().Debugf("locationOfOrigin %s", locationOfOrigin)
+
 	for k, v := range c.ConfigToImport.Contexts {
-		log.Logger().Debugf("context %s", k)
+		log.Logger().Debugf("context %s from %s", k, v.LocationOfOrigin)
 		newConfig.Contexts[k] = v
+		newConfig.Contexts[k].LocationOfOrigin = locationOfOrigin
 	}
 
 	for k, v := range c.ConfigToImport.AuthInfos {
-		log.Logger().Debugf("authInfo %s", k)
+		log.Logger().Debugf("authInfo %s from %s", k, v.LocationOfOrigin)
 		newConfig.AuthInfos[k] = v
+		newConfig.AuthInfos[k].LocationOfOrigin = locationOfOrigin
 	}
 
 	for k, v := range c.ConfigToImport.Clusters {
-		log.Logger().Debugf("cluster %s", k)
+		log.Logger().Debugf("cluster %s from %s", k, v.LocationOfOrigin)
 		newConfig.Clusters[k] = v
+		newConfig.Clusters[k].LocationOfOrigin = locationOfOrigin
 	}
 
 	for k, v := range c.ConfigToImport.Extensions {

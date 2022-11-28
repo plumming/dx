@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/jenkins-x/jx-logging/pkg/log"
+
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/tools/clientcmd/api"
@@ -49,6 +51,7 @@ func (f *factory) SetKubeNamespace(namespace string, config *api.Config) (*api.C
 
 func (f *factory) SetKubeConfig(config *api.Config) (*api.Config, error) {
 	newConfig := *config
+	log.Logger().Debugf("persisting %+v", newConfig)
 	err := clientcmd.ModifyConfig(clientcmd.NewDefaultPathOptions(), newConfig, false)
 	if err != nil {
 		return nil, err
@@ -78,7 +81,6 @@ func (f *factory) LoadAPIConfigFromPath(path string) (*api.Config, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	return apiConfig, nil
 }
 
