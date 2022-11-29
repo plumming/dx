@@ -9,6 +9,8 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"github.com/plumming/dx/pkg/cmd/importcmd"
+
 	"github.com/plumming/dx/pkg/brew"
 
 	"github.com/plumming/dx/pkg/auth"
@@ -78,6 +80,7 @@ func init() {
 	RootCmd.AddCommand(deletecmd.NewDeleteCmd())
 	RootCmd.AddCommand(editcmd.NewEditCmd())
 	RootCmd.AddCommand(getcmd.NewGetCmd())
+	RootCmd.AddCommand(importcmd.NewImportCmd())
 	RootCmd.AddCommand(upgradecmd.NewUpgradeCmd())
 	RootCmd.AddCommand(rebasecmd.NewRebaseCmd())
 	RootCmd.AddCommand(namespacecmd.NewNamespaceCmd())

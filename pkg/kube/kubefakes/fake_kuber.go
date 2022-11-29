@@ -44,6 +44,19 @@ type FakeKuber struct {
 		result1 *api.Config
 		result2 error
 	}
+	LoadAPIConfigFromPathStub        func(string) (*api.Config, error)
+	loadAPIConfigFromPathMutex       sync.RWMutex
+	loadAPIConfigFromPathArgsForCall []struct {
+		arg1 string
+	}
+	loadAPIConfigFromPathReturns struct {
+		result1 *api.Config
+		result2 error
+	}
+	loadAPIConfigFromPathReturnsOnCall map[int]struct {
+		result1 *api.Config
+		result2 error
+	}
 	LoadClientConfigStub        func() (*rest.Config, error)
 	loadClientConfigMutex       sync.RWMutex
 	loadClientConfigArgsForCall []struct {
@@ -54,6 +67,19 @@ type FakeKuber struct {
 	}
 	loadClientConfigReturnsOnCall map[int]struct {
 		result1 *rest.Config
+		result2 error
+	}
+	SetKubeConfigStub        func(*api.Config) (*api.Config, error)
+	setKubeConfigMutex       sync.RWMutex
+	setKubeConfigArgsForCall []struct {
+		arg1 *api.Config
+	}
+	setKubeConfigReturns struct {
+		result1 *api.Config
+		result2 error
+	}
+	setKubeConfigReturnsOnCall map[int]struct {
+		result1 *api.Config
 		result2 error
 	}
 	SetKubeContextStub        func(string, *api.Config) (*api.Config, error)
@@ -266,6 +292,70 @@ func (fake *FakeKuber) LoadAPIConfigReturnsOnCall(i int, result1 *api.Config, re
 	}{result1, result2}
 }
 
+func (fake *FakeKuber) LoadAPIConfigFromPath(arg1 string) (*api.Config, error) {
+	fake.loadAPIConfigFromPathMutex.Lock()
+	ret, specificReturn := fake.loadAPIConfigFromPathReturnsOnCall[len(fake.loadAPIConfigFromPathArgsForCall)]
+	fake.loadAPIConfigFromPathArgsForCall = append(fake.loadAPIConfigFromPathArgsForCall, struct {
+		arg1 string
+	}{arg1})
+	stub := fake.LoadAPIConfigFromPathStub
+	fakeReturns := fake.loadAPIConfigFromPathReturns
+	fake.recordInvocation("LoadAPIConfigFromPath", []interface{}{arg1})
+	fake.loadAPIConfigFromPathMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeKuber) LoadAPIConfigFromPathCallCount() int {
+	fake.loadAPIConfigFromPathMutex.RLock()
+	defer fake.loadAPIConfigFromPathMutex.RUnlock()
+	return len(fake.loadAPIConfigFromPathArgsForCall)
+}
+
+func (fake *FakeKuber) LoadAPIConfigFromPathCalls(stub func(string) (*api.Config, error)) {
+	fake.loadAPIConfigFromPathMutex.Lock()
+	defer fake.loadAPIConfigFromPathMutex.Unlock()
+	fake.LoadAPIConfigFromPathStub = stub
+}
+
+func (fake *FakeKuber) LoadAPIConfigFromPathArgsForCall(i int) string {
+	fake.loadAPIConfigFromPathMutex.RLock()
+	defer fake.loadAPIConfigFromPathMutex.RUnlock()
+	argsForCall := fake.loadAPIConfigFromPathArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeKuber) LoadAPIConfigFromPathReturns(result1 *api.Config, result2 error) {
+	fake.loadAPIConfigFromPathMutex.Lock()
+	defer fake.loadAPIConfigFromPathMutex.Unlock()
+	fake.LoadAPIConfigFromPathStub = nil
+	fake.loadAPIConfigFromPathReturns = struct {
+		result1 *api.Config
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeKuber) LoadAPIConfigFromPathReturnsOnCall(i int, result1 *api.Config, result2 error) {
+	fake.loadAPIConfigFromPathMutex.Lock()
+	defer fake.loadAPIConfigFromPathMutex.Unlock()
+	fake.LoadAPIConfigFromPathStub = nil
+	if fake.loadAPIConfigFromPathReturnsOnCall == nil {
+		fake.loadAPIConfigFromPathReturnsOnCall = make(map[int]struct {
+			result1 *api.Config
+			result2 error
+		})
+	}
+	fake.loadAPIConfigFromPathReturnsOnCall[i] = struct {
+		result1 *api.Config
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeKuber) LoadClientConfig() (*rest.Config, error) {
 	fake.loadClientConfigMutex.Lock()
 	ret, specificReturn := fake.loadClientConfigReturnsOnCall[len(fake.loadClientConfigArgsForCall)]
@@ -318,6 +408,70 @@ func (fake *FakeKuber) LoadClientConfigReturnsOnCall(i int, result1 *rest.Config
 	}
 	fake.loadClientConfigReturnsOnCall[i] = struct {
 		result1 *rest.Config
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeKuber) SetKubeConfig(arg1 *api.Config) (*api.Config, error) {
+	fake.setKubeConfigMutex.Lock()
+	ret, specificReturn := fake.setKubeConfigReturnsOnCall[len(fake.setKubeConfigArgsForCall)]
+	fake.setKubeConfigArgsForCall = append(fake.setKubeConfigArgsForCall, struct {
+		arg1 *api.Config
+	}{arg1})
+	stub := fake.SetKubeConfigStub
+	fakeReturns := fake.setKubeConfigReturns
+	fake.recordInvocation("SetKubeConfig", []interface{}{arg1})
+	fake.setKubeConfigMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeKuber) SetKubeConfigCallCount() int {
+	fake.setKubeConfigMutex.RLock()
+	defer fake.setKubeConfigMutex.RUnlock()
+	return len(fake.setKubeConfigArgsForCall)
+}
+
+func (fake *FakeKuber) SetKubeConfigCalls(stub func(*api.Config) (*api.Config, error)) {
+	fake.setKubeConfigMutex.Lock()
+	defer fake.setKubeConfigMutex.Unlock()
+	fake.SetKubeConfigStub = stub
+}
+
+func (fake *FakeKuber) SetKubeConfigArgsForCall(i int) *api.Config {
+	fake.setKubeConfigMutex.RLock()
+	defer fake.setKubeConfigMutex.RUnlock()
+	argsForCall := fake.setKubeConfigArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeKuber) SetKubeConfigReturns(result1 *api.Config, result2 error) {
+	fake.setKubeConfigMutex.Lock()
+	defer fake.setKubeConfigMutex.Unlock()
+	fake.SetKubeConfigStub = nil
+	fake.setKubeConfigReturns = struct {
+		result1 *api.Config
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeKuber) SetKubeConfigReturnsOnCall(i int, result1 *api.Config, result2 error) {
+	fake.setKubeConfigMutex.Lock()
+	defer fake.setKubeConfigMutex.Unlock()
+	fake.SetKubeConfigStub = nil
+	if fake.setKubeConfigReturnsOnCall == nil {
+		fake.setKubeConfigReturnsOnCall = make(map[int]struct {
+			result1 *api.Config
+			result2 error
+		})
+	}
+	fake.setKubeConfigReturnsOnCall[i] = struct {
+		result1 *api.Config
 		result2 error
 	}{result1, result2}
 }
@@ -461,8 +615,12 @@ func (fake *FakeKuber) Invocations() map[string][][]interface{} {
 	defer fake.getCurrentNamespaceMutex.RUnlock()
 	fake.loadAPIConfigMutex.RLock()
 	defer fake.loadAPIConfigMutex.RUnlock()
+	fake.loadAPIConfigFromPathMutex.RLock()
+	defer fake.loadAPIConfigFromPathMutex.RUnlock()
 	fake.loadClientConfigMutex.RLock()
 	defer fake.loadClientConfigMutex.RUnlock()
+	fake.setKubeConfigMutex.RLock()
+	defer fake.setKubeConfigMutex.RUnlock()
 	fake.setKubeContextMutex.RLock()
 	defer fake.setKubeContextMutex.RUnlock()
 	fake.setKubeNamespaceMutex.RLock()

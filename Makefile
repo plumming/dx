@@ -124,3 +124,5 @@ docs: clean build
 lint:
 	golangci-lint run
 
+lint-fix:
+	golangci-lint run --fix
