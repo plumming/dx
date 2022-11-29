@@ -56,13 +56,10 @@ func NewUpgradeCliCmd() *cobra.Command {
 		Short:   "Upgrade the cli",
 		Long:    "",
 		Example: "",
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			c.Cmd = cmd
 			c.Args = args
-			err := c.Run()
-			if err != nil {
-				log.Logger().Fatalf("unable to run command: %s", err)
-			}
+			return c.Run()
 		},
 		Args: cobra.NoArgs,
 	}
