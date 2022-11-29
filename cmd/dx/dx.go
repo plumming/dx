@@ -175,13 +175,10 @@ var filePrepender = func(in string) string {
 var docsCmd = &cobra.Command{
 	Use:    "docs",
 	Hidden: true,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		RootCmd.DisableAutoGenTag = true
 
-		err := doc.GenMarkdownTreeCustom(RootCmd, "./docs", filePrepender, linkHandler)
-		if err != nil {
-			fmt.Println(err)
-		}
+		return doc.GenMarkdownTreeCustom(RootCmd, "./docs", filePrepender, linkHandler)
 	},
 }
 

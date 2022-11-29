@@ -1,7 +1,6 @@
 package deletecmd
 
 import (
-	"github.com/jenkins-x/jx-logging/pkg/log"
 	"github.com/spf13/cobra"
 )
 
@@ -19,13 +18,10 @@ func NewDeleteCmd() *cobra.Command {
 		Short:   "",
 		Long:    "",
 		Example: "",
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			c.Cmd = cmd
 			c.Args = args
-			err := c.Run()
-			if err != nil {
-				log.Logger().WithError(err).Fatal("unable to run command")
-			}
+			return c.Run()
 		},
 	}
 
