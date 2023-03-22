@@ -4,6 +4,7 @@ import "time"
 
 type Repository struct {
 	NameWithOwner       string              `json:"nameWithOwner"`
+	URL                 string              `json:"url"`
 	VulnerabilityAlerts VulnerabilityAlerts `json:"vulnerabilityAlerts"`
 }
 
