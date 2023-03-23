@@ -20,6 +20,15 @@ var (
         nameWithOwner
         url
         hasVulnerabilityAlertsEnabled
+		isSecurityPolicyEnabled
+        defaultBranchRef {
+          name
+          branchProtectionRule {
+            pattern
+            requiresStatusChecks
+            restrictsPushes
+          }
+        }
       }
     }
   }
