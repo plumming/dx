@@ -18,5 +18,6 @@ dx get [flags]
 * [dx get issues](dx_get_issues.md)	 - Gets your open issues
 * [dx get prs](dx_get_prs.md)	 - Gets your open prs
 * [dx get repos](dx_get_repos.md)	 - Lists your repositories
+* [dx get security-config](dx_get_security-config.md)	 - Displays the security config for configured repos
 * [dx get vulnerability-alerts](dx_get_vulnerability-alerts.md)	 - Gets your open vulnerability alerts
 
