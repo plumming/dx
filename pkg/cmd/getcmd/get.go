@@ -29,6 +29,7 @@ func NewGetCmd() *cobra.Command {
 	cmd.AddCommand(NewGetReposCmd())
 	cmd.AddCommand(NewGetIssuesCmd())
 	cmd.AddCommand(NewGetVulnerabilityAlertsCmd())
+	cmd.AddCommand(NewGetSecurityConfigCmd())
 
 	return cmd
 }
