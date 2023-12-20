@@ -77,16 +77,16 @@ func DxConfigFile() string {
 }
 
 // credit https://gist.github.com/r0l1/92462b38df26839a3ca324697c8cba04
-func CopyFile(src, dst string) (err error) {
+func CopyFile(src, dst string) error {
 	in, err := os.Open(src)
 	if err != nil {
-		return
+		return err
 	}
 	defer in.Close()
 
 	out, err := os.Create(dst)
 	if err != nil {
-		return
+		return err
 	}
 	defer func() {
 		if e := out.Close(); e != nil {
@@ -96,28 +96,28 @@ func CopyFile(src, dst string) (err error) {
 
 	_, err = io.Copy(out, in)
 	if err != nil {
-		return
+		return err
 	}
 
 	err = out.Sync()
 	if err != nil {
-		return
+		return err
 	}
 
 	si, err := os.Stat(src)
 	if err != nil {
-		return
+		return err
 	}
 	err = os.Chmod(dst, si.Mode())
 	if err != nil {
-		return
+		return err
 	}
 
 	return nil
 }
 
 // credit https://gist.github.com/r0l1/92462b38df26839a3ca324697c8cba04
-func CopyDir(src string, dst string, force bool) (err error) {
+func CopyDir(src string, dst string, force bool) error {
 	src = filepath.Clean(src)
 	dst = filepath.Clean(dst)
 
@@ -131,7 +131,7 @@ func CopyDir(src string, dst string, force bool) (err error) {
 
 	_, err = os.Stat(dst)
 	if err != nil && !os.IsNotExist(err) {
-		return
+		return err
 	}
 	if err == nil {
 		if force {
@@ -143,12 +143,12 @@ func CopyDir(src string, dst string, force bool) (err error) {
 
 	err = os.MkdirAll(dst, si.Mode())
 	if err != nil {
-		return
+		return err
 	}
 
 	entries, err := ioutil.ReadDir(src)
 	if err != nil {
-		return
+		return err
 	}
 
 	for _, entry := range entries {
@@ -158,7 +158,7 @@ func CopyDir(src string, dst string, force bool) (err error) {
 		if entry.IsDir() {
 			err = CopyDir(srcPath, dstPath, force)
 			if err != nil {
-				return
+				return err
 			}
 		} else {
 			// Skip symlinks.
@@ -168,7 +168,7 @@ func CopyDir(src string, dst string, force bool) (err error) {
 
 			err = CopyFile(srcPath, dstPath)
 			if err != nil {
-				return
+				return err
 			}
 		}
 	}

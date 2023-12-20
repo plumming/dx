@@ -138,7 +138,8 @@ func (c *GetPrsCmd) Run() error {
 			)
 		}
 
-		for _, pr := range d.PullRequests {
+		for _, p := range d.PullRequests {
+			pr := p
 			if pullURL != pr.PullsString() {
 				table.AddRow(fmt.Sprintf("# %s", util.ColorAnswer(pr.PullsString())))
 				pullURL = pr.PullsString()
@@ -163,7 +164,7 @@ func (c *GetPrsCmd) Run() error {
 	}
 
 	if (d.FilteredBotAccounts + d.FilteredLabels) > 0 {
-		flags := []string{}
+		var flags []string
 		if d.FilteredBotAccounts > 0 {
 			flags = append(flags, "--show-bots")
 		}
