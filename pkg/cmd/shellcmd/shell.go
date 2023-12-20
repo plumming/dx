@@ -195,7 +195,7 @@ func (c *ShellCmd) createNewBashPrompt(prompt string) string {
 
 func (c *ShellCmd) createNewZshPrompt(prompt string) string {
 	if prompt == "" {
-		return fmt.Sprintf("'[$(%s) %n@%m %c]\\$ '", defaultPromptCommand)
+		return fmt.Sprintf("'[$(%s) %%n@%%m %%c]\\$ '", defaultPromptCommand)
 	}
 	if strings.Contains(prompt, defaultPromptCommand) {
 		return prompt
