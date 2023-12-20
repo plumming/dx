@@ -115,7 +115,8 @@ func (c *GetIssuesCmd) Run() error {
 		)
 	}
 
-	for _, issue := range d.Issues {
+	for _, i := range d.Issues {
+		issue := i
 		if pullURL != issue.IssueString() {
 			table.AddRow(fmt.Sprintf("# %s", util.ColorAnswer(issue.IssueString())))
 			pullURL = issue.IssueString()
