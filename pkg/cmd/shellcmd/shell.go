@@ -26,7 +26,8 @@ type ShellCmd struct {
 }
 
 const (
-	defaultRcFile = `
+	defaultPromptCommand = "dx prompt"
+	defaultRcFile        = `
 if [ -f /etc/bashrc ]; then
     source /etc/bashrc
 fi
@@ -178,32 +179,32 @@ func (c *ShellCmd) PickContext(names []string, defaultValue string) (string, err
 
 func (c *ShellCmd) createNewBashPrompt(prompt string) string {
 	if prompt == "" {
-		return "'[\\u@\\h \\W \\$(jx prompt) ]\\$ '"
+		return fmt.Sprintf("'[\\u@\\h \\W \\$(%s) ]\\$ '", defaultPromptCommand)
 	}
-	if strings.Contains(prompt, "jx prompt") {
+	if strings.Contains(prompt, defaultPromptCommand) {
 		return prompt
 	}
 	if prompt[0] == '"' {
-		return prompt[0:1] + "\\$(jx prompt) " + prompt[1:]
+		return prompt[0:1] + fmt.Sprintf("\\$(%s) ", defaultPromptCommand) + prompt[1:]
 	}
 	if prompt[0] == '\'' {
-		return prompt[0:1] + "$(jx prompt) " + prompt[1:]
+		return prompt[0:1] + fmt.Sprintf("$(%s) ", defaultPromptCommand) + prompt[1:]
 	}
-	return "'$(jx prompt) " + prompt + "'"
+	return fmt.Sprintf("'$(%s) ", defaultPromptCommand) + prompt + "'"
 }
 
 func (c *ShellCmd) createNewZshPrompt(prompt string) string {
 	if prompt == "" {
-		return "'[$(jx prompt) %n@%m %c]\\$ '"
+		return fmt.Sprintf("'[$(%s) %n@%m %c]\\$ '", defaultPromptCommand)
 	}
-	if strings.Contains(prompt, "jx prompt") {
+	if strings.Contains(prompt, defaultPromptCommand) {
 		return prompt
 	}
 	if prompt[0] == '"' {
-		return prompt[0:1] + "$(jx prompt) " + prompt[1:]
+		return prompt[0:1] + fmt.Sprintf("$(%s) ", defaultPromptCommand) + prompt[1:]
 	}
 	if prompt[0] == '\'' {
-		return prompt[0:1] + "$(jx prompt) " + prompt[1:]
+		return prompt[0:1] + fmt.Sprintf("$(%s) ", defaultPromptCommand) + prompt[1:]
 	}
-	return "'$(jx prompt) " + prompt + "'"
+	return fmt.Sprintf("'$(%s) ", defaultPromptCommand) + prompt + "'"
 }

@@ -9,6 +9,8 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"github.com/plumming/dx/pkg/cmd/promptcmd"
+
 	"github.com/plumming/dx/pkg/cmd/shellcmd"
 
 	"github.com/plumming/dx/pkg/cmd/importcmd"
@@ -87,6 +89,7 @@ func init() {
 	RootCmd.AddCommand(rebasecmd.NewRebaseCmd())
 	RootCmd.AddCommand(namespacecmd.NewNamespaceCmd())
 	RootCmd.AddCommand(shellcmd.NewShellCmd())
+	RootCmd.AddCommand(promptcmd.NewPromptCmd())
 
 	c := completionCmd
 	c.Flags().StringP("shell", "s", "bash", "Shell type: {bash|zsh|fish|powershell}")
