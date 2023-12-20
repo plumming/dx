@@ -21,6 +21,7 @@ Have you got the chillies.
 * [dx get](dx_get.md)	 - 
 * [dx import](dx_import.md)	 - 
 * [dx namespace](dx_namespace.md)	 - View or change the current Kubernetes cluster namespace
+* [dx prompt](dx_prompt.md)	 - Configure a new command prompt
 * [dx rebase](dx_rebase.md)	 - Rebase the local clone
 * [dx shell](dx_shell.md)	 - Launch a new shell with a copy of the current kubernetes config
 * [dx upgrade](dx_upgrade.md)	 - 
