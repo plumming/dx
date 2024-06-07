@@ -3,7 +3,7 @@ module github.com/plumming/dx
 go 1.22.2
 
 require (
-	github.com/fatih/color v1.16.0
+	github.com/fatih/color v1.17.0
 	github.com/hashicorp/go-version v1.6.0
 	github.com/jenkins-x/jx-logging v0.0.11
 	github.com/jmespath/go-jmespath v0.4.0
