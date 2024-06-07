@@ -1,92 +1,34 @@
----
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+# vim: set ts=2 sw=2 tw=0 fo=jcroql
+version: 2
+
 env:
   - GO111MODULE=on
   - CGO_ENABLED=0
+
 before:
   hooks:
     - go mod download
 
 builds:
-  - id: dx-linux
-    # Path to main.go file or main package.
-    # Default is `.`.
+  - id: dx
     main: ./cmd/dx/dx.go
-
-    # Binary name.
-    # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
-    # Default is the name of the project directory.
     binary: dx
-
-    # Custom ldflags templates.
-    # Default is `-s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}} -X main.builtBy=goreleaser`.
     ldflags:
       - -X github.com/plumming/dx/pkg/version.Version={{.Version}} -X github.com/plumming/dx/pkg/version.Revision={{.ShortCommit}} -X github.com/plumming/dx/pkg/version.BuildDate={{.CommitDate}}
-
-    # GOOS list to build for.
-    # For more info refer to: https://golang.org/doc/install/source#environment
-    # Defaults are darwin and linux.
-    goos:
-      - linux
-
-    # GOARCH to build for.
-    # For more info refer to: https://golang.org/doc/install/source#environment
-    # Defaults are 386 and amd64.
-    goarch:
-      - amd64
-      - arm64
-
-  - id: dx-amd64
-    # Path to main.go file or main package.
-    # Default is `.`.
-    main: ./cmd/dx/dx.go
-
-    # Binary name.
-    # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
-    # Default is the name of the project directory.
-    binary: dx
-
-    # Custom ldflags templates.
-    # Default is `-s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}} -X main.builtBy=goreleaser`.
-    ldflags:
-      - -X github.com/plumming/dx/pkg/version.Version={{.Version}} -X github.com/plumming/dx/pkg/version.Revision={{.ShortCommit}} -X github.com/plumming/dx/pkg/version.BuildDate={{.CommitDate}}
-
-    # GOOS list to build for.
-    # For more info refer to: https://golang.org/doc/install/source#environment
-    # Defaults are darwin and linux.
     goos:
       - darwin
-
-    # GOARCH to build for.
-    # For more info refer to: https://golang.org/doc/install/source#environment
-    # Defaults are 386 and amd64.
+      - linux
     goarch:
       - amd64
       - arm64
-
   - id: dx-windows-amd64
-    # Path to main.go file or main package.
-    # Default is `.`.
     main: ./cmd/dx/dx.go
-
-    # Binary name.
-    # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
-    # Default is the name of the project directory.
     binary: dx
-
-    # Custom ldflags templates.
-    # Default is `-s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}} -X main.builtBy=goreleaser`.
     ldflags:
       - -X github.com/plumming/dx/pkg/version.Version={{.Version}} -X github.com/plumming/dx/pkg/version.Revision={{.ShortCommit}} -X github.com/plumming/dx/pkg/version.BuildDate={{.CommitDate}}
-
-    # GOOS list to build for.
-    # For more info refer to: https://golang.org/doc/install/source#environment
-    # Defaults are darwin and linux.
     goos:
       - windows
-
-    # GOARCH to build for.
-    # For more info refer to: https://golang.org/doc/install/source#environment
-    # Defaults are 386 and amd64.
     goarch:
       - amd64
 
@@ -97,82 +39,28 @@ archives:
         format: zip
 
 checksum:
-  # You can change the name of the checksums file.
-  # Default is `{{ .ProjectName }}_{{ .Version }}_checksums.txt`.
   name_template: "{{ .ProjectName }}-checksums.txt"
-
-  # Algorithm to be used.
-  # Accepted options are sha256, sha512, sha1, crc32, md5, sha224 and sha384.
-  # Default is sha256.
   algorithm: sha256
 
 changelog:
-  # set it to true if you wish to skip the changelog generation
   skip: false
 
 release:
-  # If set to true, will not auto-publish the release.
-  # Default is false.
   draft: false
-
-  # If set to auto, will mark the release as not ready for production
-  # in case there is an indicator for this in the tag e.g. v1.0.0-rc1
-  # If set to true, will mark the release as not ready for production.
-  # Default is false.
   prerelease: false
-
-  # You can change the name of the GitHub release.
-  # Default is `{{.Tag}}`
   name_template: "{{.Tag}}"
 
 brews:
-  -
-    # Name template of the recipe
-    # Default to project name
-    name: dx
-
-    # NOTE: make sure the url_template, the token and given repo (github or gitlab) owner and name are from the
-    # same kind. We will probably unify this in the next major version like it is done with scoop.
-
-    # GitHub/GitLab repository to push the formula to
-    # Gitea is not supported yet, but the support coming
+  - name: dx
     tap:
       owner: plumming
       name: homebrew-tap
       token: "{{ .Env.CHILLY_TAP_TOKEN }}"
 
-    # Allows you to set a custom download strategy. Note that you'll need
-    # to implement the strategy and add it to your tap repository.
-    # Example: https://docs.brew.sh/Formula-Cookbook#specifying-the-download-strategy-explicitly
-    # Default is empty.
-    # download_strategy: CurlDownloadStrategy.
-
-    # Git author used to commit to the repository.
-    # Defaults are shown.
     commit_author:
       name: garethjevans
       email: gareth@bryncynfelin.co.uk
 
-    # Folder inside the repository to put the formula.
-    # Default is the root folder.
     folder: Formula
-
-    # Caveats for the user of your binary.
-    # Default is empty.
     caveats: "How to use this binary"
-
-    # Your app's homepage.
-    # Default is empty.
-    # homepage: "https://example.com/"
-
-    # Your app's description.
-    # Default is empty.
     description: "Have you got the chillys?"
-
-    # Setting this will prevent goreleaser to actually try to commit the updated
-    # formula - instead, the formula file will be stored on the dist folder only,
-    # leaving the responsibility of publishing it to the user.
-    # If set to auto, the release will not be uploaded to the homebrew tap
-    # in case there is an indicator for prerelease in the tag e.g. v1.0.0-rc1
-    # Default is false.
-    # skip_upload: true
