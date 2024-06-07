@@ -43,7 +43,7 @@ checksum:
   algorithm: sha256
 
 changelog:
-  skip: false
+  disable: false
 
 release:
   draft: false
@@ -52,15 +52,13 @@ release:
 
 brews:
   - name: dx
-    tap:
+    repository:
       owner: plumming
       name: homebrew-tap
       token: "{{ .Env.CHILLY_TAP_TOKEN }}"
-
     commit_author:
       name: garethjevans
       email: gareth@bryncynfelin.co.uk
-
-    folder: Formula
+    directory: Formula
     caveats: "How to use this binary"
     description: "Have you got the chillys?"
