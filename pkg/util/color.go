@@ -73,7 +73,7 @@ func GetColor(optionName string, colorNames []string) (*color.Color, error) {
 	for _, colorName := range colorNames {
 		a := colorMap[colorName]
 		if a == color.Attribute(0) {
-			return nil, fmt.Errorf("invalid color: " + optionName)
+			return nil, fmt.Errorf("invalid color: %s", optionName)
 		}
 		attributes = append(attributes, a)
 	}
