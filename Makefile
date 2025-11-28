@@ -122,6 +122,7 @@ docs: clean build
 	./hack/generate_docs_links.sh
 
 lint:
+	golangci-lint config verify
 	golangci-lint run
 
 lint-fix:
