@@ -81,9 +81,9 @@ func LoadFromFile(path string) (Config, error) {
 
 func (c *fileBasedConfig) setDefaults() {
 	// migrate from the old structure to the new structure
-	if c.Repositories == nil || len(c.Repositories) == 0 {
+	if len(c.Repositories) == 0 {
 		c.Repositories = make(map[string][]string)
-		if c.Repos == nil || len(c.Repos) == 0 {
+		if len(c.Repos) == 0 {
 			c.Repositories["github.com"] = defaultGitHubRepos
 		} else {
 			c.Repositories["github.com"] = c.Repos
@@ -91,7 +91,7 @@ func (c *fileBasedConfig) setDefaults() {
 		}
 	}
 
-	if c.HiddenLabels == nil || len(c.HiddenLabels) == 0 {
+	if len(c.HiddenLabels) == 0 {
 		c.HiddenLabels = defaultHiddenLabels
 	}
 
@@ -103,7 +103,7 @@ func (c *fileBasedConfig) setDefaults() {
 		c.MaxAge = defaultMaxAge
 	}
 
-	if c.BotAccounts == nil || len(c.BotAccounts) == 0 {
+	if len(c.BotAccounts) == 0 {
 		c.BotAccounts = defaultBotAccounts
 	}
 }
