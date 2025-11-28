@@ -1,39 +1,6 @@
-linters-settings:
-  dupl:
-    threshold: 100
-  exhaustive:
-    default-signifies-exhaustive: false
-  funlen:
-    lines: 200
-    statements: 150
-  goconst:
-    min-len: 3
-    min-occurrences: 5
-  gocritic:
-    enabled-tags:
-      - diagnostic
-      - experimental
-      - opinionated
-      - performance
-      - style
-    disabled-checks:
-      - dupImport # https://github.com/go-critic/go-critic/issues/845
-      - ifElseChain
-      - octalLiteral
-      - whyNoLint
-      - wrapperFunc
-  gocyclo:
-    min-complexity: 30
-  lll:
-    line-length: 140
-  nolintlint:
-    allow-unused: false # report any unused nolint directives
-    require-explanation: false # don't require an explanation for nolint directives
-    require-specific: false # don't require nolint directives to be specific about which linter is being skipped
+version: "2"
 linters:
-  # please, do not use `enable-all`: it's deprecated and will be removed soon.
-  # inverted configuration with `enable-all` and `disable` is not scalable during updates of golangci-lint
-  disable-all: true
+  default: none
   enable:
     - asciicheck
     - dogsled
@@ -43,31 +10,76 @@ linters:
     - goconst
     - gocyclo
     - godot
-    - gofmt
-    - goimports
     - goprintffuncname
     - gosec
-    - gosimple
-    - ineffassign  
+    - ineffassign
     - misspell
     - nakedret
     - nolintlint
     - rowserrcheck
-    - stylecheck
-    - typecheck
+    - staticcheck
     - unconvert
     - unparam
     - unused
     - whitespace
-issues:
-  # Excluding configuration per-path, per-linter, per-text and per-source
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - gomnd
-        - funlen
-    - linters:
-        - gocritic
-      text: "unnecessaryDefer:"
-run:
-  timeout: 5m
+  settings:
+    dupl:
+      threshold: 100
+    exhaustive:
+      default-signifies-exhaustive: false
+    funlen:
+      lines: 200
+      statements: 150
+    goconst:
+      min-len: 3
+      min-occurrences: 5
+    gocritic:
+      disabled-checks:
+        - dupImport
+        - ifElseChain
+        - octalLiteral
+        - whyNoLint
+        - wrapperFunc
+      enabled-tags:
+        - diagnostic
+        - experimental
+        - opinionated
+        - performance
+        - style
+    gocyclo:
+      min-complexity: 30
+    lll:
+      line-length: 140
+    nolintlint:
+      require-explanation: false
+      require-specific: false
+      allow-unused: false
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - funlen
+          - mnd
+        path: _test\.go
+      - linters:
+          - gocritic
+        text: 'unnecessaryDefer:'
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

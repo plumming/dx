@@ -49,10 +49,10 @@ func TestGetPrs_Run(t *testing.T) {
 	d.SetGithubClient(client)
 
 	// github.com
-	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(userResponse)))
+	http.StubResponse(200, bytes.NewBufferString(fmt.Sprint(userResponse)))
 	http.StubResponse(200, bytes.NewBufferString(expectedResponse("github.com")))
 	// other.com
-	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(userResponse)))
+	http.StubResponse(200, bytes.NewBufferString(fmt.Sprint(userResponse)))
 	http.StubResponse(200, bytes.NewBufferString(expectedResponse("other.com")))
 
 	err := d.Run()
@@ -102,7 +102,7 @@ func TestGetPrs_Run_ShowOnHold(t *testing.T) {
 
 	d.SetDxConfig(&dxConfig)
 
-	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(userResponse)))
+	http.StubResponse(200, bytes.NewBufferString(fmt.Sprint(userResponse)))
 	http.StubResponse(200, bytes.NewBufferString(expectedResponse("github.com")))
 
 	err := d.Run()
@@ -144,7 +144,7 @@ func TestGetPrs_Run_ShowBots(t *testing.T) {
 
 	d.SetDxConfig(&dxConfig)
 
-	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(userResponse)))
+	http.StubResponse(200, bytes.NewBufferString(fmt.Sprint(userResponse)))
 	http.StubResponse(200, bytes.NewBufferString(expectedResponse("github.com")))
 
 	err := d.Run()

@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"regexp"
@@ -177,7 +176,7 @@ func handleResponse(resp *http.Response, data interface{}) error {
 		return handleHTTPError(resp)
 	}
 
-	body, err := ioutil.ReadAll(io.LimitReader(resp.Body, 10000000))
+	body, err := io.ReadAll(io.LimitReader(resp.Body, 10000000))
 	if err != nil {
 		return err
 	}
@@ -222,7 +221,7 @@ func (c *Client) REST(host string, method string, path string, body io.Reader, d
 		return nil
 	}
 
-	b, err := ioutil.ReadAll(io.LimitReader(resp.Body, 10000000))
+	b, err := io.ReadAll(io.LimitReader(resp.Body, 10000000))
 	if err != nil {
 		return err
 	}
@@ -275,7 +274,7 @@ func handleHTTPError(resp *http.Response) error {
 	var parsedBody struct {
 		Message string `json:"message"`
 	}
-	body, err := ioutil.ReadAll(io.LimitReader(resp.Body, 10000000))
+	body, err := io.ReadAll(io.LimitReader(resp.Body, 10000000))
 	if err != nil {
 		return err
 	}

@@ -3,7 +3,6 @@ package util
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -36,7 +35,7 @@ func ReadFile(fn string) ([]byte, error) {
 	}
 	defer f.Close()
 
-	data, err := ioutil.ReadAll(f)
+	data, err := io.ReadAll(f)
 	if err != nil {
 		return nil, err
 	}
@@ -146,7 +145,7 @@ func CopyDir(src string, dst string, force bool) error {
 		return err
 	}
 
-	entries, err := ioutil.ReadDir(src)
+	entries, err := os.ReadDir(src)
 	if err != nil {
 		return err
 	}
@@ -162,7 +161,7 @@ func CopyDir(src string, dst string, force bool) error {
 			}
 		} else {
 			// Skip symlinks.
-			if entry.Mode()&os.ModeSymlink != 0 {
+			if entry.Type()&os.ModeSymlink != 0 {
 				continue
 			}
 

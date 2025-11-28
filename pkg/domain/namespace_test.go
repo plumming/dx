@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -64,7 +63,7 @@ func TestSelectNamespaceUsingConfigFile_Run(t *testing.T) {
 	kuber := want.Kuber()
 
 	// setup files to read and update
-	baseDir, err := ioutil.TempDir("", "test_select_namespace")
+	baseDir, err := os.MkdirTemp("", "test_select_namespace")
 	assert.NoError(t, err)
 	testData := path.Join("test_data", "namespace_test")
 	_, err = os.Stat(testData)

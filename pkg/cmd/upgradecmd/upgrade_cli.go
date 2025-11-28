@@ -199,10 +199,10 @@ func UnTargz(tarball, target string, onlyFiles []string) error {
 	defer zreader.Close()
 
 	reader, err := gzip.NewReader(zreader)
-	defer reader.Close()
 	if err != nil {
 		panic(err)
 	}
+	defer reader.Close()
 
 	tarReader := tar.NewReader(reader)
 

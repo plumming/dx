@@ -2,7 +2,6 @@ package domain_test
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"strings"
@@ -18,7 +17,7 @@ import (
 func TestCanDetermineBranchName(t *testing.T) {
 	cr := util.DefaultCommandRunner{}
 
-	dir, err := ioutil.TempDir("", "domain_test__TestCanDetermineBranchName")
+	dir, err := os.MkdirTemp("", "domain_test__TestCanDetermineBranchName")
 	assert.NoError(t, err)
 
 	defer os.RemoveAll(dir)
@@ -42,7 +41,7 @@ func TestCanDetermineBranchName(t *testing.T) {
 func TestCanStash(t *testing.T) {
 	cr := util.DefaultCommandRunner{}
 
-	dir, err := ioutil.TempDir("", "domain_test__TestCanStash")
+	dir, err := os.MkdirTemp("", "domain_test__TestCanStash")
 	assert.NoError(t, err)
 
 	defer os.RemoveAll(dir)
@@ -63,7 +62,7 @@ func TestCanStash(t *testing.T) {
 	assert.NoError(t, err)
 
 	d1 := []byte("# domain_test__TestCanStash\n")
-	err = ioutil.WriteFile(path.Join(dir, "README.md"), d1, 0600)
+	err = os.WriteFile(path.Join(dir, "README.md"), d1, 0600)
 	assert.NoError(t, err)
 
 	output, err = domain.Add(dir, "README.md")
@@ -79,7 +78,7 @@ func TestCanStash(t *testing.T) {
 	assert.False(t, localChanges)
 
 	d1 = []byte("hello\ngo\n")
-	err = ioutil.WriteFile(path.Join(dir, "README.md"), d1, 0600)
+	err = os.WriteFile(path.Join(dir, "README.md"), d1, 0600)
 	assert.NoError(t, err)
 
 	localChanges, err = domain.LocalChanges(dir)
@@ -119,7 +118,7 @@ func TestCanStash(t *testing.T) {
 	assert.False(t, localChanges)
 
 	d1 = []byte("hello\ngo\n")
-	err = ioutil.WriteFile(path.Join(dir, "OTHER.md"), d1, 0600)
+	err = os.WriteFile(path.Join(dir, "OTHER.md"), d1, 0600)
 	assert.NoError(t, err)
 
 	localChanges, err = domain.LocalChanges(dir)

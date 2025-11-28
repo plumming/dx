@@ -49,10 +49,10 @@ func TestGetIssues_Run(t *testing.T) {
 	d.SetGithubClient(client)
 
 	// github.com
-	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(userIssuesResponse)))
+	http.StubResponse(200, bytes.NewBufferString(fmt.Sprint(userIssuesResponse)))
 	http.StubResponse(200, bytes.NewBufferString(expectedIssuesResponse("github.com")))
 	// other.com
-	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(userIssuesResponse)))
+	http.StubResponse(200, bytes.NewBufferString(fmt.Sprint(userIssuesResponse)))
 	http.StubResponse(200, bytes.NewBufferString(expectedIssuesResponse("other.com")))
 
 	err := d.Run()
@@ -102,7 +102,7 @@ func TestGetIssues_Run_ShowOnHold(t *testing.T) {
 
 	d.SetDxConfig(&dxConfig)
 
-	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(userIssuesResponse)))
+	http.StubResponse(200, bytes.NewBufferString(fmt.Sprint(userIssuesResponse)))
 	http.StubResponse(200, bytes.NewBufferString(expectedIssuesResponse("github.com")))
 
 	err := d.Run()
@@ -144,7 +144,7 @@ func TestGetIssues_Run_ShowBots(t *testing.T) {
 
 	d.SetDxConfig(&dxConfig)
 
-	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(userIssuesResponse)))
+	http.StubResponse(200, bytes.NewBufferString(fmt.Sprint(userIssuesResponse)))
 	http.StubResponse(200, bytes.NewBufferString(expectedIssuesResponse("github.com")))
 
 	err := d.Run()

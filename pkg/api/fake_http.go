@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path"
@@ -23,7 +22,7 @@ type FakeHTTP struct {
 func (f *FakeHTTP) StubResponse(status int, body io.Reader) {
 	resp := &http.Response{
 		StatusCode: status,
-		Body:       ioutil.NopCloser(body),
+		Body:       io.NopCloser(body),
 	}
 	defer func() {
 		_ = resp.Body.Close()
@@ -68,7 +67,7 @@ func (f *FakeHTTP) StubRepoResponseWithPermission(owner, repo, permission string
 	`, repo, owner, permission))
 	resp := &http.Response{
 		StatusCode: 200,
-		Body:       ioutil.NopCloser(body),
+		Body:       io.NopCloser(body),
 	}
 	defer func() {
 		_ = resp.Body.Close()
@@ -101,7 +100,7 @@ func (f *FakeHTTP) StubForkedRepoResponse(forkFullName, parentFullName string) {
 	`, forkRepo[1], forkRepo[0], parentRepo[1], parentRepo[0]))
 	resp := &http.Response{
 		StatusCode: 200,
-		Body:       ioutil.NopCloser(body),
+		Body:       io.NopCloser(body),
 	}
 	defer func() {
 		_ = resp.Body.Close()

@@ -3,7 +3,6 @@ package httpmock
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -29,6 +28,6 @@ func StringResponse(body string) Responder {
 func httpResponse(status int, body io.Reader) *http.Response {
 	return &http.Response{
 		StatusCode: status,
-		Body:       ioutil.NopCloser(body),
+		Body:       io.NopCloser(body),
 	}
 }

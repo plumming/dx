@@ -2,7 +2,6 @@ package shellcmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -91,7 +90,7 @@ func (c *ShellCmd) Run() error {
 	newConfig.CurrentContext = ctxName
 
 	c.cleanup()
-	tmpDirName, err := ioutil.TempDir("/tmp", ".dx-shell-")
+	tmpDirName, err := os.MkdirTemp("/tmp", ".dx-shell-")
 	if err != nil {
 		return err
 	}
