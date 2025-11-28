@@ -120,13 +120,14 @@ func (p *PullRequest) ColoredTitle() string {
 }
 
 func (p *PullRequest) ColoredReviewDecision() string {
-	if p.ReviewDecision == "APPROVED" {
+	switch p.ReviewDecision {
+	case "APPROVED":
 		return util.ColorInfo("Approved")
-	} else if p.ReviewDecision == "REVIEW_REQUIRED" {
+	case "REVIEW_REQUIRED":
 		return util.ColorWarning("Required")
-	} else if p.ReviewDecision == "CHANGES_REQUESTED" {
+	case "CHANGES_REQUESTED":
 		return util.ColorError("Changes Requested")
-	} else {
+	default:
 		return p.ReviewDecision
 	}
 }

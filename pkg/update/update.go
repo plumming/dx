@@ -2,6 +2,7 @@ package update
 
 import (
 	"fmt"
+	"os"
 
 	"gopkg.in/yaml.v2"
 
@@ -10,7 +11,6 @@ import (
 	"github.com/hashicorp/go-version"
 	"github.com/plumming/dx/pkg/api"
 
-	"io/ioutil"
 	"time"
 )
 
@@ -64,7 +64,7 @@ func GetLatestReleaseInfo(client *api.Client, stateFilePath, repo string, force 
 }
 
 func getStateEntry(stateFilePath string) (*StateEntry, error) {
-	content, err := ioutil.ReadFile(stateFilePath)
+	content, err := os.ReadFile(stateFilePath)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +84,7 @@ func setStateEntry(stateFilePath string, t time.Time, r ReleaseInfo) error {
 	if err != nil {
 		return err
 	}
-	_ = ioutil.WriteFile(stateFilePath, content, 0600)
+	_ = os.WriteFile(stateFilePath, content, 0600)
 
 	return nil
 }

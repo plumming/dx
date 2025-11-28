@@ -125,7 +125,7 @@ var versionCmd = &cobra.Command{
 	Use:    "version",
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf(versionOutput)
+		fmt.Print(versionOutput)
 	},
 }
 
@@ -153,7 +153,7 @@ var filePrepender = func(in string) string {
 
 	name := filepath.Base(in)
 	base := strings.TrimSuffix(name, path.Ext(name))
-	command := strings.Replace(base, "_", " ", -1)
+	command := strings.ReplaceAll(base, "_", " ")
 
 	content := ""
 

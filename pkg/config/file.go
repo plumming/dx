@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"sort"
 
@@ -65,7 +64,7 @@ func (c *fileBasedConfig) GetConfiguredServers() []string {
 
 func LoadFromFile(path string) (Config, error) {
 	if exists, err := util.FileExists(path); err == nil && exists {
-		content, err := ioutil.ReadFile(path)
+		content, err := os.ReadFile(path)
 		if err != nil {
 			return &fileBasedConfig{}, err
 		}
@@ -152,7 +151,7 @@ func (c *fileBasedConfig) SaveToFile(path string) error {
 	if err != nil {
 		return err
 	}
-	err = ioutil.WriteFile(path, data, 0600)
+	err = os.WriteFile(path, data, 0600)
 	if err != nil {
 		return err
 	}

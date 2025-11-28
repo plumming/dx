@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"io/ioutil"
+	"io"
 	"os"
 	"path"
 
@@ -46,7 +46,7 @@ var readConfigFile = func(fn string) ([]byte, error) {
 	}
 	defer func() { _ = f.Close() }()
 
-	data, err := ioutil.ReadAll(f)
+	data, err := io.ReadAll(f)
 	if err != nil {
 		return nil, err
 	}

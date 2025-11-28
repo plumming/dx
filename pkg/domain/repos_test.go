@@ -488,7 +488,7 @@ func TestRepos_ListRepositoriesForUser(t *testing.T) {
 	fakeConfig.GetMaxAgeOfPRsReturns(-1)
 	d.SetDxConfig(fakeConfig)
 
-	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(userRepos)))
+	http.StubResponse(200, bytes.NewBufferString(fmt.Sprint(userRepos)))
 
 	repos, err := d.ListRepositoriesForUser("github.com", "u")
 	assert.NoError(t, err)
@@ -519,7 +519,7 @@ func TestRepos_ListRepositoriesForOrg(t *testing.T) {
 	fakeConfig.GetMaxAgeOfPRsReturns(-1)
 	d.SetDxConfig(fakeConfig)
 
-	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(orgRepos)))
+	http.StubResponse(200, bytes.NewBufferString(fmt.Sprint(orgRepos)))
 
 	repos, err := d.ListRepositoriesForOrg("github.com", "o")
 	assert.NoError(t, err)
@@ -554,7 +554,7 @@ func TestRepos_DeleteRepositoriesForOrg(t *testing.T) {
 	d.SetPrompter(prompter)
 	prompter.SelectMultipleFromOptionsReturns([]string{"Hello-World"}, nil)
 
-	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(orgRepos)))
+	http.StubResponse(200, bytes.NewBufferString(fmt.Sprint(orgRepos)))
 	http.StubResponse(204, bytes.NewBufferString(""))
 
 	err := d.DeleteRepositoriesFromOrg("github.com", "o")
@@ -593,7 +593,7 @@ func TestRepos_DeleteRepositoriesForUser(t *testing.T) {
 	d.SetPrompter(prompter)
 	prompter.SelectMultipleFromOptionsReturns([]string{"Hello-World"}, nil)
 
-	http.StubResponse(200, bytes.NewBufferString(fmt.Sprintf(orgRepos)))
+	http.StubResponse(200, bytes.NewBufferString(fmt.Sprint(orgRepos)))
 	http.StubResponse(204, bytes.NewBufferString(""))
 
 	err := d.DeleteRepositoriesFromUser("github.com", "u")

@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -43,13 +42,13 @@ func TestHostsFile(t *testing.T) {
 }
 
 func TestCanLoadConfigFromFile(t *testing.T) {
-	configFile, err := ioutil.TempFile(os.TempDir(), "TestCanLoadConfigFromFile")
+	configFile, err := os.CreateTemp(os.TempDir(), "TestCanLoadConfigFromFile")
 	if err != nil {
 		panic(err)
 	}
 	defer func() { _ = os.Remove(configFile.Name()) }()
 
-	err = ioutil.WriteFile(configFile.Name(), []byte(dummyConfigFile), 0600)
+	err = os.WriteFile(configFile.Name(), []byte(dummyConfigFile), 0600)
 	assert.NoError(t, err)
 
 	config, err := parseConfigFile(configFile.Name())
@@ -77,13 +76,13 @@ func TestParseConfigWithNonExistentHostsFile(t *testing.T) {
 }
 
 func TestCanLoadHostsFromFile(t *testing.T) {
-	hostsFile, err := ioutil.TempFile(os.TempDir(), "TestCanLoadHostsFromFile")
+	hostsFile, err := os.CreateTemp(os.TempDir(), "TestCanLoadHostsFromFile")
 	if err != nil {
 		panic(err)
 	}
 	defer func() { _ = os.Remove(hostsFile.Name()) }()
 
-	err = ioutil.WriteFile(hostsFile.Name(), []byte(dummyHostsFile), 0600)
+	err = os.WriteFile(hostsFile.Name(), []byte(dummyHostsFile), 0600)
 	assert.NoError(t, err)
 
 	config, err := parseHostsFile(hostsFile.Name())
@@ -97,13 +96,13 @@ func TestCanLoadHostsFromFile(t *testing.T) {
 }
 
 func TestParseConfigFile(t *testing.T) {
-	configFile, err := ioutil.TempFile(os.TempDir(), "TestParseConfigFile")
+	configFile, err := os.CreateTemp(os.TempDir(), "TestParseConfigFile")
 	if err != nil {
 		panic(err)
 	}
 	defer func() { _ = os.Remove(configFile.Name()) }()
 
-	err = ioutil.WriteFile(configFile.Name(), []byte(dummyConfigFile), 0600)
+	err = os.WriteFile(configFile.Name(), []byte(dummyConfigFile), 0600)
 	assert.NoError(t, err)
 
 	config, err := parseConfigFile(configFile.Name())
@@ -117,13 +116,13 @@ func TestParseConfigFile(t *testing.T) {
 }
 
 func TestParseConfigFileWithYamlError(t *testing.T) {
-	configFile, err := ioutil.TempFile(os.TempDir(), "TestParseConfigFileWithYamlError")
+	configFile, err := os.CreateTemp(os.TempDir(), "TestParseConfigFileWithYamlError")
 	if err != nil {
 		panic(err)
 	}
 	defer func() { _ = os.Remove(configFile.Name()) }()
 
-	err = ioutil.WriteFile(configFile.Name(), []byte(errorConfigFile), 0600)
+	err = os.WriteFile(configFile.Name(), []byte(errorConfigFile), 0600)
 	assert.NoError(t, err)
 
 	config, err := parseConfigFile(configFile.Name())
@@ -132,13 +131,13 @@ func TestParseConfigFileWithYamlError(t *testing.T) {
 }
 
 func TestParseHostsFile(t *testing.T) {
-	hostsFile, err := ioutil.TempFile(os.TempDir(), "TestParseHostsFile")
+	hostsFile, err := os.CreateTemp(os.TempDir(), "TestParseHostsFile")
 	if err != nil {
 		panic(err)
 	}
 	defer func() { _ = os.Remove(hostsFile.Name()) }()
 
-	err = ioutil.WriteFile(hostsFile.Name(), []byte(dummyHostsFile), 0600)
+	err = os.WriteFile(hostsFile.Name(), []byte(dummyHostsFile), 0600)
 	assert.NoError(t, err)
 
 	config, err := parseHostsFile(hostsFile.Name())
@@ -152,13 +151,13 @@ func TestParseHostsFile(t *testing.T) {
 }
 
 func TestParseHostsFileWithYamlError(t *testing.T) {
-	hostsFile, err := ioutil.TempFile(os.TempDir(), "TestParseHostsFileWithYamlError")
+	hostsFile, err := os.CreateTemp(os.TempDir(), "TestParseHostsFileWithYamlError")
 	if err != nil {
 		panic(err)
 	}
 	defer func() { _ = os.Remove(hostsFile.Name()) }()
 
-	err = ioutil.WriteFile(hostsFile.Name(), []byte(errorHostsFile), 0600)
+	err = os.WriteFile(hostsFile.Name(), []byte(errorHostsFile), 0600)
 	assert.NoError(t, err)
 
 	config, err := parseHostsFile(hostsFile.Name())
@@ -174,21 +173,21 @@ func TestParseHostsWithNonExistentHostsFile(t *testing.T) {
 }
 
 func TestParseDefaultConfigWithHostsFile(t *testing.T) {
-	hostsFile, err := ioutil.TempFile(os.TempDir(), "TestParseDefaultConfigWithHostsFile1")
+	hostsFile, err := os.CreateTemp(os.TempDir(), "TestParseDefaultConfigWithHostsFile1")
 	if err != nil {
 		panic(err)
 	}
 	defer func() { _ = os.Remove(hostsFile.Name()) }()
-	configFile, err := ioutil.TempFile(os.TempDir(), "TestParseDefaultConfigWithHostsFile2")
+	configFile, err := os.CreateTemp(os.TempDir(), "TestParseDefaultConfigWithHostsFile2")
 	if err != nil {
 		panic(err)
 	}
 	defer func() { _ = os.Remove(configFile.Name()) }()
 
-	err = ioutil.WriteFile(hostsFile.Name(), []byte(dummyHostsFile), 0600)
+	err = os.WriteFile(hostsFile.Name(), []byte(dummyHostsFile), 0600)
 	assert.NoError(t, err)
 
-	err = ioutil.WriteFile(configFile.Name(), []byte(emptyConfigFile), 0600)
+	err = os.WriteFile(configFile.Name(), []byte(emptyConfigFile), 0600)
 	assert.NoError(t, err)
 
 	config, err := ParseDefaultConfig(configFile.Name(), hostsFile.Name())
@@ -202,21 +201,21 @@ func TestParseDefaultConfigWithHostsFile(t *testing.T) {
 }
 
 func TestParseDefaultConfigWithConfigFile(t *testing.T) {
-	hostsFile, err := ioutil.TempFile(os.TempDir(), "TestParseDefaultConfigWithConfigFile1")
+	hostsFile, err := os.CreateTemp(os.TempDir(), "TestParseDefaultConfigWithConfigFile1")
 	if err != nil {
 		panic(err)
 	}
 	defer func() { _ = os.Remove(hostsFile.Name()) }()
-	configFile, err := ioutil.TempFile(os.TempDir(), "TestParseDefaultConfigWithConfigFile2")
+	configFile, err := os.CreateTemp(os.TempDir(), "TestParseDefaultConfigWithConfigFile2")
 	if err != nil {
 		panic(err)
 	}
 	defer func() { _ = os.Remove(configFile.Name()) }()
 
-	err = ioutil.WriteFile(hostsFile.Name(), []byte(emptyHostsFile), 0600)
+	err = os.WriteFile(hostsFile.Name(), []byte(emptyHostsFile), 0600)
 	assert.NoError(t, err)
 
-	err = ioutil.WriteFile(configFile.Name(), []byte(dummyConfigFile), 0600)
+	err = os.WriteFile(configFile.Name(), []byte(dummyConfigFile), 0600)
 	assert.NoError(t, err)
 
 	config, err := ParseDefaultConfig(configFile.Name(), hostsFile.Name())
@@ -230,13 +229,13 @@ func TestParseDefaultConfigWithConfigFile(t *testing.T) {
 }
 
 func TestParseDefaultConfigWithNoHostsFile(t *testing.T) {
-	configFile, err := ioutil.TempFile(os.TempDir(), "TestParseDefaultConfigWithNoHostsFile2")
+	configFile, err := os.CreateTemp(os.TempDir(), "TestParseDefaultConfigWithNoHostsFile2")
 	if err != nil {
 		panic(err)
 	}
 	defer func() { _ = os.Remove(configFile.Name()) }()
 
-	err = ioutil.WriteFile(configFile.Name(), []byte(dummyConfigFile), 0600)
+	err = os.WriteFile(configFile.Name(), []byte(dummyConfigFile), 0600)
 	assert.NoError(t, err)
 
 	config, err := ParseDefaultConfig(configFile.Name(), "hosts-file-does-not-exist")

@@ -3,7 +3,6 @@ package api
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"math/rand"
 	"reflect"
 	"testing"
@@ -51,7 +50,7 @@ func TestGraphQL(t *testing.T) {
 	eq(t, response.Viewer.Login, "hubot")
 
 	req := http.Requests[0]
-	reqBody, _ := ioutil.ReadAll(io.LimitReader(req.Body, 10000000))
+	reqBody, _ := io.ReadAll(io.LimitReader(req.Body, 10000000))
 	eq(t, string(reqBody), `{"query":"QUERY","variables":{"name":"Mona"}}`)
 	eq(t, req.Header.Get("Authorization"), "token OTOKEN")
 }
@@ -100,7 +99,7 @@ func TestFilterToken(t *testing.T) {
 	token := generateRandomString()
 	masked := Mask(token)
 
-	t.Logf(masked)
+	t.Log(masked)
 	assert.Equal(t, len(token), len(masked))
 	assert.NotEqual(t, token, masked)
 }
@@ -109,7 +108,7 @@ func TestFilterToken_WithPrefix(t *testing.T) {
 	token := "token " + generateRandomString()
 	masked := Mask(token)
 
-	t.Logf(masked)
+	t.Log(masked)
 	assert.Equal(t, len(token), len(masked))
 	assert.NotEqual(t, token, masked)
 }
@@ -118,7 +117,7 @@ func TestFilterToken_WithSuffix(t *testing.T) {
 	token := generateRandomString() + " something at the end"
 	masked := Mask(token)
 
-	t.Logf(masked)
+	t.Log(masked)
 	assert.Equal(t, len(token), len(masked))
 	assert.NotEqual(t, token, masked)
 }

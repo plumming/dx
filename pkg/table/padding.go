@@ -1,7 +1,6 @@
 package table
 
 import (
-	"math"
 	"strings"
 	"unicode/utf8"
 
@@ -43,7 +42,7 @@ func PadLeft(s, pad string, width int) string {
 func PadCenter(s, pad string, width int) string {
 	gap := width - utf8.RuneCountInString(util.Strip(s))
 	if gap > 0 {
-		gapLeft := int(math.Ceil(float64(gap / 2)))
+		gapLeft := int(float64(gap / 2))
 		gapRight := gap - gapLeft
 		return strings.Repeat(pad, gapLeft) + s + strings.Repeat(pad, gapRight)
 	}
