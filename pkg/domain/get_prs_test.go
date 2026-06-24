@@ -234,6 +234,77 @@ func TestGetPrs_Run_FilterDrafts(t *testing.T) {
 	assert.Equal(t, 1, d.FilteredDrafts)
 }
 
+func TestGetPrs_Run_ShowApprovedByDefault(t *testing.T) {
+	d := NewGetPrs()
+
+	var authConfig auth.Config = &auth.FakeConfig{
+		Hosts: map[string]*auth.HostConfig{
+			"github.com": {User: "user", Token: "token"},
+		},
+	}
+
+	http := &api.FakeHTTP{}
+	client := api.NewClient(authConfig, api.ReplaceTripper(http))
+	d.SetGithubClient(client)
+
+	dxConfig := configfakes.FakeConfig{}
+	dxConfig.GetMaxAgeOfPRsReturns(-1)
+	dxConfig.GetBotAccountsReturns([]string{"dependabot-preview"})
+	dxConfig.GetHiddenLabelsReturns([]string{"do-not-merge/hold"})
+	dxConfig.GetConfiguredServersReturns([]string{"github.com"})
+	dxConfig.GetReposToQueryReturns([]string{"github/repo1", "github/repo2"})
+
+	d.SetDxConfig(&dxConfig)
+
+	http.StubResponse(200, bytes.NewBufferString(fmt.Sprint(userResponse)))
+	http.StubResponse(200, bytes.NewBufferString(expectedResponse("github.com")))
+
+	err := d.Run()
+	assert.NoError(t, err)
+
+	assert.Equal(t, 2, len(http.Requests))
+
+	// by default the approved PR (#790) is included
+	assert.Equal(t, 5, len(d.PullRequests))
+	assert.Equal(t, 0, d.FilteredApproved)
+}
+
+func TestGetPrs_Run_HideApproved(t *testing.T) {
+	d := NewGetPrs()
+	d.HideApproved = true
+
+	var authConfig auth.Config = &auth.FakeConfig{
+		Hosts: map[string]*auth.HostConfig{
+			"github.com": {User: "user", Token: "token"},
+		},
+	}
+
+	http := &api.FakeHTTP{}
+	client := api.NewClient(authConfig, api.ReplaceTripper(http))
+	d.SetGithubClient(client)
+
+	dxConfig := configfakes.FakeConfig{}
+	dxConfig.GetMaxAgeOfPRsReturns(-1)
+	dxConfig.GetBotAccountsReturns([]string{"dependabot-preview"})
+	dxConfig.GetHiddenLabelsReturns([]string{"do-not-merge/hold"})
+	dxConfig.GetConfiguredServersReturns([]string{"github.com"})
+	dxConfig.GetReposToQueryReturns([]string{"github/repo1", "github/repo2"})
+
+	d.SetDxConfig(&dxConfig)
+
+	http.StubResponse(200, bytes.NewBufferString(fmt.Sprint(userResponse)))
+	http.StubResponse(200, bytes.NewBufferString(expectedResponse("github.com")))
+
+	err := d.Run()
+	assert.NoError(t, err)
+
+	assert.Equal(t, 2, len(http.Requests))
+
+	// with --hide-approved the approved PR (#790) is filtered out
+	assert.Equal(t, 4, len(d.PullRequests))
+	assert.Equal(t, 1, d.FilteredApproved)
+}
+
 func expectedResponse(host string) string {
 	variables := make(map[string]string)
 	variables["Host"] = host
@@ -248,7 +319,7 @@ func expectedResponse(host string) string {
 			{"number":792,"title":"chore: test to 0.0.923","url":"https://{{.Host}}/test_repo_two/pull/792","createdAt":"2020-05-15T10:07:30Z","closed":false,"author":{"login":"-bot"},"repository":{"nameWithOwner":"my_owner"},"mergeable":"MERGEABLE","labels":{"nodes":[{"name":"size/XS"},{"name":"updatebot"}]},"commits":{"nodes":[{"commit":{"status":{"contexts":[{"state":"PENDING","targetUrl":"http://dec","description":"Not mergeable. Needs approved label.","context":"tide"},{"state":"SUCCESS","targetUrl":null,"description":"All Tasks have completed executing","context":"promotion-build"}]}}}]}},
 			{"number":44,"title":"chore: prompt for version if not supplied","url":"https://{{.Host}}/plumming/dx/pull/44","createdAt":"2020-05-15T08:07:26Z","closed":false,"author":{"login":"me"},"repository":{"nameWithOwner":"plumming/dx"},"mergeable":"MERGEABLE","labels":{"nodes":[{"name":"size/XL"},{"name":"do-not-merge/hold"}]},"commits":{"nodes":[{"commit":{"status":{"contexts":[{"state":"PENDING","targetUrl":"","description":"Not mergeable. Needs approved label.","context":"Merge Status"},{"state":"SUCCESS","targetUrl":"https://dashboard/PR-44/4","description":"Pipeline successful","context":"pr-build"}]}}}]}},
      		{"number":791,"title":"chore: my-service to 0.0.717","url":"https://{{.Host}}/test_repo_two/pull/791","createdAt":"2020-05-14T23:12:56Z","closed":false,"author":{"login":"bot"},"repository":{"nameWithOwner":"my_owner"},"mergeable":"MERGEABLE","labels":{"nodes":[{"name":"size/XS"},{"name":"updatebot"}]},"commits":{"nodes":[{"commit":{"status":{"contexts":[{"state":"PENDING","targetUrl":"http://dec","description":"Not mergeable. Needs approved label.","context":"tide"},{"state":"SUCCESS","targetUrl":null,"description":"All Tasks have completed executing","context":"promotion-build"}]}}}]}},
-			{"number":790,"title":"chore: test to 0.0.922","url":"https://{{.Host}}/test_repo_two/pull/790","createdAt":"2020-05-14T22:53:14Z","closed":false,"author":{"login":"bot"},"repository":{"nameWithOwner":"testOwners"},"mergeable":"MERGEABLE","labels":{"nodes":[{"name":"size/XS"},{"name":"updatebot"}]},"commits":{"nodes":[{"commit":{"status":{"contexts":[{"state":"PENDING","targetUrl":"http://dec","description":"Not mergeable. Needs approved label.","context":"tide"},{"state":"SUCCESS","targetUrl":null,"description":"All Tasks have completed executing","context":"promotion-build"}]}}}]}},
+			{"number":790,"title":"chore: test to 0.0.922","url":"https://{{.Host}}/test_repo_two/pull/790","createdAt":"2020-05-14T22:53:14Z","closed":false,"reviewDecision":"APPROVED","author":{"login":"bot"},"repository":{"nameWithOwner":"testOwners"},"mergeable":"MERGEABLE","labels":{"nodes":[{"name":"size/XS"},{"name":"updatebot"}]},"commits":{"nodes":[{"commit":{"status":{"contexts":[{"state":"PENDING","targetUrl":"http://dec","description":"Not mergeable. Needs approved label.","context":"tide"},{"state":"SUCCESS","targetUrl":null,"description":"All Tasks have completed executing","context":"promotion-build"}]}}}]}},
 			{"number":789,"title":"chore: draft pr","url":"https://{{.Host}}/test_repo_two/pull/789","createdAt":"2020-05-14T22:00:14Z","closed":false,"isDraft":true,"author":{"login":"me"},"repository":{"nameWithOwner":"testOwners"},"mergeable":"MERGEABLE","labels":{"nodes":[{"name":"size/XS"}]},"commits":{"nodes":[{"commit":{"status":{"contexts":[{"state":"SUCCESS","targetUrl":null,"description":"All Tasks have completed executing","context":"promotion-build"}]}}}]}}
 		]}
 	}

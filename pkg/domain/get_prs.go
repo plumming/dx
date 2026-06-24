@@ -82,6 +82,7 @@ type GetPrs struct {
 	ShowBots            bool
 	ShowHidden          bool
 	ShowDrafts          bool
+	HideApproved        bool
 	Me                  bool
 	Review              bool
 	Raw                 string
@@ -89,6 +90,7 @@ type GetPrs struct {
 	FilteredLabels      int
 	FilteredBotAccounts int
 	FilteredDrafts      int
+	FilteredApproved    int
 }
 
 // PrData.
@@ -136,6 +138,7 @@ func (g *GetPrs) Run() error {
 	filteredOnLabels := 0
 	filteredOnAccounts := 0
 	filteredOnDrafts := 0
+	filteredOnApproved := 0
 
 	for _, pullRequest := range pulls {
 		if pullRequest.Display() {
@@ -145,18 +148,21 @@ func (g *GetPrs) Run() error {
 				filteredOnAccounts++
 			} else if g.filterOnDrafts(pullRequest) {
 				filteredOnDrafts++
+			} else if g.filterOnApproved(pullRequest) {
+				filteredOnApproved++
 			} else {
 				pullsToReturn = append(pullsToReturn, pullRequest)
 			}
 		}
 	}
 
-	log.Logger().Debugf("Filtered %d/%d/%d PR(s)", filteredOnLabels, filteredOnAccounts, filteredOnDrafts)
+	log.Logger().Debugf("Filtered %d/%d/%d/%d PR(s)", filteredOnLabels, filteredOnAccounts, filteredOnDrafts, filteredOnApproved)
 
 	g.PullRequests = pullsToReturn
 	g.FilteredLabels = filteredOnLabels
 	g.FilteredBotAccounts = filteredOnAccounts
 	g.FilteredDrafts = filteredOnDrafts
+	g.FilteredApproved = filteredOnApproved
 
 	return nil
 }
@@ -229,6 +235,13 @@ func (g *GetPrs) filterOnLabels(pr pr.PullRequest, hiddenLabels []string) bool {
 func (g *GetPrs) filterOnDrafts(pr pr.PullRequest) bool {
 	if pr.IsDraft {
 		return !g.ShowDrafts
+	}
+	return false
+}
+
+func (g *GetPrs) filterOnApproved(pr pr.PullRequest) bool {
+	if pr.IsApproved() {
+		return g.HideApproved
 	}
 	return false
 }

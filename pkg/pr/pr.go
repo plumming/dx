@@ -41,6 +41,7 @@ const (
 	error       = "ERROR"
 	conflicting = "CONFLICTING"
 	unknown     = "UNKNOWN"
+	approved    = "APPROVED"
 )
 
 func (p *PullRequest) Display() bool {
@@ -122,7 +123,7 @@ func (p *PullRequest) ColoredTitle() string {
 
 func (p *PullRequest) ColoredReviewDecision() string {
 	switch p.ReviewDecision {
-	case "APPROVED":
+	case approved:
 		return util.ColorInfo("Approved")
 	case "REVIEW_REQUIRED":
 		return util.ColorWarning("Required")
@@ -131,6 +132,10 @@ func (p *PullRequest) ColoredReviewDecision() string {
 	default:
 		return p.ReviewDecision
 	}
+}
+
+func (p *PullRequest) IsApproved() bool {
+	return p.ReviewDecision == approved
 }
 
 func (p *PullRequest) TrimmedTitle() string {
