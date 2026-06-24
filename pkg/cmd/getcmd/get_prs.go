@@ -17,16 +17,17 @@ import (
 
 type GetPrsCmd struct {
 	cmd.CommonCmd
-	ShowBots   bool
-	ShowHidden bool
-	ShowDrafts bool
-	Review     bool
-	Quiet      bool
-	Me         bool
-	Copy       bool
-	Raw        string
-	Cmd        *cobra.Command
-	Args       []string
+	ShowBots     bool
+	ShowHidden   bool
+	ShowDrafts   bool
+	HideApproved bool
+	Review       bool
+	Quiet        bool
+	Me           bool
+	Copy         bool
+	Raw          string
+	Cmd          *cobra.Command
+	Args         []string
 }
 
 func NewGetPrsCmd() *cobra.Command {
@@ -55,6 +56,10 @@ Get a list of PRs including drafts:
 
   dx get prs --show-drafts
 
+Get a list of PRs excluding approved ones:
+
+  dx get prs --hide-approved
+
 `,
 		Aliases: []string{"pr", "pulls", "pull-requests"},
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -73,6 +78,8 @@ Get a list of PRs including drafts:
 		"Show PRs that are filtered by hidden labels (default: false)")
 	cmd.Flags().BoolVarP(&c.ShowDrafts, "show-drafts", "", false,
 		"Show draft PRs (default: false)")
+	cmd.Flags().BoolVarP(&c.HideApproved, "hide-approved", "", false,
+		"Hide approved PRs (default: false)")
 	cmd.Flags().BoolVarP(&c.Review, "review", "", false,
 		"Show PRs that are ready for review")
 	cmd.Flags().BoolVarP(&c.Quiet, "quiet", "", false,
@@ -94,6 +101,7 @@ func (c *GetPrsCmd) Run() error {
 	d.ShowHidden = c.ShowHidden
 	d.ShowBots = c.ShowBots
 	d.ShowDrafts = c.ShowDrafts
+	d.HideApproved = c.HideApproved
 	d.Me = c.Me
 	d.Review = c.Review
 	d.Raw = c.Raw
@@ -183,6 +191,10 @@ func (c *GetPrsCmd) Run() error {
 			flags = append(flags, "--show-drafts")
 		}
 		fmt.Printf("\nFiltered %d PRs, use %s to view them\n", (d.FilteredBotAccounts + d.FilteredLabels + d.FilteredDrafts), strings.Join(flags, ", "))
+	}
+
+	if d.FilteredApproved > 0 {
+		fmt.Printf("\nFiltered %d approved PRs, remove --hide-approved to view them\n", d.FilteredApproved)
 	}
 
 	return nil
