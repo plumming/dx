@@ -19,6 +19,7 @@ type GetPrsCmd struct {
 	cmd.CommonCmd
 	ShowBots   bool
 	ShowHidden bool
+	ShowDrafts bool
 	Review     bool
 	Quiet      bool
 	Me         bool
@@ -50,6 +51,10 @@ Get a list of PRs with a custom query:
 
   dx get prs --raw is:private
 
+Get a list of PRs including drafts:
+
+  dx get prs --show-drafts
+
 `,
 		Aliases: []string{"pr", "pulls", "pull-requests"},
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -66,6 +71,8 @@ Get a list of PRs with a custom query:
 		"Show bot account PRs (default: false)")
 	cmd.Flags().BoolVarP(&c.ShowHidden, "show-hidden", "", false,
 		"Show PRs that are filtered by hidden labels (default: false)")
+	cmd.Flags().BoolVarP(&c.ShowDrafts, "show-drafts", "", false,
+		"Show draft PRs (default: false)")
 	cmd.Flags().BoolVarP(&c.Review, "review", "", false,
 		"Show PRs that are ready for review")
 	cmd.Flags().BoolVarP(&c.Quiet, "quiet", "", false,
@@ -86,6 +93,7 @@ func (c *GetPrsCmd) Run() error {
 	d := domain.NewGetPrs()
 	d.ShowHidden = c.ShowHidden
 	d.ShowBots = c.ShowBots
+	d.ShowDrafts = c.ShowDrafts
 	d.Me = c.Me
 	d.Review = c.Review
 	d.Raw = c.Raw
@@ -163,7 +171,7 @@ func (c *GetPrsCmd) Run() error {
 		fmt.Printf("\nDisplaying %d PRs\n", len(d.PullRequests))
 	}
 
-	if (d.FilteredBotAccounts + d.FilteredLabels) > 0 {
+	if (d.FilteredBotAccounts + d.FilteredLabels + d.FilteredDrafts) > 0 {
 		var flags []string
 		if d.FilteredBotAccounts > 0 {
 			flags = append(flags, "--show-bots")
@@ -171,7 +179,10 @@ func (c *GetPrsCmd) Run() error {
 		if d.FilteredLabels > 0 {
 			flags = append(flags, "--show-hidden")
 		}
-		fmt.Printf("\nFiltered %d PRs, use %s to view them\n", (d.FilteredBotAccounts + d.FilteredLabels), strings.Join(flags, ", "))
+		if d.FilteredDrafts > 0 {
+			flags = append(flags, "--show-drafts")
+		}
+		fmt.Printf("\nFiltered %d PRs, use %s to view them\n", (d.FilteredBotAccounts + d.FilteredLabels + d.FilteredDrafts), strings.Join(flags, ", "))
 	}
 
 	return nil

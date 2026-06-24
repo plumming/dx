@@ -19,6 +19,7 @@ type PullRequest struct {
 	Labels         Labels     `json:"labels"`
 	Commits        Commits    `json:"commits"`
 	Closed         bool       `json:"closed"`
+	IsDraft        bool       `json:"isDraft"`
 	Repository     Repository `json:"repository"`
 	Comments       Comments   `json:"comments"`
 	ReviewDecision string     `json:"reviewDecision"`
