@@ -24,6 +24,7 @@ var (
         url
         createdAt
         closed
+        isDraft
         author {
           login
         }
@@ -80,12 +81,14 @@ type GetPrs struct {
 	cmd.CommonOptions
 	ShowBots            bool
 	ShowHidden          bool
+	ShowDrafts          bool
 	Me                  bool
 	Review              bool
 	Raw                 string
 	PullRequests        []pr.PullRequest
 	FilteredLabels      int
 	FilteredBotAccounts int
+	FilteredDrafts      int
 }
 
 // PrData.
@@ -132,6 +135,7 @@ func (g *GetPrs) Run() error {
 
 	filteredOnLabels := 0
 	filteredOnAccounts := 0
+	filteredOnDrafts := 0
 
 	for _, pullRequest := range pulls {
 		if pullRequest.Display() {
@@ -139,17 +143,20 @@ func (g *GetPrs) Run() error {
 				filteredOnLabels++
 			} else if g.filterOnAccounts(pullRequest, cfg.GetBotAccounts()) {
 				filteredOnAccounts++
+			} else if g.filterOnDrafts(pullRequest) {
+				filteredOnDrafts++
 			} else {
 				pullsToReturn = append(pullsToReturn, pullRequest)
 			}
 		}
 	}
 
-	log.Logger().Debugf("Filtered %d/%d PR(s)", filteredOnLabels, filteredOnAccounts)
+	log.Logger().Debugf("Filtered %d/%d/%d PR(s)", filteredOnLabels, filteredOnAccounts, filteredOnDrafts)
 
 	g.PullRequests = pullsToReturn
 	g.FilteredLabels = filteredOnLabels
 	g.FilteredBotAccounts = filteredOnAccounts
+	g.FilteredDrafts = filteredOnDrafts
 
 	return nil
 }
@@ -215,6 +222,13 @@ func (g *GetPrs) filterOnLabels(pr pr.PullRequest, hiddenLabels []string) bool {
 		if pr.HasLabel(label) {
 			return !g.ShowHidden
 		}
+	}
+	return false
+}
+
+func (g *GetPrs) filterOnDrafts(pr pr.PullRequest) bool {
+	if pr.IsDraft {
+		return !g.ShowDrafts
 	}
 	return false
 }
