@@ -266,6 +266,7 @@ func (c *Client) Download(url string) (*http.Response, error) {
 }
 
 func (c *Client) Do(req *http.Request) (*http.Response, error) {
+	// #nosec G704 -- the request targets the user's own configured GitHub (Enterprise) host; the CLI acts on their behalf.
 	return c.http.Do(req)
 }
 

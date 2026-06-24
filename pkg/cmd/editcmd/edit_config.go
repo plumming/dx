@@ -63,6 +63,7 @@ func (c *EditConfigCmd) Run() error {
 		log.Logger().Fatal(err)
 	}
 
+	// #nosec G702 -- editor is the user's own $EDITOR (default vi), launched locally on a process-created temp file.
 	cmd := exec.Command(editor, f.Name())
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout

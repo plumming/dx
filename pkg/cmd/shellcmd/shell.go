@@ -110,6 +110,7 @@ func (c *ShellCmd) Run() error {
 		rcFile = zshRcFile + "\nexport PS1=" + prompt + "\nexport KUBECONFIG=\"" + tmpConfigFileName + "\"\n"
 		tmpRCFileName = tmpDirName + "/.zshrc"
 	}
+	// #nosec G703 -- tmpRCFileName lives inside a process-created MkdirTemp directory, not user-supplied input.
 	err = os.WriteFile(tmpRCFileName, []byte(rcFile), 0600)
 	if err != nil {
 		return err
@@ -121,10 +122,12 @@ func (c *ShellCmd) Run() error {
 	fmt.Printf("All changes to the Kubernetes context like changing environment, namespace or context will be local to this shell\n")
 	fmt.Printf("To return to the global context use the command: exit\n\n")
 
+	// #nosec G702 -- shell is the basename of the user's own $SHELL, launched interactively on their behalf.
 	e := exec.Command(shell, "-rcfile", tmpRCFileName, "-i")
 	if shell == "zsh" {
 		env := os.Environ()
 		env = append(env, fmt.Sprintf("ZDOTDIR=%s", tmpDirName))
+		// #nosec G702 -- shell is the basename of the user's own $SHELL, launched interactively on their behalf.
 		e = exec.Command(shell, "-i")
 		e.Env = env
 	}
