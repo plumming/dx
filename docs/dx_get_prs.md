@@ -25,6 +25,10 @@ Get a list of PRs with a custom query:
 
   dx get prs --raw is:private
 
+Get a list of PRs including drafts:
+
+  dx get prs --show-drafts
+
 
 ```
 
@@ -38,6 +42,7 @@ Get a list of PRs with a custom query:
       --raw string     Additional raw search parameters to use when querying
       --review         Show PRs that are ready for review
       --show-bots      Show bot account PRs (default: false)
+      --show-drafts    Show draft PRs (default: false)
       --show-hidden    Show PRs that are filtered by hidden labels (default: false)
 ```
 
