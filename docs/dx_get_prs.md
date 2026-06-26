@@ -29,21 +29,26 @@ Get a list of PRs including drafts:
 
   dx get prs --show-drafts
 
+Get a list of PRs excluding approved ones:
+
+  dx get prs --hide-approved
+
 
 ```
 
 ### Options
 
 ```
-  -c, --copy           Output is copy and pasteable
-  -m, --me             Show all PRs that are created by the author
-  -q, --query string   JMESPath query filter
-      --quiet          Hide the column headings
-      --raw string     Additional raw search parameters to use when querying
-      --review         Show PRs that are ready for review
-      --show-bots      Show bot account PRs (default: false)
-      --show-drafts    Show draft PRs (default: false)
-      --show-hidden    Show PRs that are filtered by hidden labels (default: false)
+  -c, --copy            Output is copy and pasteable
+      --hide-approved   Hide approved PRs (default: false)
+  -m, --me              Show all PRs that are created by the author
+  -q, --query string    JMESPath query filter
+      --quiet           Hide the column headings
+      --raw string      Additional raw search parameters to use when querying
+      --review          Show PRs that are ready for review
+      --show-bots       Show bot account PRs (default: false)
+      --show-drafts     Show draft PRs (default: false)
+      --show-hidden     Show PRs that are filtered by hidden labels (default: false)
 ```
 
 ### Options inherited from parent commands
