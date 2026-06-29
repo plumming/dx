@@ -53,11 +53,13 @@ var (
                       state
                       context
                       description
+                      createdAt
                     }
                     ...on CheckRun {
                       conclusion
                       name
                       title
+                      startedAt
                     }
                   }
                 }

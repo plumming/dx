@@ -62,9 +62,44 @@ func (p *PullRequest) LabelsString() string {
 	return strings.Join(labels, ", ")
 }
 
+// latestContexts deduplicates the status checks on the latest commit, keeping
+// only the most recent run of each. GitHub's statusCheckRollup can contain
+// multiple runs of the same check (for example a failed run followed by a
+// successful re-run); only the latest run reflects the current state, so the
+// stale entries must be discarded to avoid reporting a check as failed when it
+// has since passed.
+func (p *PullRequest) latestContexts() []Context {
+	var keys []string
+	latest := map[string]Context{}
+	var result []Context
+	for _, c := range p.Commits.Nodes[0].Commit.StatusCheckRollup.Contexts.Nodes {
+		key := c.Name
+		if key == "" {
+			key = c.Context
+		}
+		if key == "" {
+			// Nothing to deduplicate on, keep the context as-is.
+			result = append(result, c)
+			continue
+		}
+		if existing, ok := latest[key]; ok {
+			if c.timestamp().Before(existing.timestamp()) {
+				continue
+			}
+		} else {
+			keys = append(keys, key)
+		}
+		latest[key] = c
+	}
+	for _, key := range keys {
+		result = append(result, latest[key])
+	}
+	return result
+}
+
 func (p *PullRequest) contexts() []string {
 	var contexts []string
-	for _, c := range p.Commits.Nodes[0].Commit.StatusCheckRollup.Contexts.Nodes {
+	for _, c := range p.latestContexts() {
 		if c.Context != "" && c.Context != "tide" && c.Context != "keeper" && c.Context != "Merge Status" {
 			contexts = append(contexts, c.State)
 		}
@@ -100,7 +135,7 @@ func (p *PullRequest) ContextsString() string {
 
 func (p *PullRequest) FailedContexts() []Context {
 	var failedContexts []Context
-	for _, c := range p.Commits.Nodes[0].Commit.StatusCheckRollup.Contexts.Nodes {
+	for _, c := range p.latestContexts() {
 		if c.Context != "" && c.Context != "tide" && c.Context != "keeper" && c.Context != "Merge Status" && c.State == failure {
 			failedContexts = append(failedContexts, c)
 		}

@@ -1,5 +1,7 @@
 package pr
 
+import "time"
+
 type Comments struct {
 	TotalCount int `json:"totalCount"`
 }
@@ -42,10 +44,21 @@ type StatusContext struct {
 }
 
 type Context struct {
-	State       string `json:"state"`
-	Description string `json:"description"`
-	Context     string `json:"context"`
-	Conclusion  string `json:"conclusion"`
-	Name        string `json:"name"`
-	Title       string `json:"title"`
+	State       string    `json:"state"`
+	Description string    `json:"description"`
+	Context     string    `json:"context"`
+	Conclusion  string    `json:"conclusion"`
+	Name        string    `json:"name"`
+	Title       string    `json:"title"`
+	StartedAt   time.Time `json:"startedAt"`
+	CreatedAt   time.Time `json:"createdAt"`
+}
+
+// timestamp returns the time the context was last run, preferring a CheckRun's
+// startedAt and falling back to a StatusContext's createdAt.
+func (c Context) timestamp() time.Time {
+	if !c.StartedAt.IsZero() {
+		return c.StartedAt
+	}
+	return c.CreatedAt
 }
