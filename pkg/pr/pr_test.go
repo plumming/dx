@@ -2,6 +2,7 @@ package pr
 
 import (
 	"testing"
+	"time"
 
 	"github.com/plumming/dx/pkg/util"
 
@@ -124,6 +125,64 @@ func TestPullRequest_ContextsString(t *testing.T) {
 				},
 			}
 			assert.Equal(t, pr.ContextsString(), test.exp)
+		})
+	}
+}
+
+func TestPullRequest_ContextsString_DeduplicatesStaleRuns(t *testing.T) {
+	older := time.Date(2026, 1, 1, 10, 0, 0, 0, time.UTC)
+	newer := time.Date(2026, 1, 1, 11, 0, 0, 0, time.UTC)
+
+	var tests = []struct {
+		name     string
+		contexts []Context
+		exp      string
+	}{
+		{
+			name: "stale_failure_superseded_by_successful_rerun",
+			contexts: []Context{
+				{Conclusion: "FAILURE", Name: "commit-policy", StartedAt: older},
+				{Conclusion: "SUCCESS", Name: "commit-policy", StartedAt: newer},
+				{Conclusion: "SUCCESS", Name: "Run tests", StartedAt: newer},
+			},
+			exp: "SUCCESS",
+		},
+		{
+			name: "successful_run_superseded_by_failing_rerun",
+			contexts: []Context{
+				{Conclusion: "SUCCESS", Name: "commit-policy", StartedAt: older},
+				{Conclusion: "FAILURE", Name: "commit-policy", StartedAt: newer},
+			},
+			exp: "FAILURE",
+		},
+		{
+			name: "stale_failure_regardless_of_node_order",
+			contexts: []Context{
+				{Conclusion: "SUCCESS", Name: "commit-policy", StartedAt: newer},
+				{Conclusion: "FAILURE", Name: "commit-policy", StartedAt: older},
+			},
+			exp: "SUCCESS",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			pr := PullRequest{
+				Commits: Commits{
+					Nodes: []CommitEntry{
+						{
+							Commit: Commit{
+								StatusCheckRollup: StatusCheckRollup{
+									Contexts: StatusContext{
+										Nodes: test.contexts,
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			assert.Equal(t, test.exp, pr.ContextsString())
 		})
 	}
 }
