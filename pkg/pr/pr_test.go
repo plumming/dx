@@ -206,6 +206,29 @@ func TestPullRequest_MergableString(t *testing.T) {
 	assert.Equal(t, pr.MergeableString(), "* ?")
 }
 
+func TestPullRequest_IsQueued(t *testing.T) {
+	pr := PullRequest{IsInMergeQueue: true}
+	assert.Equal(t, pr.IsQueued(), true)
+
+	pr = PullRequest{IsInMergeQueue: false}
+	assert.Equal(t, pr.IsQueued(), false)
+}
+
+func TestPullRequest_ColoredReviewDecision(t *testing.T) {
+	pr := PullRequest{ReviewDecision: "APPROVED"}
+	assert.Equal(t, pr.ColoredReviewDecision(), util.ColorInfo("Approved"))
+
+	pr = PullRequest{ReviewDecision: "REVIEW_REQUIRED"}
+	assert.Equal(t, pr.ColoredReviewDecision(), util.ColorWarning("Required"))
+
+	pr = PullRequest{ReviewDecision: "CHANGES_REQUESTED"}
+	assert.Equal(t, pr.ColoredReviewDecision(), util.ColorError("Changes Requested"))
+
+	// queued takes priority over the review decision
+	pr = PullRequest{ReviewDecision: "APPROVED", IsInMergeQueue: true}
+	assert.Equal(t, pr.ColoredReviewDecision(), util.ColorInfo("Queued"))
+}
+
 func TestPullRequest_PullsString(t *testing.T) {
 	pr := PullRequest{URL: "https://github.com/plumming/dx/pull/257"}
 	assert.Equal(t, pr.PullsString(), "https://github.com/plumming/dx/pulls")

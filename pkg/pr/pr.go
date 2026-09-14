@@ -23,6 +23,7 @@ type PullRequest struct {
 	Repository     Repository `json:"repository"`
 	Comments       Comments   `json:"comments"`
 	ReviewDecision string     `json:"reviewDecision"`
+	IsInMergeQueue bool       `json:"isInMergeQueue"`
 	BaseRef        BaseRef    `json:"baseRef"`
 }
 
@@ -157,6 +158,9 @@ func (p *PullRequest) ColoredTitle() string {
 }
 
 func (p *PullRequest) ColoredReviewDecision() string {
+	if p.IsQueued() {
+		return util.ColorInfo("Queued")
+	}
 	switch p.ReviewDecision {
 	case approved:
 		return util.ColorInfo("Approved")
@@ -171,6 +175,10 @@ func (p *PullRequest) ColoredReviewDecision() string {
 
 func (p *PullRequest) IsApproved() bool {
 	return p.ReviewDecision == approved
+}
+
+func (p *PullRequest) IsQueued() bool {
+	return p.IsInMergeQueue
 }
 
 func (p *PullRequest) TrimmedTitle() string {

@@ -38,6 +38,7 @@ var (
           }
         }
         reviewDecision
+        isInMergeQueue
         comments {
           totalCount
         }
@@ -85,6 +86,7 @@ type GetPrs struct {
 	ShowHidden          bool
 	ShowDrafts          bool
 	HideApproved        bool
+	HideQueued          bool
 	Me                  bool
 	Review              bool
 	Raw                 string
@@ -93,6 +95,7 @@ type GetPrs struct {
 	FilteredBotAccounts int
 	FilteredDrafts      int
 	FilteredApproved    int
+	FilteredQueued      int
 }
 
 // PrData.
@@ -141,6 +144,7 @@ func (g *GetPrs) Run() error {
 	filteredOnAccounts := 0
 	filteredOnDrafts := 0
 	filteredOnApproved := 0
+	filteredOnQueued := 0
 
 	for _, pullRequest := range pulls {
 		if pullRequest.Display() {
@@ -152,19 +156,22 @@ func (g *GetPrs) Run() error {
 				filteredOnDrafts++
 			} else if g.filterOnApproved(pullRequest) {
 				filteredOnApproved++
+			} else if g.filterOnQueued(pullRequest) {
+				filteredOnQueued++
 			} else {
 				pullsToReturn = append(pullsToReturn, pullRequest)
 			}
 		}
 	}
 
-	log.Logger().Debugf("Filtered %d/%d/%d/%d PR(s)", filteredOnLabels, filteredOnAccounts, filteredOnDrafts, filteredOnApproved)
+	log.Logger().Debugf("Filtered %d/%d/%d/%d/%d PR(s)", filteredOnLabels, filteredOnAccounts, filteredOnDrafts, filteredOnApproved, filteredOnQueued)
 
 	g.PullRequests = pullsToReturn
 	g.FilteredLabels = filteredOnLabels
 	g.FilteredBotAccounts = filteredOnAccounts
 	g.FilteredDrafts = filteredOnDrafts
 	g.FilteredApproved = filteredOnApproved
+	g.FilteredQueued = filteredOnQueued
 
 	return nil
 }
@@ -244,6 +251,13 @@ func (g *GetPrs) filterOnDrafts(pr pr.PullRequest) bool {
 func (g *GetPrs) filterOnApproved(pr pr.PullRequest) bool {
 	if pr.IsApproved() {
 		return g.HideApproved
+	}
+	return false
+}
+
+func (g *GetPrs) filterOnQueued(pr pr.PullRequest) bool {
+	if pr.IsQueued() {
+		return g.HideQueued
 	}
 	return false
 }
