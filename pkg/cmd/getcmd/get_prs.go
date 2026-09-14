@@ -21,6 +21,7 @@ type GetPrsCmd struct {
 	ShowHidden   bool
 	ShowDrafts   bool
 	HideApproved bool
+	HideQueued   bool
 	Review       bool
 	Quiet        bool
 	Me           bool
@@ -60,6 +61,10 @@ Get a list of PRs excluding approved ones:
 
   dx get prs --hide-approved
 
+Get a list of PRs excluding queued ones:
+
+  dx get prs --hide-queued
+
 `,
 		Aliases: []string{"pr", "pulls", "pull-requests"},
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -80,6 +85,8 @@ Get a list of PRs excluding approved ones:
 		"Show draft PRs (default: false)")
 	cmd.Flags().BoolVarP(&c.HideApproved, "hide-approved", "", false,
 		"Hide approved PRs (default: false)")
+	cmd.Flags().BoolVarP(&c.HideQueued, "hide-queued", "", false,
+		"Hide queued PRs (default: false)")
 	cmd.Flags().BoolVarP(&c.Review, "review", "", false,
 		"Show PRs that are ready for review")
 	cmd.Flags().BoolVarP(&c.Quiet, "quiet", "", false,
@@ -102,6 +109,7 @@ func (c *GetPrsCmd) Run() error {
 	d.ShowBots = c.ShowBots
 	d.ShowDrafts = c.ShowDrafts
 	d.HideApproved = c.HideApproved
+	d.HideQueued = c.HideQueued
 	d.Me = c.Me
 	d.Review = c.Review
 	d.Raw = c.Raw
@@ -195,6 +203,10 @@ func (c *GetPrsCmd) Run() error {
 
 	if d.FilteredApproved > 0 {
 		fmt.Printf("\nFiltered %d approved PRs, remove --hide-approved to view them\n", d.FilteredApproved)
+	}
+
+	if d.FilteredQueued > 0 {
+		fmt.Printf("\nFiltered %d queued PRs, remove --hide-queued to view them\n", d.FilteredQueued)
 	}
 
 	return nil

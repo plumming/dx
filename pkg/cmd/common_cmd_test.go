@@ -37,6 +37,7 @@ func TestCommonCmd_Filter_AllData(t *testing.T) {
     },
     "createdAt": "0001-01-01T00:00:00Z",
     "isDraft": false,
+    "isInMergeQueue": false,
     "labels": {
       "nodes": null
     },
@@ -67,6 +68,7 @@ func TestCommonCmd_Filter_AllData(t *testing.T) {
     },
     "createdAt": "0001-01-01T00:00:00Z",
     "isDraft": false,
+    "isInMergeQueue": false,
     "labels": {
       "nodes": null
     },
@@ -97,6 +99,7 @@ func TestCommonCmd_Filter_AllData(t *testing.T) {
     },
     "createdAt": "0001-01-01T00:00:00Z",
     "isDraft": false,
+    "isInMergeQueue": false,
     "labels": {
       "nodes": null
     },
@@ -142,6 +145,7 @@ func TestCommonCmd_Filter_FilterOnAuthor(t *testing.T) {
     },
     "createdAt": "0001-01-01T00:00:00Z",
     "isDraft": false,
+    "isInMergeQueue": false,
     "labels": {
       "nodes": null
     },

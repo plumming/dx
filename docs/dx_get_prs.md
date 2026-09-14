@@ -33,6 +33,10 @@ Get a list of PRs excluding approved ones:
 
   dx get prs --hide-approved
 
+Get a list of PRs excluding queued ones:
+
+  dx get prs --hide-queued
+
 
 ```
 
@@ -41,6 +45,7 @@ Get a list of PRs excluding approved ones:
 ```
   -c, --copy            Output is copy and pasteable
       --hide-approved   Hide approved PRs (default: false)
+      --hide-queued     Hide queued PRs (default: false)
   -m, --me              Show all PRs that are created by the author
   -q, --query string    JMESPath query filter
       --quiet           Hide the column headings
