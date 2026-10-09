@@ -224,6 +224,10 @@ func TestPullRequest_ColoredReviewDecision(t *testing.T) {
 	pr = PullRequest{ReviewDecision: "CHANGES_REQUESTED"}
 	assert.Equal(t, pr.ColoredReviewDecision(), util.ColorError("Changes Requested"))
 
+	// a pending review request means the author has asked for a re-review
+	pr = PullRequest{ReviewDecision: "CHANGES_REQUESTED", ReviewRequests: ReviewRequests{TotalCount: 1}}
+	assert.Equal(t, pr.ColoredReviewDecision(), util.ColorWarning("Re-review Requested"))
+
 	// queued takes priority over the review decision
 	pr = PullRequest{ReviewDecision: "APPROVED", IsInMergeQueue: true}
 	assert.Equal(t, pr.ColoredReviewDecision(), util.ColorInfo("Queued"))

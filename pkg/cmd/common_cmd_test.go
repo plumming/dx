@@ -47,6 +47,9 @@ func TestCommonCmd_Filter_AllData(t *testing.T) {
       "nameWithOwner": ""
     },
     "reviewDecision": "",
+    "reviewRequests": {
+      "totalCount": 0
+    },
     "title": "",
     "url": ""
   },
@@ -78,6 +81,9 @@ func TestCommonCmd_Filter_AllData(t *testing.T) {
       "nameWithOwner": ""
     },
     "reviewDecision": "",
+    "reviewRequests": {
+      "totalCount": 0
+    },
     "title": "",
     "url": ""
   },
@@ -109,6 +115,9 @@ func TestCommonCmd_Filter_AllData(t *testing.T) {
       "nameWithOwner": ""
     },
     "reviewDecision": "",
+    "reviewRequests": {
+      "totalCount": 0
+    },
     "title": "",
     "url": ""
   }
@@ -155,6 +164,9 @@ func TestCommonCmd_Filter_FilterOnAuthor(t *testing.T) {
       "nameWithOwner": ""
     },
     "reviewDecision": "",
+    "reviewRequests": {
+      "totalCount": 0
+    },
     "title": "",
     "url": ""
   }
