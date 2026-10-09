@@ -10,21 +10,22 @@ import (
 )
 
 type PullRequest struct {
-	Number         int        `json:"number"`
-	Title          string     `json:"title"`
-	URL            string     `json:"url"`
-	Mergeable      string     `json:"mergeable"`
-	CreatedAt      time.Time  `json:"createdAt"`
-	Author         Author     `json:"author"`
-	Labels         Labels     `json:"labels"`
-	Commits        Commits    `json:"commits"`
-	Closed         bool       `json:"closed"`
-	IsDraft        bool       `json:"isDraft"`
-	Repository     Repository `json:"repository"`
-	Comments       Comments   `json:"comments"`
-	ReviewDecision string     `json:"reviewDecision"`
-	IsInMergeQueue bool       `json:"isInMergeQueue"`
-	BaseRef        BaseRef    `json:"baseRef"`
+	Number         int            `json:"number"`
+	Title          string         `json:"title"`
+	URL            string         `json:"url"`
+	Mergeable      string         `json:"mergeable"`
+	CreatedAt      time.Time      `json:"createdAt"`
+	Author         Author         `json:"author"`
+	Labels         Labels         `json:"labels"`
+	Commits        Commits        `json:"commits"`
+	Closed         bool           `json:"closed"`
+	IsDraft        bool           `json:"isDraft"`
+	Repository     Repository     `json:"repository"`
+	Comments       Comments       `json:"comments"`
+	ReviewDecision string         `json:"reviewDecision"`
+	IsInMergeQueue bool           `json:"isInMergeQueue"`
+	ReviewRequests ReviewRequests `json:"reviewRequests"`
+	BaseRef        BaseRef        `json:"baseRef"`
 }
 
 type BaseRef struct {
@@ -167,6 +168,11 @@ func (p *PullRequest) ColoredReviewDecision() string {
 	case "REVIEW_REQUIRED":
 		return util.ColorWarning("Required")
 	case "CHANGES_REQUESTED":
+		// GitHub keeps reporting CHANGES_REQUESTED after a re-review has been
+		// requested, until the reviewer submits a new review.
+		if p.ReviewRequests.TotalCount > 0 {
+			return util.ColorWarning("Re-review Requested")
+		}
 		return util.ColorError("Changes Requested")
 	default:
 		return p.ReviewDecision

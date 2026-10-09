@@ -62,3 +62,7 @@ func (c Context) timestamp() time.Time {
 	}
 	return c.CreatedAt
 }
+
+type ReviewRequests struct {
+	TotalCount int `json:"totalCount"`
+}

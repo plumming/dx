@@ -38,6 +38,9 @@ var (
           }
         }
         reviewDecision
+        reviewRequests {
+          totalCount
+        }
         isInMergeQueue
         comments {
           totalCount
