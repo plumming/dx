@@ -13,13 +13,13 @@ dx rebase [flags]
 ### Options
 
 ```
-  -f, --force-with-lease --force-with-lease   Use --force-with-lease when pushing back up to the forked repo
+  -f, --force-with-lease[=true|false]   Use --force-with-lease when pushing back up to the forked repo
 ```
 
 ### Options inherited from parent commands
 
 ```
-      --help   Show help for command
+      --help[=true|false]   Show help for command
 ```
 
 ### SEE ALSO

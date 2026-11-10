@@ -9,8 +9,8 @@ Have you got the chillies.
 ### Options
 
 ```
-      --help      Show help for command
-      --version   Show version
+      --help[=true|false]      Show help for command
+      --version[=true|false]   Show version
 ```
 
 ### SEE ALSO

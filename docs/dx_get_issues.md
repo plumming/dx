@@ -31,19 +31,19 @@ Get a list of issues with a custom query:
 ### Options
 
 ```
-  -m, --me             Show all PRs that are created by the author
-  -q, --query string   JMESPath query filter
-      --quiet          Hide the column headings
-      --raw string     Additional raw search parameters to use when querying
-      --review         Show PRs that are ready for review
-      --show-bots      Show bot account PRs (default: false)
-      --show-hidden    Show PRs that are filtered by hidden labels (default: false)
+  -m, --me[=true|false]            Show all PRs that are created by the author
+  -q, --query string               JMESPath query filter
+      --quiet[=true|false]         Hide the column headings
+      --raw string                 Additional raw search parameters to use when querying
+      --review[=true|false]        Show PRs that are ready for review
+      --show-bots[=true|false]     Show bot account PRs (default: false)
+      --show-hidden[=true|false]   Show PRs that are filtered by hidden labels (default: false)
 ```
 
 ### Options inherited from parent commands
 
 ```
-      --help   Show help for command
+      --help[=true|false]   Show help for command
 ```
 
 ### SEE ALSO

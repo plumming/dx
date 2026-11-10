@@ -18,14 +18,14 @@ Gets the security config for each repository, if you have permission:
 ### Options
 
 ```
-  -q, --query string   JMESPath query filter
-      --quiet          Hide the column headings
+  -q, --query string         JMESPath query filter
+      --quiet[=true|false]   Hide the column headings
 ```
 
 ### Options inherited from parent commands
 
 ```
-      --help   Show help for command
+      --help[=true|false]   Show help for command
 ```
 
 ### SEE ALSO
