@@ -9,13 +9,13 @@ dx upgrade cli [flags]
 ### Options
 
 ```
-      --force   Force upgrade of cli to latest
+      --force[=true|false]   Force upgrade of cli to latest
 ```
 
 ### Options inherited from parent commands
 
 ```
-      --help   Show help for command
+      --help[=true|false]   Show help for command
 ```
 
 ### SEE ALSO
